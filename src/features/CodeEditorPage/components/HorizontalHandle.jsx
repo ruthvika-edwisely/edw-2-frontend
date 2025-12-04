@@ -4,7 +4,7 @@ import ResizeHandle from '../../../components/ResizeHandle.jsx'
 const HorizontalHandle = () => {
   return (
     <ResizeHandle 
-        width={3}
+        width={5}
         bg={"#333333"}
         borderRadius={50}
         transition={"background 0.1s ease"}

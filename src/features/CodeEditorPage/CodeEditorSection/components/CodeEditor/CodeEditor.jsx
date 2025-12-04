@@ -4,7 +4,7 @@ import { Panel } from 'react-resizable-panels'
 import CodeEditorMenu from './components/CodeEditorMenu'
 import CodeEditorMain from './components/CodeEditorMain'
 
-const CodeEditor = () => {
+const CodeEditor = ({snippetsData, testcases}) => {
 
   const [editorTheme, setEditorTheme] = useState("vs-dark");
   const [language, setLanguage] = useState("python");
@@ -12,7 +12,9 @@ const CodeEditor = () => {
   return (
     <Panel>
 
-      <Box sx={{display: "flex", flexDirection: "column", height: "100%", bgcolor: "grey.1300"}}>
+      <Box sx={{display: "flex", flexDirection: "column", height: "100%", 
+        // bgcolor: "grey.1300"
+        }}>
         
         <CodeEditorMenu 
           editorTheme={editorTheme} 
@@ -23,6 +25,7 @@ const CodeEditor = () => {
         <CodeEditorMain 
           editorTheme={editorTheme}
           language={language} 
+          snippetsData={snippetsData}
         />
 
       </Box>

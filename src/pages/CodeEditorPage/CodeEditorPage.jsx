@@ -5,7 +5,7 @@ import ProblemDescriptionSection from '../../features/CodeEditorPage/ProblemDesc
 import CodeEditorSection from '../../features/CodeEditorPage/CodeEditorSection/CodeEditorSection.jsx';
 import CodingAssistantSection from '../../features/CodeEditorPage/CodeAssistantSection/CodingAssistantSection.jsx';
 import HorizontalHandle from '../../features/CodeEditorPage/components/HorizontalHandle.jsx';
-import { getProblemById } from '../../api/api.js';
+import { getProblemById, getProblemConstraints, getProblemEditorial, getProblemHints, getProblemTags, getProblemTestCases, getSnippetsByProblem } from '../../api/api.js';
 import { useParams } from 'react-router-dom';
 
 
@@ -14,16 +14,39 @@ const CodeEditorPage = () => {
   const { id } = useParams();
   const [showAI, setShowAI] = useState(false);
   const [problemData, setProblemData] = useState({});
+  const [tagsData, setTagsData] = useState([]);
+  const [hintsData, setHintsData] = useState([]);
+  const [constraintsData, setConstraintsData] = useState([]);
+  const [editorialData, setEditorialData] = useState({});
+  const [snippetsData, setSnippetsData] = useState([]);
+  const [testcases, setTestcases] = useState([]);
 
   useEffect(() => {
     const problem = getProblemById(id);
+    const tags = getProblemTags(id);
+    const hints = getProblemHints(id);
+    const constraints = getProblemConstraints(id);
+    const editorial = getProblemEditorial(id);
+    const snippets = getSnippetsByProblem(id);
+    const tcs = getProblemTestCases(id);
+
     setProblemData(problem);
+    setTagsData(tags);
+    setHintsData(hints);
+    setConstraintsData(constraints);
+    setEditorialData(editorial);
+    setSnippetsData(snippets);
+    setTestcases(tcs);
   }, [id]);
+
+
 
   return (
 
 
-    <Box sx={{display: "flex", flexDirection: "column", height: "100%", width: "100%", bgcolor: "grey.1200"}}>
+    <Box sx={{display: "flex", flexDirection: "column", height: "100%", width: "100%", 
+    // bgcolor: "grey.1200"
+    }}>
 
         {/* AI Toggle Button */}
         <Box sx={{
@@ -49,13 +72,13 @@ const CodeEditorPage = () => {
         <PanelGroup direction='horizontal'>
 
           {/* left */}
-          <ProblemDescriptionSection problemData={problemData} />
+          <ProblemDescriptionSection problemData={problemData} tagsData={tagsData} hintsData={hintsData} constraintsData={constraintsData} editorialData={editorialData} />
 
           {/* resize handle */}
           <HorizontalHandle />
 
           {/* center */}
-          <CodeEditorSection />
+          <CodeEditorSection snippetsData={snippetsData} testcases={testcases} />
 
           {
             showAI 

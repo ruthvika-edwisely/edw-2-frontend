@@ -5,7 +5,7 @@ import { Box } from '@mui/material'
 
 const LayoutPage = () => {
   return (
-    <Box sx={{display: "flex", height: "100vh", bgcolor: "grey.1100"}}>
+    <Box sx={{display: "flex", height: "100vh"}}>
         {/* <Navbar /> */}
         <Outlet />
     </Box>
