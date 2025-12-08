@@ -1,19 +1,42 @@
-import { Box, Typography, Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Checkbox, Chip, Button, Select, MenuItem, FormControl, Skeleton } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Card,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Checkbox,
+  Chip,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+  Skeleton,
+  TextField,
+  InputAdornment,
+} from '@mui/material';
+
 import { KeyboardArrowDown as KeyboardArrowDownIcon } from '@mui/icons-material';
+import SearchIcon from '@mui/icons-material/Search';
+
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useNavigate } from 'react-router-dom';
 import TopicGrid from "../../components/Topics/TopicGrid";
 import BoltIcon from '@mui/icons-material/Bolt';
 
 export default function AllProblems() {
-  const { darkMode } = useOutletContext();
+  const { darkMode, searchQuery, setSearchQuery } = useOutletContext(); // ✅ added search context
+  const navigate = useNavigate();
 
   const [problems, setProblems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [difficultyFilter, setDifficultyFilter] = useState('all');
+  const [selectedTopic, setSelectedTopic] = useState('all'); // 'all' = no filter
 
-  // Dynamically update the body background to match darkMode
   useEffect(() => {
     document.body.style.backgroundColor = darkMode ? "#0F172A" : "#F3F4F6";
   }, [darkMode]);
@@ -21,7 +44,11 @@ export default function AllProblems() {
   useEffect(() => {
     const fetchProblems = async () => {
       try {
-        const url = difficultyFilter === 'all' ? '/api/problems' : `/api/problems?difficulty=${difficultyFilter}`;
+        const url =
+          difficultyFilter === 'all'
+            ? '/api/problems'
+            : `/api/problems?difficulty=${difficultyFilter}`;
+
         const response = await axios.get(url);
         setProblems(response.data);
       } catch (error) {
@@ -33,11 +60,30 @@ export default function AllProblems() {
     fetchProblems();
   }, [difficultyFilter]);
 
+  // ✅ Search filter (added)
+  const filteredProblems = problems.filter((p) => {
+    const matchesSearch =
+      p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.topics?.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()));
+  
+    const matchesTopic =
+      !selectedTopic || p.topics?.includes(selectedTopic); // <-- topic filter toggle
+  
+    return matchesSearch && matchesTopic;
+  });
+  
+  
+  
+
   const handleStatusChange = async (problemId, currentStatus) => {
     const newStatus = currentStatus === 'solved' ? 'unsolved' : 'solved';
     try {
       await axios.patch(`/api/problems/${problemId}/status`, { status: newStatus });
-      setProblems(problems.map(p => p.id === problemId ? { ...p, status: newStatus } : p));
+      setProblems(
+        problems.map((p) =>
+          p.id === problemId ? { ...p, status: newStatus } : p
+        )
+      );
     } catch (error) {
       console.error('Error updating problem status:', error);
     }
@@ -83,121 +129,169 @@ export default function AllProblems() {
         bgcolor: darkMode ? "#0F172A" : "#F3F4F6",
       }}
     >
-    <TopicGrid />
-      {/* Header with filter */}
+    <TopicGrid
+  selectedTopic={selectedTopic} 
+  onSelectTopic={(topicName) =>
+    setSelectedTopic(selectedTopic === topicName ? '' : topicName)
+  }
+/>
+
+{/* Show selected topic as a chip above the table */}
+{selectedTopic && (
+  <Box sx={{ mb: 2 }}>
+    <Chip
+      label={selectedTopic}
+      onDelete={() => setSelectedTopic('')}
+      sx={{
+        fontWeight: 500,
+        backgroundColor: darkMode ? '#1e293b' : '#e0f2fe', // dark vs light background
+        color: darkMode ? '#fff' : '#0369a1', // text color
+        '& .MuiChip-deleteIcon': {
+          color: darkMode ? '#fff' : '#0369a1', // cross icon color
+        },
+      }}
+    />
+  </Box>
+)}
+
+
+
+      {/* Header with Filters + Search */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
         <Typography variant="h6" sx={{ fontWeight: 600, color: darkMode ? '#fff' : 'text.primary' }}>
           All Problems
         </Typography>
-        <FormControl size="small">
-          <Select
-            value={difficultyFilter}
-            onChange={(e) => setDifficultyFilter(e.target.value)}
-            IconComponent={KeyboardArrowDownIcon}
-            sx={{
-              backgroundColor: "#fff",
-              color: "#000",
-              '.MuiOutlinedInput-notchedOutline': "#D1D5DB" ,
-              '& .MuiSvgIcon-root': { color: "#000" },
-              '& .MuiSelect-select': { py: 1 },
+
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          
+          {/* Difficulty Filter */}
+          <FormControl size="small">
+            <Select
+              value={difficultyFilter}
+              onChange={(e) => setDifficultyFilter(e.target.value)}
+              IconComponent={KeyboardArrowDownIcon}
+              sx={{
+                backgroundColor: "#fff",
+                color: "#000",
+                '.MuiOutlinedInput-notchedOutline': "#D1D5DB",
+                '& .MuiSvgIcon-root': { color: "#000" },
+                '& .MuiSelect-select': { py: 1 },
+              }}
+            >
+              <MenuItem value="all">All</MenuItem>
+              <MenuItem value="easy">Easy</MenuItem>
+              <MenuItem value="medium">Medium</MenuItem>
+              <MenuItem value="hard">Hard</MenuItem>
+            </Select>
+          </FormControl>
+
+          {/* ✅ Search bar added */}
+          <TextField
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search problems"
+            size="small"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ fontSize: 20, color: '#64748b' }} />
+                </InputAdornment>
+              ),
             }}
-          >
-            <MenuItem value="all">All</MenuItem>
-            <MenuItem value="easy">Easy</MenuItem>
-            <MenuItem value="medium">Medium</MenuItem>
-            <MenuItem value="hard">Hard</MenuItem>
-          </Select>
-        </FormControl>
+            sx={{
+              width: 260,
+              '& .MuiOutlinedInput-root': {
+                backgroundColor: '#fff',
+                borderRadius: 1,
+                '& fieldset': { borderColor: '#E5E7EB' },
+                '&:hover fieldset': { borderColor: '#D1D5DB' },
+              },
+            }}
+          />
+        </Box>
       </Box>
 
       {/* Table */}
       <Card sx={{ backgroundColor: 'background.paper', width: '100%' }}>
         <TableContainer>
           <Table>
-          <TableHead>
-  <TableRow>
-    <TableCell sx={{ color: 'text.secondary', fontWeight: 500, width: 80 }}>STATUS</TableCell>
-    <TableCell sx={{ color: 'text.secondary', fontWeight: 500 }}>TITLE</TableCell>
-    <TableCell sx={{ color: 'text.secondary', fontWeight: 500, width: 120 }}>DIFFICULTY</TableCell>
-    <TableCell sx={{ color: 'text.secondary', fontWeight: 500, width: 120 }}>ACCEPTANCE</TableCell>
-    <TableCell sx={{ color: 'text.secondary', fontWeight: 500, width: 100 }}>XP</TableCell>
-    <TableCell sx={{ color: 'text.secondary', fontWeight: 500, width: 100 }}>ACTION</TableCell>
-  </TableRow>
-</TableHead>
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{ color: 'text.secondary', fontWeight: 500, width: 80 }}>STATUS</TableCell>
+                <TableCell sx={{ color: 'text.secondary', fontWeight: 500 }}>TITLE</TableCell>
+                <TableCell sx={{ color: 'text.secondary', fontWeight: 500, width: 120 }}>DIFFICULTY</TableCell>
+                <TableCell sx={{ color: 'text.secondary', fontWeight: 500, width: 120 }}>ACCEPTANCE</TableCell>
+                <TableCell sx={{ color: 'text.secondary', fontWeight: 500, width: 100 }}>XP</TableCell>
+                <TableCell sx={{ color: 'text.secondary', fontWeight: 500, width: 100 }}>ACTION</TableCell>
+              </TableRow>
+            </TableHead>
 
-<TableBody>
-  {problems.map((problem) => {
-    const difficultyStyle = getDifficultyColor(problem.difficulty);
+            <TableBody>
+              {filteredProblems.map((problem) => {
+                const difficultyStyle = getDifficultyColor(problem.difficulty);
 
-    return (
-      <TableRow
-        key={problem.id}
-        sx={{ '&:hover': { backgroundColor: 'rgba(255,255,255,0.02)' } }}
-      >
-        <TableCell>
-          <Checkbox
-            checked={problem.status === 'solved'}
-            onChange={() => handleStatusChange(problem.id, problem.status)}
-            sx={{
-              color: 'text.disabled',
-              '&.Mui-checked': { color: 'success.600' },
-              transform: 'scale(2)',
-            }}
-          />
-        </TableCell>
+                return (
+                  <TableRow key={problem.id} sx={{ '&:hover': { backgroundColor: 'rgba(255,255,255,0.02)' } }}>
+                    <TableCell>
+                      <Checkbox
+                        checked={problem.status === 'solved'}
+                        onChange={() => handleStatusChange(problem.id, problem.status)}
+                        sx={{
+                          color: 'text.disabled',
+                          '&.Mui-checked': { color: 'success.600' },
+                          transform: 'scale(2)',
+                        }}
+                      />
+                    </TableCell>
 
-        <TableCell>
-          <Typography sx={{ fontWeight: 500 }}>{problem.title}</Typography>
-          <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-            {problem.topics?.join(', ')}
-          </Typography>
-        </TableCell>
+                    <TableCell>
+                      <Typography sx={{ fontWeight: 500 }}>{problem.title}</Typography>
+                      <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                        {problem.topics?.join(', ')}
+                      </Typography>
+                    </TableCell>
 
-        <TableCell>
-          <Chip
-            label={problem.difficulty}
-            size="small"
-            sx={{
-              backgroundColor: difficultyStyle.bg,
-              color: difficultyStyle.color,
-              fontWeight: 600,
-            }}
-          />
-        </TableCell>
+                    <TableCell>
+                      <Chip
+                        label={problem.difficulty}
+                        size="small"
+                        sx={{
+                          backgroundColor: difficultyStyle.bg,
+                          color: difficultyStyle.color,
+                          fontWeight: 600,
+                        }}
+                      />
+                    </TableCell>
 
-        <TableCell>{problem.acceptance}%</TableCell>
+                    <TableCell>{problem.acceptance}%</TableCell>
 
-        {/* ⭐ XP column */}
-        <TableCell>
-          <Chip
-            icon={<BoltIcon />}
-            label={problem.xp}
-            size="small"
-            sx={{
-              border: '1px solid #f59e0b',
-              color: '#f59e0b',
-              fontWeight: 600,
-              background: 'transparent',
-              '& .MuiChip-icon': { color: '#f59e0b' },
-            }}
-          />
-        </TableCell>
+                    <TableCell>
+                      <Chip
+                        icon={<BoltIcon />}
+                        label={problem.xp}
+                        size="small"
+                        sx={{
+                          border: '1px solid #f59e0b',
+                          color: '#f59e0b',
+                          fontWeight: 600,
+                          background: 'transparent',
+                          '& .MuiChip-icon': { color: '#f59e0b' },
+                        }}
+                      />
+                    </TableCell>
 
-        <TableCell>
-          <Button
-            sx={{
-              color: 'primary.main',
-              fontWeight: 600,
-            }}
-            onClick={() => navigate(`/problem/${problem.id}`)}
-          >
-            Solve
-          </Button>
-        </TableCell>
-      </TableRow>
-    );
-  })}
-</TableBody>
+                    <TableCell>
+                      <Button
+                        sx={{ color: 'primary.main', fontWeight: 600 }}
+                        onClick={() => navigate(`/problem/${problem.id}`)}
+                      >
+                        Solve
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
 
           </Table>
         </TableContainer>

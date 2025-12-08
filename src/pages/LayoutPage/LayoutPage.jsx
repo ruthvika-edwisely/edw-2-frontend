@@ -2,6 +2,7 @@ import { useState } from "react";
 import React from 'react'
 import Navbar from '../../components/Navbar/Navbar'
 import Dashboard from '../DashboardPage/Dashboard.jsx'
+import LoginPage from "../LoginPage/LoginPage.jsx";
 import { Outlet } from 'react-router-dom'
 import { Box } from '@mui/material'
 

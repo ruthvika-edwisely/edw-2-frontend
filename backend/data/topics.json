@@ -1,37 +1,37 @@
 [
   {
     "id": 1,
-    "name": "Data Structures",
+    "name": "Arrays",
     "icon": "AccountTree",
-    "problemCount": 142,
+    "problemCount": 3,
     "color": "#3b82f6"
   },
   {
     "id": 2,
-    "name": "SQL",
-    "icon": "Storage",
-    "problemCount": 56,
-    "color": "#22c55e"
-  },
-  {
-    "id": 3,
-    "name": "Strings",
+    "name": "String",
     "icon": "TextFields",
-    "problemCount": 89,
+    "problemCount": 3,
     "color": "#ef4444"
   },
   {
-    "id": 4,
-    "name": "Dynamic Prog.",
+    "id": 3,
+    "name": "Dynamic Programming",
     "icon": "Bolt",
-    "problemCount": 112,
+    "problemCount": 1,
     "color": "#f59e0b"
   },
   {
+    "id": 4,
+    "name": "Math",
+    "icon": "Bolt",
+    "problemCount": 1,
+    "color": "#22c55e"
+  },
+  {
     "id": 5,
-    "name": "System Design",
+    "name": "Linked List",
     "icon": "Hub",
-    "problemCount": 24,
+    "problemCount": 1,
     "color": "#8b5cf6"
   }
 ]

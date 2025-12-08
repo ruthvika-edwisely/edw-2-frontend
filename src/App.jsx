@@ -1,11 +1,15 @@
 import AppRouter from './routes/AppRouter.jsx';
 import ThemeProvider from './theme';
 import { Typography } from '@mui/material';
+import { AuthProvider } from "./context/AuthContext";
+
 const App = () => {
 
   return (
     <ThemeProvider>
-      <AppRouter />    
+       <AuthProvider>
+          <AppRouter /> 
+       </AuthProvider>   
     </ThemeProvider>
   );
 }

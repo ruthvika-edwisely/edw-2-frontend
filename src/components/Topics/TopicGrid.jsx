@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Box, Typography, Card, CardContent, Skeleton, } from '@mui/material';
+import { Box, Typography, Card, CardContent, Skeleton } from '@mui/material';
 import {
   AccountTree as AccountTreeIcon,
   Storage as StorageIcon,
@@ -18,7 +18,7 @@ const iconMap = {
   Hub: HubIcon,
 };
 
-export default function TopicGrid() {
+export default function TopicGrid({ selectedTopic, onSelectTopic }) { // ✅ accept props
   const { darkMode } = useOutletContext(); // get darkMode
   const [topics, setTopics] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -69,72 +69,97 @@ export default function TopicGrid() {
       </Typography>
 
       <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-        {topics.map((topic) => {
-          const IconComponent = iconMap[topic.icon] || AccountTreeIcon;
+      {topics.map((topic) => {
+  const IconComponent = iconMap[topic.icon] || AccountTreeIcon;
+  const isSelected = selectedTopic === topic.name; // highlight if selected
 
-          return (
-            <Box
-              key={topic.id}
-              sx={{
-                flex: '1 1 calc(20% - 16px)',
-                minWidth: '140px',
-              }}
-            >
-              <Card
-                sx={{
-                  backgroundColor: 'background.paper',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  height: "140px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  '&:hover': {
-                    borderColor: topic.color,
-                    boxShadow: `0 4px 20px ${topic.color}30`,
-                    transform: 'translateY(-2px)',
-                  },
-                }}
-              >
-                <CardContent
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    textAlign: 'center',
-                    py: 2,
-                  }}
-                >
-                  <Box
-                    sx={{
-                      width: 48,
-                      height: 48,
-                      borderRadius: '12px',
-                      backgroundColor: `${topic.color}20`,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      mb: 1.5,
-                    }}
-                  >
-                    <IconComponent sx={{ color: topic.color, fontSize: 24 }} />
-                  </Box>
+  return (
+    <Box
+      key={topic.id}
+      sx={{ flex: '1 1 calc(20% - 16px)', minWidth: '140px' }}
+      onClick={() => onSelectTopic(topic.name)}
+    >
+      <Card
+  sx={{
+    backgroundColor: isSelected
+      ? darkMode
+        ? `${topic.color}30` // Slightly lighter overlay for dark mode
+        : `${topic.color}40` // Original overlay for light mode
+      : 'background.paper',
+    cursor: 'pointer',
+    transition: 'all 0.2s',
+    height: "140px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    border: '1px solid',
+    borderColor: isSelected
+      ? topic.color
+      : darkMode
+        ? 'rgba(255,255,255,0.06)'
+        : 'rgba(0,0,0,0.05)',
+    '&:hover': {
+      borderColor: topic.color,
+      boxShadow: `0 4px 20px ${topic.color}30`,
+      transform: 'translateY(-2px)',
+    },
+  }}
+>
+  <CardContent
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      textAlign: 'center',
+      py: 2,
+    }}
+  >
+    <Box
+      sx={{
+        width: 48,
+        height: 48,
+        borderRadius: '12px',
+        backgroundColor: darkMode
+          ? `${topic.color}20`
+          : `${topic.color}20`,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        mb: 1.5,
+      }}
+    >
+      <IconComponent
+        sx={{
+          color: topic.color,
+          fontSize: 24,
+        }}
+      />
+    </Box>
+    <Typography
+      variant="body1"
+      sx={{
+        fontWeight: 500,
+        color: darkMode ? '#fff' : 'text.primary',
+        mb: 0.5,
+      }}
+    >
+      {topic.name}
+    </Typography>
+    <Typography
+      variant="caption"
+      sx={{
+        color: darkMode ? 'rgba(255,255,255,0.6)' : 'text.secondary',
+      }}
+    >
+      {topic.problemCount} Problems
+    </Typography>
+  </CardContent>
+</Card>
 
-                  <Typography
-                    variant="body1"
-                    sx={{ fontWeight: 500, color: 'text.primary', mb: 0.5 }}
-                  >
-                    {topic.name}
-                  </Typography>
+    </Box>
+  );
+})}
 
-                  <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                    {topic.problemCount} Problems
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Box>
-          );
-        })}
       </Box>
     </Box>
   );
