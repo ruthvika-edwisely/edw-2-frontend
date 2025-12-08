@@ -79,13 +79,13 @@ export default function TopicGrid({ selectedTopic, onSelectTopic }) { // ✅ acc
       sx={{ flex: '1 1 calc(20% - 16px)', minWidth: '140px' }}
       onClick={() => onSelectTopic(topic.name)}
     >
-      <Card
+     <Card
   sx={{
     backgroundColor: isSelected
       ? darkMode
-        ? `${topic.color}30` // Slightly lighter overlay for dark mode
-        : `${topic.color}40` // Original overlay for light mode
-      : 'background.paper',
+        ? `${topic.color}30` // selected in dark mode
+        : `${topic.color}40` // selected in light mode
+      : '#fff', // unselected always like light mode
     cursor: 'pointer',
     transition: 'all 0.2s',
     height: "140px",
@@ -95,9 +95,7 @@ export default function TopicGrid({ selectedTopic, onSelectTopic }) { // ✅ acc
     border: '1px solid',
     borderColor: isSelected
       ? topic.color
-      : darkMode
-        ? 'rgba(255,255,255,0.06)'
-        : 'rgba(0,0,0,0.05)',
+      : 'rgba(0,0,0,0.05)', // subtle border for unselected
     '&:hover': {
       borderColor: topic.color,
       boxShadow: `0 4px 20px ${topic.color}30`,
@@ -119,9 +117,9 @@ export default function TopicGrid({ selectedTopic, onSelectTopic }) { // ✅ acc
         width: 48,
         height: 48,
         borderRadius: '12px',
-        backgroundColor: darkMode
+        backgroundColor: isSelected
           ? `${topic.color}20`
-          : `${topic.color}20`,
+          : `${topic.color}20`, // can keep same overlay or remove
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -139,7 +137,11 @@ export default function TopicGrid({ selectedTopic, onSelectTopic }) { // ✅ acc
       variant="body1"
       sx={{
         fontWeight: 500,
-        color: darkMode ? '#fff' : 'text.primary',
+        color: isSelected
+          ? darkMode
+            ? '#fff'
+            : 'text.primary'
+          : 'text.primary', // unselected text always like light mode
         mb: 0.5,
       }}
     >
@@ -148,13 +150,18 @@ export default function TopicGrid({ selectedTopic, onSelectTopic }) { // ✅ acc
     <Typography
       variant="caption"
       sx={{
-        color: darkMode ? 'rgba(255,255,255,0.6)' : 'text.secondary',
+        color: isSelected
+          ? darkMode
+            ? 'rgba(255,255,255,0.6)'
+            : 'text.secondary'
+          : 'text.secondary', // unselected text always like light mode
       }}
     >
       {topic.problemCount} Problems
     </Typography>
   </CardContent>
 </Card>
+
 
     </Box>
   );
