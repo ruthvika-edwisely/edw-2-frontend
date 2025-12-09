@@ -1,0 +1,129 @@
+[
+  {
+    "id": 1,
+    "title": "Two Sum",
+    "description": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
+    "difficulty": "Easy",
+    "acceptance": 48.5,
+    "topics": [
+      "Arrays",
+      "Math"
+    ],
+    "status": "solved",
+    "xp": 50
+  },
+  {
+    "id": 2,
+    "title": "Median of Two Sorted Arrays",
+    "description": "Given two sorted arrays nums1 and nums2 of size m and n respectively, return the median of the two sorted arrays.",
+    "difficulty": "Hard",
+    "acceptance": 32.8,
+    "topics": [
+      "Arrays",
+      "Math"
+    ],
+    "status": "unsolved",
+    "xp": 200
+  },
+  {
+    "id": 3,
+    "title": "Longest Palindromic Substring",
+    "description": "Given a string s, return the longest palindromic substring in s.",
+    "difficulty": "Hard",
+    "acceptance": 31.5,
+    "topics": [
+      "String",
+      "Dynamic Programming"
+    ],
+    "status": "unsolved",
+    "xp": 200
+  },
+  {
+    "id": 4,
+    "title": "ZigZag Conversion",
+    "description": "The string 'PAYPALISHIRING' is written in a zigzag pattern on a given number of rows.",
+    "difficulty": "Medium",
+    "acceptance": 41.2,
+    "topics": [
+      "String"
+    ],
+    "status": "unsolved",
+    "xp": 100
+  },
+  {
+    "id": 5,
+    "title": "Reverse Integer",
+    "description": "Given a signed 32-bit integer x, return x with its digits reversed.",
+    "difficulty": "Medium",
+    "acceptance": 27.1,
+    "topics": [
+      "Math"
+    ],
+    "status": "unsolved",
+    "xp": 100
+  },
+  {
+    "id": 6,
+    "title": "String to Integer (atoi)",
+    "description": "Implement the myAtoi(string s) function, which converts a string to a 32-bit signed integer.",
+    "difficulty": "Medium",
+    "acceptance": 16.6,
+    "topics": [
+      "String",
+      "Math"
+    ],
+    "status": "unsolved",
+    "xp": 100
+  },
+  {
+    "id": 7,
+    "title": "Container With Most Water",
+    "description": "You are given an integer array height of length n. Find two lines that together with the x-axis form a container.",
+    "difficulty": "Medium",
+    "acceptance": 54.3,
+    "topics": [
+      "Arrays",
+      "Math"
+    ],
+    "status": "unsolved",
+    "xp": 100
+  },
+  {
+    "id": 8,
+    "title": "3Sum",
+    "description": "Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k.",
+    "difficulty": "Medium",
+    "acceptance": 32.4,
+    "topics": [
+      "Arrays",
+      "Math"
+    ],
+    "status": "unsolved",
+    "xp": 100
+  },
+  {
+    "id": 9,
+    "title": "Valid Parentheses",
+    "description": "Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.",
+    "difficulty": "Easy",
+    "acceptance": 40.1,
+    "topics": [
+      "String"
+    ],
+    "status": "unsolved",
+    "xp": 50
+  },
+  {
+    "id": 10,
+    "title": "Merge Two Sorted Lists",
+    "description": "You are given the heads of two sorted linked lists list1 and list2. Merge the two lists into one sorted list.",
+    "difficulty": "Easy",
+    "acceptance": 62.5,
+    "topics": [
+      "Linked List",
+      "Arrays"
+    ],
+    "status": "unsolved",
+    "xp": 50
+  }
+]
