@@ -14,21 +14,15 @@ import {
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
 import { useState } from "react";
-<<<<<<< HEAD
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../store/features/auth/authSlice";
 
-=======
-import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
->>>>>>> 2aa2b4266616bb52af9f44a9561ee5c516b2e1ca
 
 export default function LoginCard() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-<<<<<<< HEAD
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -45,19 +39,6 @@ export default function LoginCard() {
 };
 
   
-=======
-  const { login } = useAuth();
-  const navigate = useNavigate();
-
-  const handleSubmit = async () => {
-    const ok = await login(email, password);
-    if (ok) {
-      navigate("/");
-    } else {
-      alert("Invalid credentials");
-    }
-  };
->>>>>>> 2aa2b4266616bb52af9f44a9561ee5c516b2e1ca
   
 
   return (

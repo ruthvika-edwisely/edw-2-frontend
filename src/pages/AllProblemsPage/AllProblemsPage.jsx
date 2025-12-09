@@ -60,7 +60,6 @@ export default function AllProblemsPage() {
           difficultyFilter === 'all'
             ? '/api/problems'
             : `/api/problems?difficulty=${difficultyFilter}`;
-<<<<<<< HEAD
   
         const response = await axios.get(url);
   
@@ -76,25 +75,14 @@ export default function AllProblemsPage() {
       } catch (error) {
         console.error('Error fetching problems:', error);
         setProblems([]); // prevent crash
-=======
-        const response = await axios.get(url);
-        setProblems(response.data);
-      } catch (error) {
-        console.error('Error fetching problems:', error);
->>>>>>> 2aa2b4266616bb52af9f44a9561ee5c516b2e1ca
       } finally {
         setLoading(false);
       }
     };
-<<<<<<< HEAD
   
     fetchProblems();
   }, [difficultyFilter]);
   
-=======
-    fetchProblems();
-  }, [difficultyFilter]);
->>>>>>> 2aa2b4266616bb52af9f44a9561ee5c516b2e1ca
 
   const filteredProblems = problems.filter((p) => {
     const matchesSearch =

@@ -20,7 +20,6 @@ import {
 } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
-<<<<<<< HEAD
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../store/features/auth/authSlice";
 
@@ -28,13 +27,6 @@ import { logout } from "../../store/features/auth/authSlice";
 export default function Navbar({ darkMode, setDarkMode }) {
   const theme = useTheme();
   const dispatch = useDispatch();
-=======
-import { useAuth } from '../../context/AuthContext'; // <-- your AuthProvider
-
-export default function Navbar({ darkMode, setDarkMode }) {
-  const theme = useTheme();
-  const { logout } = useAuth();
->>>>>>> 2aa2b4266616bb52af9f44a9561ee5c516b2e1ca
   const location = useLocation();
 
   const handleThemeToggle = () => setDarkMode(!darkMode);
@@ -59,17 +51,10 @@ export default function Navbar({ darkMode, setDarkMode }) {
   };
 
   const handleLogout = () => {
-<<<<<<< HEAD
     dispatch(logout());
     handleClose();
   };
   
-=======
-    logout();
-    handleClose();
-  };
-
->>>>>>> 2aa2b4266616bb52af9f44a9561ee5c516b2e1ca
   return (
     <AppBar
       position="sticky"

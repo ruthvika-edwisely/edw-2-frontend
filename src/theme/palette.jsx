@@ -292,44 +292,6 @@ const primary_gradient = 'linear-gradient(101deg, #262729 0%, #4A4B4F 100%)';
 const mode = "dark";
 
 const palette = {
-<<<<<<< HEAD
-  mode: mode,
-  common: { black: '#000', white: '#fff' },
-  primary: PRIMARY,
-  secondary: SECONDARY,
-  success: SUCCESS,
-  warning: WARNING,
-  error: ERROR,
-  grey: GREY,
-  info: INFO,
-  extraredpalette: EXTRAREDPALETTE,
-  externalInfo: EXTERNALINFO,
-  externalerror: EXTERNALERROR,
-  externalwarning: EXTERNALWARNING,
-  gradient: primary_gradient,
-  additionalColorPalette: ADDITIONALCOLORPALETTE,
-  problemPage: mode === "light" ? PROBLEMPAGELIGHT : PROBLEMPAGEDARK, 
-  background: {
-      paper: '#fff',
-      default: GREY[100],
-      neutral: GREY[200],
-  },
-  text: {
-      primary: '#393A3D',
-      secondary: GREY[600],
-      disabled: GREY[500],
-  },
-  heading:{
-    primary: '#ffffff',
-},
-xp:{
-    primary: '#EAB308',
-},
-difficulty_tags:{
-    easy: {
-        background: 'rgba(34, 197, 94, 0.15)',
-        text: '#22c55e',
-=======
     mode: 'light',
     common: { black: '#000', white: '#fff', transparent: 'rgba(0,0,0,0)' },
     primary: PRIMARY,
@@ -351,24 +313,11 @@ difficulty_tags:{
         neutral: GREY[200],
         elevated: '#1A2032',
         hover: 'rgba(255, 255, 255, 0.05)',
->>>>>>> 2aa2b4266616bb52af9f44a9561ee5c516b2e1ca
     },
     medium:{
         background: 'rgba(245, 158, 11, 0.15)',
         text: '#f59e0b',
     },
-<<<<<<< HEAD
-    hard:{
-        background: 'rgba(239, 68, 68, 0.15)',
-        text: '#ef4444',
-    },
-},
-action: {
-    hover: 'rgba(255, 255, 255, 0.05)',
-    selected: 'rgba(59,130,246,0.08)', // optional for other uses
-  },
-divider: GREY[200],
-=======
     heading:{
         primary: '#ffffff',
     },
@@ -394,7 +343,6 @@ divider: GREY[200],
         selected: 'rgba(59,130,246,0.08)', // optional for other uses
       },
     divider: GREY[200],
->>>>>>> 2aa2b4266616bb52af9f44a9561ee5c516b2e1ca
 
 };
 

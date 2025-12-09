@@ -167,27 +167,16 @@ function DailyChallenge() {
           )}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: theme.palette.xp.primary}}>
           <Chip
-<<<<<<< HEAD
           icon={<BoltIcon />}
           label="150"
           sx={{
             backgroundColor: 'transparent',
-=======
-          icon={<BoltIcon sx={{ fontSize: 16, color: `${theme.palette.xp.primary} !important` }} />}
-          label="150"
-          sx={{
-            backgroundColor: theme.palette.common.transparent ,
->>>>>>> 2aa2b4266616bb52af9f44a9561ee5c516b2e1ca
             border: `1px solid ${theme.palette.xp.primary}`,
             color: theme.palette.xp.primary,
             fontWeight: 600,
             fontSize: '0.875rem',
             ml: 1,
-<<<<<<< HEAD
             '& .MuiChip-icon': { color: theme.palette.xp.primary, ml: 1, fontSize: 16 },
-=======
-            '& .MuiChip-icon': { ml: 1 },
->>>>>>> 2aa2b4266616bb52af9f44a9561ee5c516b2e1ca
           }}
         />
           </Box>
