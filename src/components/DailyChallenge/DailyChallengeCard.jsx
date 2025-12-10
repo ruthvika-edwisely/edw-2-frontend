@@ -15,20 +15,9 @@ import {
   AccountTree as AccountTreeIcon,
   Bolt as BoltIcon,
 } from '@mui/icons-material';
+import { getDailyChallengeAPI } from "../../api/api";
 
 // Dummy API function
-const getDailyChallenge = async () => {
-  await new Promise(res => setTimeout(res, 500)); // simulate network delay
-  return {
-    id: "challenge_1",
-    title: "Optimize Network Delay Time",
-    difficulty: "Medium",
-    description:
-      "You are given a network of n nodes, labeled from 1 to n. You are also given times, a list of travel times as directed edges times[i] = (ui, vi, wi), where ui is the source node...",
-    tags: ["Graph", "Dijkstra"],
-    xp: 150,
-  };
-};
 
 function DailyChallenge() {
   const [challenge, setChallenge] = useState(null);
@@ -39,7 +28,7 @@ function DailyChallenge() {
   useEffect(() => {
     const loadDailyChallenge = async () => {
       try {
-        const data = await getDailyChallenge();
+        const data = await getDailyChallengeAPI();
         setChallenge(data);
       } catch (error) {
         console.error("Error fetching daily challenge:", error);
@@ -47,9 +36,10 @@ function DailyChallenge() {
         setLoading(false);
       }
     };
-
+  
     loadDailyChallenge();
   }, []);
+  
 
   const getDifficultyColor = (difficulty) => {
     const diff = (difficulty || "medium").toLowerCase();

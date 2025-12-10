@@ -78,24 +78,6 @@ const CodeEditorPage = () => {
     // bgcolor: "grey.1200"
     }}>
 
-        {/* AI Toggle Button */}
-        <Box sx={{
-                  display: "flex", 
-                  justifyContent: "center", 
-                  alignItems: "center",
-                  width: "100%", 
-                  height: "65px", 
-                  paddingX: "8px", 
-                  paddingY: "16px",
-                  border: "1px solid",
-                  borderColor: "grey.1300"
-                }}
-        >
-          <Button variant='contained' onClick={() => dispatch(togglePanelVisibility())}>
-            {showAI ? "Close" : "Ask AI"}
-          </Button>
-        </Box>
-
 
 
         {/* Horizontal Panels - 3 unnay (1 closable) */}

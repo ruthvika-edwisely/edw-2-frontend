@@ -2,7 +2,7 @@ import axios from "axios";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-// src/data/users.js
+// src/users.js
 
 export const users = [
   {
@@ -433,23 +433,21 @@ export const getProblems = async () => {
 
 // api.js
 
-export const getDailyChallenge = async () => {
+export const getDailyChallengeAPI = async () => {
   try {
-    // Dummy data for testing
-    const dummyData = {
-      id: "challenge_1",
-      title: "Optimize Network Delay Time",
-      difficulty: "Medium",
-      description:
-        "You are given a network of n nodes, labeled from 1 to n. You are also given times, a list of travel times as directed edges times[i] = (ui, vi, wi), where ui is the source node...",
-      tags: ["Graph", "Dijkstra"],
-      xp: 150
+    const res = await axios.get(`${BASE_URL}/problems/daily`);
+    const daily = res.data.data; // backend wraps in { success, data }
+
+    if (!daily) return null;
+
+    return {
+      id: daily.id,
+      title: daily.title,
+      description: daily.description,
+      difficulty: daily.difficulty,
+      xp: daily.xp,
+      tags: daily.tags, // already array of strings from backend
     };
-
-    // simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    return dummyData;
   } catch (error) {
     console.error("Error fetching daily challenge:", error);
     return null;
