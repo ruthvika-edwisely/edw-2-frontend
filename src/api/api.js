@@ -397,3 +397,13 @@ export const getProblems = async (difficulty = "all") => {
     return [];
   }
 };
+
+export const getDailyChallenge = async () => {
+  try {
+    const response = await axios.get(`${BASE_URL}/daily-challenge`);
+    return response.data;          // adjust depending on backend structure
+  } catch (error) {
+    console.error("Error fetching daily challenge:", error);
+    return null;
+  }
+};

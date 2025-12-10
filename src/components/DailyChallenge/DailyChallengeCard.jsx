@@ -15,25 +15,21 @@ import {
   AccountTree as AccountTreeIcon,
   Bolt as BoltIcon,
 } from '@mui/icons-material';
-import axios from 'axios';
+
+import { getDailyChallenge } from "../../api/api";
 
 function DailyChallenge() {
   const [challenge, setChallenge] = useState(null);
   const [loading, setLoading] = useState(true);
   const theme = useTheme();
   useEffect(() => {
-    const fetchDailyChallenge = async () => {
-      try {
-        const response = await axios.get('/api/daily-challenge');
-        setChallenge(response.data);
-      } catch (error) {
-        console.error('Error fetching daily challenge:', error);
-      } finally {
-        setLoading(false);
-      }
+    const loadDailyChallenge = async () => {
+      const data = await getDailyChallenge();
+      setChallenge(data);
+      setLoading(false);
     };
-
-    fetchDailyChallenge();
+  
+    loadDailyChallenge();
   }, []);
 
   const getDifficultyColor = (difficulty) => {
