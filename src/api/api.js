@@ -343,6 +343,7 @@ export const getSubmissionAnswers = (submissionId) => {
 export const getSnippetsByProblem = async(problemId) => {
   const snippet_data = await axios.get(`${BASE_URL}/problems/${problemId}/snippets`);
   return snippet_data.data.data;
+  
 };
 
 
@@ -385,7 +386,7 @@ export const getProblemTags = async(problemId) => {
 // GET /api/problems (list all problems)
 
 export const getProblems = async() => {
-  const all_problems_data = await axios.get(`${BASE_URL}/problems/`)
+  const all_problems_data = await axios.get(`${BASE_URL}/problems/`);
   console.log(all_problems_data.data.data)
   return all_problems_data.data.data;
 };
