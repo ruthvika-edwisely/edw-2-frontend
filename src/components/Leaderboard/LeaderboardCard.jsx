@@ -27,24 +27,21 @@ function LeaderboardCard() {
     const fetchLeaderboard = async () => {
       try {
         const response = await axios.get('/api/leaderboard');
-  
-        // Ensure always an array
         const data = Array.isArray(response.data)
           ? response.data
           : response.data.users || [];
-  
         setUsers(data);
       } catch (error) {
         console.error('Error fetching leaderboard:', error);
-        setUsers([]); // prevent crashes
+        setUsers([]);
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchLeaderboard();
   }, []);
-  
+
   const getRankBadgeColor = (rank) => {
     switch (rank) {
       case 1:

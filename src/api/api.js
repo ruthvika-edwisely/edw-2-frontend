@@ -384,16 +384,8 @@ export const getProblemTags = async(problemId) => {
 
 // GET /api/problems (list all problems)
 
-export const getProblems = async (difficulty = "all") => {
-  try {
-    const url =
-      difficulty === "all"
-        ? `${BASE_URL}/problems`
-        : `${BASE_URL}/problems?difficulty=${difficulty}`;
-    const res = await axios.get(url);
-    return res.data.data || res.data;
-  } catch (err) {
-    console.error("Error fetching problems:", err);
-    return [];
-  }
+export const getProblems = async() => {
+  const all_problems_data = await axios.get(`${BASE_URL}/problems/`)
+  console.log(all_problems_data.data.data)
+  return all_problems_data.data.data;
 };

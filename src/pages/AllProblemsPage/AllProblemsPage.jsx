@@ -38,13 +38,12 @@ export default function AllProblemsPage() {
   const location = useLocation();
 
   const preselectedTopic = location.state?.topic || '';
-  const selectedTopic = useSelector((state) => state.topic.selectedTopic); // ✅ corrected
+  const selectedTopic = useSelector((state) => state.topic.selectedTopic);
 
   const [problems, setProblems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [difficultyFilter, setDifficultyFilter] = useState('all');
 
-  // Initialize selected topic from navigation state
   useEffect(() => {
     if (preselectedTopic) dispatch(setSelectedTopic(preselectedTopic));
   }, [preselectedTopic, dispatch]);
@@ -60,29 +59,26 @@ export default function AllProblemsPage() {
           difficultyFilter === 'all'
             ? '/api/problems'
             : `/api/problems?difficulty=${difficultyFilter}`;
-  
+
         const response = await axios.get(url);
-  
         const data = response.data;
-  
-        // ✅ FIX: extract the array properly
+
         setProblems(
           Array.isArray(data) 
             ? data 
             : data.problems || data.data || []
         );
-  
+
       } catch (error) {
         console.error('Error fetching problems:', error);
-        setProblems([]); // prevent crash
+        setProblems([]);
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchProblems();
   }, [difficultyFilter]);
-  
 
   const filteredProblems = problems.filter((p) => {
     const matchesSearch =
@@ -146,7 +142,7 @@ export default function AllProblemsPage() {
         bgcolor: darkMode ? "#0F172A" : "#F3F4F6",
       }}
     >
-      <TopicGrid /> {/* Redux-connected */}
+      <TopicGrid />
 
       {selectedTopic && (
         <Box sx={{ mb: 2 }}>
@@ -163,7 +159,6 @@ export default function AllProblemsPage() {
         </Box>
       )}
 
-      {/* Filters + Search */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
         <Typography variant="h6" sx={{ fontWeight: 600, color: darkMode ? '#fff' : 'text.primary' }}>
           All Problems
@@ -201,7 +196,6 @@ export default function AllProblemsPage() {
         </Box>
       </Box>
 
-      {/* Table */}
       <Card sx={{ backgroundColor: 'background.paper', width: '100%' }}>
         <TableContainer>
           <Table>

@@ -167,7 +167,7 @@ function DailyChallenge() {
           )}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: theme.palette.xp.primary}}>
           <Chip
-          icon={<BoltIcon />}
+          icon={<BoltIcon sx={{ fontSize: 16, color: `${theme.palette.xp.primary} !important` }} />}
           label="150"
           sx={{
             backgroundColor: 'transparent',
@@ -176,7 +176,7 @@ function DailyChallenge() {
             fontWeight: 600,
             fontSize: '0.875rem',
             ml: 1,
-            '& .MuiChip-icon': { color: theme.palette.xp.primary, ml: 1, fontSize: 16 },
+            '& .MuiChip-icon': { ml: 1 },
           }}
         />
           </Box>

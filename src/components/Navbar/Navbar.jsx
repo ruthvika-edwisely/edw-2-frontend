@@ -20,9 +20,8 @@ import {
 } from '@mui/icons-material';
 import { useLocation } from 'react-router-dom';
 import { Link as RouterLink } from 'react-router-dom';
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { logout } from "../../store/features/auth/authSlice";
-
 
 export default function Navbar({ darkMode, setDarkMode }) {
   const theme = useTheme();
@@ -36,9 +35,6 @@ export default function Navbar({ darkMode, setDarkMode }) {
     return 'dashboard';
   };
 
-  // -----------------------------
-  // Avatar Menu
-  // -----------------------------
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -54,7 +50,7 @@ export default function Navbar({ darkMode, setDarkMode }) {
     dispatch(logout());
     handleClose();
   };
-  
+
   return (
     <AppBar
       position="sticky"
@@ -65,40 +61,37 @@ export default function Navbar({ darkMode, setDarkMode }) {
       }}
     >
       <Toolbar sx={{ px: { xs: 2, md: 4 }, py: 2, gap: 3, minHeight: 72 }}>
-        {/* Logo */}
         <Box
-  component={RouterLink}
-  to="/"
-  sx={{
-    display: 'flex',
-    alignItems: 'center',
-    gap: 1,
-    textDecoration: 'none',
-    color: 'inherit',
-    cursor: 'pointer',
-  }}
->
-  <Box
-    sx={{
-      width: 36,
-      height: 36,
-      borderRadius: 1,
-      backgroundColor: theme.palette.primary.main,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-    }}
-  >
-    <CodeIcon sx={{ color: '#fff', fontSize: 20 }} />
-  </Box>
+          component={RouterLink}
+          to="/"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            textDecoration: 'none',
+            color: 'inherit',
+            cursor: 'pointer',
+          }}
+        >
+          <Box
+            sx={{
+              width: 36,
+              height: 36,
+              borderRadius: 1,
+              backgroundColor: theme.palette.primary.main,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <CodeIcon sx={{ color: '#fff', fontSize: 20 }} />
+          </Box>
 
-  <Typography variant="h6" sx={{ fontWeight: 700, color: theme.palette.text.primary }}>
-    CodeMaster AI
-  </Typography>
-</Box>
+          <Typography variant="h6" sx={{ fontWeight: 700, color: theme.palette.text.primary }}>
+            CodeMaster AI
+          </Typography>
+        </Box>
 
-
-        {/* Tabs */}
         <Box sx={{ display: 'flex', gap: 1, ml: 2 }}>
           {['dashboard', 'problems'].map((tab) => (
             <Button
@@ -122,12 +115,10 @@ export default function Navbar({ darkMode, setDarkMode }) {
 
         <Box sx={{ flexGrow: 1 }} />
 
-        {/* Theme Toggle */}
         <IconButton size="medium" onClick={handleThemeToggle} sx={{ color: theme.palette.text.secondary, ml: 1 }}>
           {darkMode ? <LightModeIcon /> : <DarkModeIcon />}
         </IconButton>
 
-        {/* XP Badge */}
         <Chip
           icon={<BoltIcon />}
           label="150"
@@ -142,7 +133,6 @@ export default function Navbar({ darkMode, setDarkMode }) {
           }}
         />
 
-        {/* Avatar */}
         <Avatar
           src="https://i.pravatar.cc/150?img=7"
           alt="User Avatar"
@@ -150,7 +140,6 @@ export default function Navbar({ darkMode, setDarkMode }) {
           onClick={handleAvatarClick}
         />
 
-        {/* Logout Menu */}
         <Menu anchorEl={anchorEl} open={open} onClose={handleClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }} transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
           <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Menu>
