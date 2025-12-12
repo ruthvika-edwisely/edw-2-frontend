@@ -2,6 +2,23 @@ import axios from "axios";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
+export const api = axios.create({
+  baseURL: BASE_URL,
+  withCredentials: true, // send cookies
+});
+
+// Login function
+export const loginUserAPI = async ({ email, password }) => {
+  try {
+    const res = await api.post("/users/login", { email, password });
+    return res.data.data; // backend returns { success, message, data: user }
+  } catch (err) {
+    throw err.response?.data?.message || "Login failed";
+  }
+};
+
+
+
 // src/data/users.js
 
 export const users = [

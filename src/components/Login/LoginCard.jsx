@@ -28,14 +28,15 @@ export default function LoginCard() {
   const { loading, error } = useSelector((state) => state.auth);
 
   const handleSubmit = async () => {
-  const result = await dispatch(loginUser({ email, password }));
-
-  if (loginUser.fulfilled.match(result)) {
-    navigate("/");
-  } else {
-    alert("Invalid credentials");
-  }
-};
+    const result = await dispatch(loginUser({ email, password }));
+  
+    if (loginUser.fulfilled.match(result)) {
+      navigate("/");
+    } else {
+      alert(result.payload || "Invalid credentials");
+    }
+  };
+  
 
   
   

@@ -46,7 +46,6 @@ function ProblemTable() {
       try {
         const data = await getProblems(difficultyFilter);
         console.log("Fetched problems:", data);
-<<<<<<< HEAD
   
         const normalizedProblems = (Array.isArray(data) ? data : []).map(p => ({
           ...p,
@@ -56,17 +55,6 @@ function ProblemTable() {
           xp: p.xp_reward || 0               // rename xp_reward to xp
         }));
   
-=======
-
-        const normalizedProblems = (Array.isArray(data) ? data : []).map(p => ({
-          ...p,
-          status: p.status || 'unsolved',
-          acceptance: p.acceptance || 0,
-          topics: p.topics || [],
-          xp: p.xp_reward || 0
-        }));
-
->>>>>>> b75ce4079ecb7e99ad1b4cb0c51f2ed6561506ef
         setProblems(normalizedProblems);
       } catch (err) {
         console.error(err);
@@ -77,11 +65,7 @@ function ProblemTable() {
     };
     fetchProblems();
   }, [difficultyFilter]);
-<<<<<<< HEAD
   
-=======
-
->>>>>>> b75ce4079ecb7e99ad1b4cb0c51f2ed6561506ef
   const safeProblems = Array.isArray(problems) ? problems : [];
   const filteredProblems = safeProblems.filter(
     (p) =>
@@ -90,13 +74,10 @@ function ProblemTable() {
         t.toLowerCase().includes((searchQuery || "").toLowerCase())
       )
   );
-<<<<<<< HEAD
   console.log("searchQuery:", searchQuery);
   console.log("safeProblems:", safeProblems);
   console.log("filteredProblems:", filteredProblems);
 
-=======
->>>>>>> b75ce4079ecb7e99ad1b4cb0c51f2ed6561506ef
 
   const handleStatusChange = async (problemId, currentStatus) => {
     const newStatus = currentStatus === 'solved' ? 'unsolved' : 'solved';
@@ -127,19 +108,13 @@ function ProblemTable() {
 
   return (
     <Box sx={{ mb: 4 }}>
-<<<<<<< HEAD
       {/* Header */}
-=======
->>>>>>> b75ce4079ecb7e99ad1b4cb0c51f2ed6561506ef
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
         <Typography variant="h6" sx={{ fontWeight: 600, color: darkMode ? '#fff' : '#000' }}>
           Problems
         </Typography>
 
-<<<<<<< HEAD
         {/* Filters Row */}
-=======
->>>>>>> b75ce4079ecb7e99ad1b4cb0c51f2ed6561506ef
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
           <FormControl size="small">
             <Select
@@ -199,10 +174,7 @@ function ProblemTable() {
         </Box>
       </Box>
 
-<<<<<<< HEAD
       {/* Table */}
-=======
->>>>>>> b75ce4079ecb7e99ad1b4cb0c51f2ed6561506ef
       <Card sx={{ backgroundColor: '#fff', minHeight: 200 }}>
         {loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>

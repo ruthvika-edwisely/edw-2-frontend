@@ -1,13 +1,12 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { loginUserMock } from "../../../api/api.js"; // path to your api.js
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { loginUserAPI } from "../../../api/api";
 
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      const res = await loginUserMock({ email, password }); // <-- use local data
-      localStorage.setItem("token", res.token); // store token locally
-      return { user: res.user, token: res.token };
+      const user = await loginUserAPI({ email, password });
+      return user;
     } catch (err) {
       return rejectWithValue(err);
     }
@@ -17,18 +16,16 @@ export const loginUser = createAsyncThunk(
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    token: localStorage.getItem("token") || null,
     user: null,
-    isAuthenticated: !!localStorage.getItem("token"),
     loading: false,
     error: null,
+    isAuthenticated: false,
   },
   reducers: {
-    logout: (state) => {
-      state.token = null;
+    logout(state) {
       state.user = null;
       state.isAuthenticated = false;
-      localStorage.removeItem("token");
+      document.cookie = "access_token=; Max-Age=0; path=/;";
     },
   },
   extraReducers: (builder) => {
@@ -39,8 +36,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.user;
-        state.token = action.payload.token;
+        state.user = action.payload;
         state.isAuthenticated = true;
       })
       .addCase(loginUser.rejected, (state, action) => {

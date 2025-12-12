@@ -10,12 +10,8 @@ import {
   Bolt as BoltIcon,
   Hub as HubIcon,
 } from '@mui/icons-material';
-<<<<<<< HEAD
 import { topics as dummyTopics } from "../../api/api"; // adjust path accordingly
 
-=======
-import axios from 'axios';
->>>>>>> b75ce4079ecb7e99ad1b4cb0c51f2ed6561506ef
 const iconMap = { AccountTree: AccountTreeIcon, Storage: StorageIcon, TextFields: TextFieldsIcon, Bolt: BoltIcon, Hub: HubIcon };
 
 export default function TopicGrid({ navigateOnClick = false }) {
@@ -30,14 +26,9 @@ export default function TopicGrid({ navigateOnClick = false }) {
   useEffect(() => {
     const fetchTopics = async () => {
       try {
-<<<<<<< HEAD
         // simulate network delay
         await new Promise(resolve => setTimeout(resolve, 500));
         setTopics(dummyTopics);
-=======
-        const response = await axios.get('/api/topics');
-        setTopics(Array.isArray(response.data) ? response.data : []);
->>>>>>> b75ce4079ecb7e99ad1b4cb0c51f2ed6561506ef
       } catch {
         setTopics([]);
       } finally {
@@ -46,10 +37,7 @@ export default function TopicGrid({ navigateOnClick = false }) {
     };
     fetchTopics();
   }, []);
-<<<<<<< HEAD
   
-=======
->>>>>>> b75ce4079ecb7e99ad1b4cb0c51f2ed6561506ef
 
   if (loading) {
     return (

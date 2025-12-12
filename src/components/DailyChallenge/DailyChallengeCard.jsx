@@ -15,7 +15,7 @@ import {
   AccountTree as AccountTreeIcon,
   Bolt as BoltIcon,
 } from '@mui/icons-material';
-import { getDailyChallengeAPI } from "../../api/api";
+//import { getDailyChallengeAPI } from "../../api/api";
 
 // Dummy API function
 
@@ -28,7 +28,7 @@ function DailyChallenge() {
   useEffect(() => {
     const loadDailyChallenge = async () => {
       try {
-        const data = await getDailyChallengeAPI();
+        //const data = await getDailyChallengeAPI();
         setChallenge(data);
       } catch (error) {
         console.error("Error fetching daily challenge:", error);

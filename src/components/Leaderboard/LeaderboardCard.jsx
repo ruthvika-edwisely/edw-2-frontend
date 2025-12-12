@@ -1,9 +1,5 @@
-<<<<<<< HEAD
 // LeaderboardCard.jsx
 import { useState, useEffect } from "react";
-=======
-import { useState, useEffect } from 'react';
->>>>>>> b75ce4079ecb7e99ad1b4cb0c51f2ed6561506ef
 import {
   Card,
   CardContent,
@@ -15,25 +11,16 @@ import {
   FormControl,
   LinearProgress,
   Skeleton,
-<<<<<<< HEAD
 } from "@mui/material";
-=======
-} from '@mui/material';
->>>>>>> b75ce4079ecb7e99ad1b4cb0c51f2ed6561506ef
 import {
   KeyboardArrowDown as KeyboardArrowDownIcon,
   EmojiEvents as EmojiEventsIcon,
   TrendingUp as TrendingUpIcon,
-<<<<<<< HEAD
 } from "@mui/icons-material";
 
 // Import dummy users
 import { users as dummyUsers } from "../../api/api"; // adjust path accordingly
 
-=======
-} from '@mui/icons-material';
-import axios from 'axios';
->>>>>>> b75ce4079ecb7e99ad1b4cb0c51f2ed6561506ef
 
 function LeaderboardCard() {
   const [users, setUsers] = useState([]);
@@ -43,37 +30,19 @@ function LeaderboardCard() {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
-<<<<<<< HEAD
         // simulate network delay
         await new Promise((resolve) => setTimeout(resolve, 500));
         setUsers(dummyUsers);
       } catch (error) {
         console.error("Error fetching leaderboard:", error);
-=======
-        const response = await axios.get('/api/leaderboard');
-        const data = Array.isArray(response.data)
-          ? response.data
-          : response.data.users || [];
-        setUsers(data);
-      } catch (error) {
-        console.error('Error fetching leaderboard:', error);
-        setUsers([]);
->>>>>>> b75ce4079ecb7e99ad1b4cb0c51f2ed6561506ef
       } finally {
         setLoading(false);
       }
     };
-<<<<<<< HEAD
   
     fetchLeaderboard();
   }, []);
   
-=======
-
-    fetchLeaderboard();
-  }, []);
-
->>>>>>> b75ce4079ecb7e99ad1b4cb0c51f2ed6561506ef
   const getRankBadgeColor = (rank) => {
     switch (rank) {
       case 1:
@@ -108,12 +77,8 @@ function LeaderboardCard() {
     );
   }
 
-<<<<<<< HEAD
   const currentUser = Array.isArray(users) ? users.find(u => u.isCurrentUser) : null;
 
-=======
-  const currentUser = users.find((u) => u.isCurrentUser);
->>>>>>> b75ce4079ecb7e99ad1b4cb0c51f2ed6561506ef
   const topUsers = users.slice(0, 5);
   const progressToNextRank = currentUser ? ((currentUser.xp % 500) / 500) * 100 : 0;
 
