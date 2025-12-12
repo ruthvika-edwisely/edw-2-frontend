@@ -28,14 +28,17 @@ export default function LoginCard() {
   const { loading, error } = useSelector((state) => state.auth);
 
   const handleSubmit = async () => {
-    const result = await dispatch(loginUser({ email, password }));
+  const result = await dispatch(loginUser({ email, password }));
 
-    if (loginUser.fulfilled.match(result)) {
-      navigate("/");
-    } else {
-      alert("Invalid credentials");
-    }
-  };
+  if (loginUser.fulfilled.match(result)) {
+    navigate("/");
+  } else {
+    alert("Invalid credentials");
+  }
+};
+
+  
+  
 
   return (
     <Card
@@ -59,102 +62,126 @@ export default function LoginCard() {
           Welcome Back
         </Typography>
 
+        {/* Email */}
         <TextField
-          label="Email Address"
-          fullWidth
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          variant="outlined"
-          sx={{
-            mb: 2,
-            input: { color: "#fff" },
-            "& .MuiInputLabel-root": {
-              color: "rgba(255,255,255,0.6)",
-            },
-            "& .MuiInputLabel-root.Mui-focused, & .MuiInputLabel-shrink": {
-              color: "#90caf9",
-              backgroundColor: "rgba(15,23,42,1)",
-              padding: "0 4px",
-              transform: "translate(14px, -6px) scale(0.85)",
-            },
-            "& .MuiOutlinedInput-root": {
-              "&:hover fieldset": {
-                borderColor: "rgba(255,255,255,0.25)",
-              },
-              "&.Mui-focused": {
-                outline: "none",
-              },
-            },
-            "& .MuiOutlinedInput-root.Mui-focused": {
-              outline: "none !important",
-            },
-            "& .MuiOutlinedInput-root fieldset": {
-              borderColor: "rgba(255,255,255,0.15)",
-            },
-            "& .MuiOutlinedInput-root.Mui-focused fieldset": {
-              borderColor: "#60a5fa",
-            },
-            "& .MuiOutlinedInput-notchedOutline": {
-              border: "none",
-            },
-            "&:hover .MuiOutlinedInput-notchedOutline": {
-              border: "none",
-            },
-            "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-              border: "none",
-            },
-          }}
-        />
+  label="Email Address"
+  fullWidth
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  variant="outlined"
+  sx={{
+    mb: 2,
+    input: { color: "#fff" },
 
+    "& .MuiInputLabel-root": {
+      color: "rgba(255,255,255,0.6)",
+    },
+
+    "& .MuiInputLabel-root.Mui-focused, & .MuiInputLabel-shrink": {
+      color: "#90caf9",
+      backgroundColor: "rgba(15,23,42,1)",
+      padding: "0 4px",
+      transform: "translate(14px, -6px) scale(0.85)",
+    },
+
+    // Remove blue outline
+    "& .MuiOutlinedInput-root": {
+      "&:hover fieldset": {
+        borderColor: "rgba(255,255,255,0.25)",
+      },
+      "&.Mui-focused": {
+        outline: "none",
+      },
+    },
+
+    "& .MuiOutlinedInput-root.Mui-focused": {
+      outline: "none !important",
+    },
+
+    // Border styling
+    "& .MuiOutlinedInput-root fieldset": {
+      borderColor: "rgba(255,255,255,0.15)",
+    },
+
+    "& .MuiOutlinedInput-root.Mui-focused fieldset": {
+      borderColor: "#60a5fa",
+    },
+    "& .MuiOutlinedInput-notchedOutline": {
+      border: "none",
+    },
+    "&:hover .MuiOutlinedInput-notchedOutline": {
+      border: "none",
+    },
+    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+      border: "none",
+    },
+  }}
+/>
+
+
+
+        {/* Password */}
         <TextField
-          label="Password"
-          type={showPassword ? "text" : "password"}
-          fullWidth
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          variant="outlined"
-          sx={{
-            mb: 1.5,
-            input: { color: "#fff" },
-            "& .MuiInputLabel-root": {
-              color: "rgba(255,255,255,0.6)",
-            },
-            "& .MuiInputLabel-root.Mui-focused, & .MuiInputLabel-shrink": {
-              color: "#90caf9",
-              backgroundColor: "rgba(15,23,42,1)",
-              padding: "0 4px",
-              transform: "translate(14px, -6px) scale(0.85)",
-            },
-            "& .MuiOutlinedInput-root fieldset": {
-              borderColor: "rgba(255,255,255,0.15)",
-            },
-            "& .MuiOutlinedInput-root.Mui-focused fieldset": {
-              borderColor: "#60a5fa",
-            },
-            "& .MuiOutlinedInput-notchedOutline": {
-              border: "none",
-            },
-            "&:hover .MuiOutlinedInput-notchedOutline": {
-              border: "none",
-            },
-            "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-              border: "none",
-            },
-          }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  onClick={() => setShowPassword(!showPassword)}
-                  sx={{ color: "rgba(255,255,255,0.6)" }}
-                >
-                  {showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            ),
-          }}
-        />
+  label="Password"
+  type={showPassword ? "text" : "password"}
+  fullWidth
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+  variant="outlined"
+  sx={{
+    mb: 1.5,
+    input: { color: "#fff" },
 
+    // Label (default)
+    "& .MuiInputLabel-root": {
+      color: "rgba(255,255,255,0.6)",
+    },
+
+    // Floating label (focused or shrunk)
+    "& .MuiInputLabel-root.Mui-focused, & .MuiInputLabel-shrink": {
+      color: "#90caf9",
+      backgroundColor: "rgba(15,23,42,1)",
+      padding: "0 4px",
+      transform: "translate(14px, -6px) scale(0.85)",
+    },
+
+    // Default border
+    "& .MuiOutlinedInput-root fieldset": {
+      borderColor: "rgba(255,255,255,0.15)",
+    },
+
+    // Focus border
+    "& .MuiOutlinedInput-root.Mui-focused fieldset": {
+      borderColor: "#60a5fa",
+    },
+    "& .MuiOutlinedInput-notchedOutline": {
+      border: "none",
+    },
+    "&:hover .MuiOutlinedInput-notchedOutline": {
+      border: "none",
+    },
+    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+      border: "none",
+    },
+    
+  }}
+  InputProps={{
+    endAdornment: (
+      <InputAdornment position="end">
+        <IconButton
+          onClick={() => setShowPassword(!showPassword)}
+          sx={{ color: "rgba(255,255,255,0.6)" }}
+        >
+          {showPassword ? <VisibilityOff /> : <Visibility />}
+        </IconButton>
+      </InputAdornment>
+    ),
+    
+  }}
+/>
+
+
+        {/* Remember me + Forgot password */}
         <Box
           sx={{
             display: "flex",
@@ -173,6 +200,7 @@ export default function LoginCard() {
           </Link>
         </Box>
 
+        {/* Sign In button */}
         <Button
           variant="contained"
           fullWidth

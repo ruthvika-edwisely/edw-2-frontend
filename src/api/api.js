@@ -2,7 +2,11 @@ import axios from "axios";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
+<<<<<<< HEAD
+// src/users.js
+=======
 // src/data/users.js
+>>>>>>> b75ce4079ecb7e99ad1b4cb0c51f2ed6561506ef
 
 export const users = [
   {
@@ -97,6 +101,44 @@ export const loginUserMock = ({ email, password }) => {
 };
 
 
+<<<<<<< HEAD
+// api.js
+
+export const topics = [
+  { id: 1, name: "Data Structures", icon: "Storage", color: "#f97316", problemCount: 120 },
+  { id: 2, name: "Algorithms", icon: "AccountTree", color: "#3b82f6", problemCount: 95 },
+  { id: 3, name: "Math", icon: "Bolt", color: "#facc15", problemCount: 80 },
+  { id: 4, name: "Strings", icon: "TextFields", color: "#10b981", problemCount: 60 },
+  { id: 5, name: "Graphs", icon: "Hub", color: "#8b5cf6", problemCount: 50 },
+];
+
+// api.js
+
+export const userProgress = {
+  currentUser: {
+    xp: 1850,
+    problemsSolved: 45,
+  },
+
+  difficultyProgress: {
+    easy: { solved: 20, total: 100 },
+    medium: { solved: 15, total: 200 },
+    hard: { solved: 10, total: 50 },
+  },
+
+  weeklyActivity: [
+    { day: "Mon", problems: 4 },
+    { day: "Tue", problems: 3 },
+    { day: "Wed", problems: 6 },
+    { day: "Thu", problems: 2 },
+    { day: "Fri", problems: 5 },
+    { day: "Sat", problems: 7 },
+    { day: "Sun", problems: 4 },
+  ],
+};
+
+=======
+>>>>>>> b75ce4079ecb7e99ad1b4cb0c51f2ed6561506ef
 export const getUserById = (userId) => {
   return {
     id: "user_1",
@@ -343,7 +385,6 @@ export const getSubmissionAnswers = (submissionId) => {
 export const getSnippetsByProblem = async(problemId) => {
   const snippet_data = await axios.get(`${BASE_URL}/problems/${problemId}/snippets`);
   return snippet_data.data.data;
-  
 };
 
 
@@ -385,8 +426,37 @@ export const getProblemTags = async(problemId) => {
 
 // GET /api/problems (list all problems)
 
-export const getProblems = async() => {
-  const all_problems_data = await axios.get(`${BASE_URL}/problems/`);
-  console.log(all_problems_data.data.data)
-  return all_problems_data.data.data;
+export const getProblems = async () => {
+  try {
+    const url =`${BASE_URL}/problems/`;
+        
+    const res = await axios.get(url);
+    return res.data.data || res.data;
+  } catch (err) {
+    console.error("Error fetching problems:", err);
+    return [];
+  }
+};
+
+// api.js
+
+export const getDailyChallengeAPI = async () => {
+  try {
+    const res = await axios.get(`${BASE_URL}/problems/daily`);
+    const daily = res.data.data; // backend wraps in { success, data }
+
+    if (!daily) return null;
+
+    return {
+      id: daily.id,
+      title: daily.title,
+      description: daily.description,
+      difficulty: daily.difficulty,
+      xp: daily.xp,
+      tags: daily.tags, // already array of strings from backend
+    };
+  } catch (error) {
+    console.error("Error fetching daily challenge:", error);
+    return null;
+  }
 };

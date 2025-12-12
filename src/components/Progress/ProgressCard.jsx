@@ -9,7 +9,11 @@ import {
   useTheme,
 } from '@mui/material';
 import ReactECharts from 'echarts-for-react';
+<<<<<<< HEAD
+import { userProgress as mockProgress } from '../../api/api'; 
+=======
 import axios from 'axios';
+>>>>>>> b75ce4079ecb7e99ad1b4cb0c51f2ed6561506ef
 
 function ProgressCard() {
   const [progress, setProgress] = useState(null);
@@ -18,6 +22,12 @@ function ProgressCard() {
 
   useEffect(() => {
     const fetchProgress = async () => {
+<<<<<<< HEAD
+      // simulate delay for realism
+      await new Promise((res) => setTimeout(res, 500));
+      setProgress(mockProgress);
+      setLoading(false);
+=======
       try {
         const response = await axios.get('/api/progress');
         setProgress(response.data);
@@ -26,11 +36,16 @@ function ProgressCard() {
       } finally {
         setLoading(false);
       }
+>>>>>>> b75ce4079ecb7e99ad1b4cb0c51f2ed6561506ef
     };
 
     fetchProgress();
   }, []);
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> b75ce4079ecb7e99ad1b4cb0c51f2ed6561506ef
   if (loading) {
     return (
       <Card sx={{ backgroundColor: 'background.paper', height: '100%' }}>
@@ -72,7 +87,11 @@ function ProgressCard() {
     },
     tooltip: {
       trigger: 'axis',
+<<<<<<< HEAD
+      backgroundColor: theme.palette.primary.main,
+=======
       backgroundColor: theme.palette.background.elevated,
+>>>>>>> b75ce4079ecb7e99ad1b4cb0c51f2ed6561506ef
       borderColor: theme.palette.primary.main,
       borderWidth: 1,
       textStyle: { color: theme.palette.common.white },
