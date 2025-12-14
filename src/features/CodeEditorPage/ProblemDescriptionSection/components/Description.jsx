@@ -29,6 +29,8 @@ const Description = () => {
 
   const { id, title, difficulty, description, xp_reward } = problem || {};
 
+  console.log(description.split("\\n"));
+
   const difficultyStyles = {
     Easy: {
       color: palette.diffEasy,
@@ -188,15 +190,17 @@ const Description = () => {
           letterSpacing: "0.01em",
         }}
       >
-        {description}
+        {description.split("\\n").map((d, idx) => d+"\n")}
       </Typography>
 
 
       {/* ------------------------------- EXAMPLE ------------------------------- */}
-      {testcasesData.filter(tc => !tc.isHidden).map(tc => 
+      {testcasesData.filter(tc => !tc.isHidden).map((tc, idx) => 
 
        (
       <Box
+
+        key={idx}
         sx={{
           background: palette.exampleBg,
           borderRadius: 2,
@@ -235,7 +239,7 @@ const Description = () => {
           >
             Input:
           </Typography>
-          <Typography
+          <Box
             sx={{
               fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
               background: palette.codeBg,
@@ -247,8 +251,8 @@ const Description = () => {
               overflowX: "auto",
             }}
           >
-            {tc?.input.split("\n").map((item) => <Box sx={{paddingY: "3px"}}>{item}</Box>)}
-          </Typography>
+            {tc?.input.split("\n").map((item, idx) => <Box key={idx} sx={{paddingY: "3px"}}>{item}</Box>)}
+          </Box>
         </Box>
 
         {/* Output */}

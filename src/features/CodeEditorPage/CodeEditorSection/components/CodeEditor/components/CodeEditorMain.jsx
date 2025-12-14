@@ -4,6 +4,8 @@ import { useSelector } from 'react-redux';
 import { getAllLanguages } from '../../../../../../api/api.js';
 
 const CodeEditorMain = ({ editorTheme, language }) => {
+
+  const problemId = useSelector(state => state.problem.id);
   const snippetsData = useSelector(state => state.problem.snippets);
   const langs = getAllLanguages();
   const langObj = langs.find((lang) => lang.name.toLowerCase() === language.toLowerCase());
@@ -13,9 +15,17 @@ const CodeEditorMain = ({ editorTheme, language }) => {
   const initialCode = snippet?.code ?? "";
 
   // State to store code for the current language
-  const [code, setCode] = useState(() => {
-    return localStorage.getItem(`code-${language}`) ?? initialCode;
-  });
+  const [code, setCode] = useState(localStorage.getItem(`code-problem-${problemId}-${language}`) || initialCode);
+
+
+  useEffect(() => {
+    localStorage.setItem(`code-problem-${problemId}-${language}`, initialCode);
+  }, []);
+
+  useEffect(() => {
+    console.log("ppppppppppppppppppppppppppppppppppppp: ",problemId)
+    setCode(localStorage.getItem(`code-problem-${problemId}-${language}`) ?? initialCode);
+  }, [problemId, language]);
 
   // Ref for debounce timer
   const saveTimer = useRef(null);
@@ -27,14 +37,14 @@ const CodeEditorMain = ({ editorTheme, language }) => {
     if (saveTimer.current) clearTimeout(saveTimer.current);
 
     saveTimer.current = setTimeout(() => {
-      localStorage.setItem(`code-${language}`, value);
+      localStorage.setItem(`code-problem-${problemId}-${language}`, value);
     }, 1000); // 1 second debounce
   };
 
   // Load code from localStorage when language changes
   useEffect(() => {
     if (saveTimer.current) clearTimeout(saveTimer.current); // cancel any pending save
-    const saved = localStorage.getItem(`code-${language}`);
+    const saved = localStorage.getItem(`code-problem-${problemId}-${language}`);
     setCode(saved ?? snippet?.code ?? "");
   }, [language, snippet?.code]);
 

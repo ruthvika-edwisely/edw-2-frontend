@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { togglePanelVisibility } from '../../../../../../store/features/showAIPanel/showAISlice';
 import { useTheme } from '@mui/material/styles';
 
-const CodeEditorMenu = ({ editorTheme, setEditorTheme, language, setLanguage }) => {
+const CodeEditorMenu = ({ editorTheme, setEditorTheme, language, setLanguage, runCode, submitCode, afterRunCodeClick }) => {
 
     const theme = useTheme();
     const showAi = useSelector((state) => state.showAIPanel.showAI);
@@ -157,8 +157,10 @@ const CodeEditorMenu = ({ editorTheme, setEditorTheme, language, setLanguage }) 
                         textTransform: "none",
                         "&:hover": { bgcolor: theme.palette.primary.dark }
                     }}
+                    disabled={runCode || submitCode}
+                    onClick={() => afterRunCodeClick("Run")}
                 >
-                    Run
+                    {runCode ? "Processing...." : "Run"}
                 </Button>
 
                 <Button
@@ -170,8 +172,10 @@ const CodeEditorMenu = ({ editorTheme, setEditorTheme, language, setLanguage }) 
                         textTransform: "none",
                         "&:hover": { bgcolor: theme.palette.success[700] }
                     }}
+                    disabled={runCode || submitCode}
+                    onClick={() => afterRunCodeClick("Submit")}
                 >
-                    Submit
+                    {submitCode ? "Submitting...." : "Submit"}
                 </Button>
 
             </Box>

@@ -1,9 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getUserSubmissions } from "../../../api/api.js";
 
 const initialState = {
-    allSubs: [],
-    currProbSubs: []
+    currSubData: {},
+    testcaseResults: [],
 };
 
 
@@ -11,20 +10,25 @@ const submissionSlice = createSlice({
     name: 'submissions',
     initialState,
     reducers: {
-        getUserSubmissionData(state, action) {
-            const userId = action.payload.userId;
-            state.allSubs = getUserSubmissions(userId);
+        // getUserSubmissionData(state, action) {
+        //     const userId = action.payload.userId;
+        //     state.allSubs = getUserSubmissions(userId);
+        // },
+
+        getLatestSubmissionData(state, action) {
+            state.currSubData = action.payload;
+            console.log(action.payload);
         },
 
-        getUserProblemSubmissionData(state, action) {
-            const userId = action.payload.userId;
-            const problemId = action.payload.id;
-            state.currProbSubs = getUserSubmissions(userId).filter((sub) => sub.problemId === problemId)
+        getTestcaseResults(state, action) {
+            const data = action.payload;
+            console.log("data this is it : ", data);
+            state.testcaseResults = data
         }
 
     }
 });
 
 
-export const { getUserSubmissionData, getUserProblemSubmissionData } = submissionSlice.actions;
+export const { getLatestSubmissionData, getTestcaseResults } = submissionSlice.actions;
 export default submissionSlice.reducer;

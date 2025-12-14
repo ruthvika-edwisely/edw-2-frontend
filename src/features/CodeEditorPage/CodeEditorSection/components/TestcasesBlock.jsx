@@ -15,11 +15,9 @@ const TestcasesBlock = () => {
   const p = theme.palette.problemPage;
 
   const testcases = useSelector((state) => state.problem.testcases);
+  const testcaseResults = useSelector((state) => state.submissions.testcaseResults);
 
-  const visibleTestcases =
-    testcases
-      ?.filter((tc) => !tc.isHidden)
-      ?.sort((a, b) => a.order - b.order) ?? [];
+  const visibleTestcases = testcases ?? [];
 
   const [tabIndex, setTabIndex] = useState(0);
 
@@ -98,6 +96,7 @@ const TestcasesBlock = () => {
                 gap: 2,
                 width: "100%",
                 flexDirection: "column",
+                key: tabIndex
               }}
             >
               {/* Input Block */}
@@ -128,7 +127,7 @@ const TestcasesBlock = () => {
                     color: p.textPrimary,
                   }}
                 >
-                  {visibleTestcases[tabIndex].input.split("\n").map((item) => (<Box sx={{paddingY: "3px"}}>{item}</Box>))}
+                  {visibleTestcases[tabIndex].input.split("\n").map((item) => (<Box sx={{paddingY: "3px"}} key={tabIndex}>{item}</Box>))}
                 </Box>
               </Box>
 
@@ -164,6 +163,48 @@ const TestcasesBlock = () => {
                   {visibleTestcases[tabIndex].expected_output}
                 </Box>
               </Box>
+
+
+              {testcaseResults[tabIndex] ? 
+                (<Box sx={{ display: "flex", flexDirection: "column" }} key={tabIndex}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      mb: 0.5,
+                      // fontWeight: 600,
+                      color: p.textTertiary,
+                      fontSize: "0.75rem",
+                      letterSpacing: "0.05em",
+                    }}
+                  >
+                    Your Output :
+                  </Typography>
+
+                  {console.log("chchchchchchhcc", testcaseResults)}
+
+                  <Box
+                    sx={{
+                      p: 1.5,
+                      background: p.codeBg,
+                      borderRadius: 1.5,
+                      border: `1px solid ${p.cardBorder}`,
+                      fontFamily: "'JetBrains Mono', monospace",
+                      fontSize: "0.875rem",
+                      overflowX: "auto",
+                      whiteSpace: "pre-wrap",
+                      color: p.textPrimary,
+                    }}
+                  >
+                    {testcaseResults[tabIndex]?.output?.split("\n").map((item) => (<Box sx={{paddingY: "3px"}}>{item}</Box>)) || testcaseResults[tabIndex]?.status || "None"}
+                  </Box>
+                </Box>)
+
+                : 
+
+                <></>
+              }
+
+
             </Box>
           )}
 
@@ -174,6 +215,17 @@ const TestcasesBlock = () => {
             </Typography>
           )}
         </Box>
+
+
+        <Box>
+
+
+
+
+
+        </Box>
+
+
       </Box>
     </Panel>
   );

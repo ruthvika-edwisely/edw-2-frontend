@@ -210,229 +210,230 @@ export const getAllLanguages = () => {
 
 
 
-export const getUserSubmissions = (userId) => {
-  return [
-    {
-      id: "sub_1",
-      userId: "user_1",
-      problemId: "1",
-      status: "Wrong Answer",
-      createdAt: "2025-02-12T10:05:00Z"
-    },
-    {
-      id: "sub_2",
-      userId: "user_1",
-      problemId: "1",
-      status: "Runtime Error",
-      createdAt: "2025-02-11T18:30:00Z"
-    },
-    {
-      id: "sub_3",
-      userId: "user_1",
-      problemId: "1",
-      status: "Time Limit Exceeded",
-      createdAt: "2025-02-10T14:20:00Z"
-    },
-    {
-      id: "sub_4",
-      userId: "user_1",
-      problemId: "1",
-      status: "Accepted",
-      createdAt: "2025-02-12T10:10:00Z"
-    },
-    {
-      id: "sub_5",
-      userId: "user_1",
-      problemId: "1",
-      status: "Time Limit Exceeded",
-      createdAt: "2025-02-10T14:20:00Z"
-    },
-    {
-      id: "sub_6",
-      userId: "user_1",
-      problemId: "1",
-      status: "Time Limit Exceeded",
-      createdAt: "2025-02-10T14:20:00Z"
-    },
-    {
-      id: "sub_7",
-      userId: "user_1",
-      problemId: "1",
-      status: "Time Limit Exceeded",
-      createdAt: "2025-02-10T14:20:00Z"
-    },
-    {
-      id: "sub_8",
-      userId: "user_1",
-      problemId: "2",
-      status: "Time Limit Exceeded",
-      createdAt: "2025-02-10T14:20:00Z"
-    },
-  ];
-};
+// export const getUserSubmissions = (userId) => {
+//   return [
+//     {
+//       id: "sub_1",
+//       userId: "user_1",
+//       problemId: "1",
+//       status: "Wrong Answer",
+//       createdAt: "2025-02-12T10:05:00Z"
+//     },
+//     {
+//       id: "sub_2",
+//       userId: "user_1",
+//       problemId: "1",
+//       status: "Runtime Error",
+//       createdAt: "2025-02-11T18:30:00Z"
+//     },
+//     {
+//       id: "sub_3",
+//       userId: "user_1",
+//       problemId: "1",
+//       status: "Time Limit Exceeded",
+//       createdAt: "2025-02-10T14:20:00Z"
+//     },
+//     {
+//       id: "sub_4",
+//       userId: "user_1",
+//       problemId: "1",
+//       status: "Accepted",
+//       createdAt: "2025-02-12T10:10:00Z"
+//     },
+//     {
+//       id: "sub_5",
+//       userId: "user_1",
+//       problemId: "1",
+//       status: "Time Limit Exceeded",
+//       createdAt: "2025-02-10T14:20:00Z"
+//     },
+//     {
+//       id: "sub_6",
+//       userId: "user_1",
+//       problemId: "1",
+//       status: "Time Limit Exceeded",
+//       createdAt: "2025-02-10T14:20:00Z"
+//     },
+//     {
+//       id: "sub_7",
+//       userId: "user_1",
+//       problemId: "1",
+//       status: "Time Limit Exceeded",
+//       createdAt: "2025-02-10T14:20:00Z"
+//     },
+//     {
+//       id: "sub_8",
+//       userId: "user_1",
+//       problemId: "2",
+//       status: "Time Limit Exceeded",
+//       createdAt: "2025-02-10T14:20:00Z"
+//     },
+//   ];
+// };
 
 
-export const getSubmissionAnswers = (submissionId) => {
-  const data = {
-    sub_4: [
-      {
-        id: "subAns_4",
-        submissionId: "sub_4",
-        code: `class Solution:\n    def twoSum(self, nums, target):\n        seen = {}\n        for i, val in enumerate(nums):\n            diff = target - val\n            if diff in seen:\n                return [seen[diff], i]\n            seen[val] = i`,
-        languageId: "1",
-        totalExecTime: "1 ms",
-        totalExecMemory: "12 MB",
-        status: "Accepted",
-        mode: "submit",
-        createdAt: "2025-02-12T10:10:05Z"
-      }
-    ],
+// export const getSubmissionAnswers = (submissionId) => {
+//   const data = {
+//     sub_4: [
+//       {
+//         id: "subAns_4",
+//         submissionId: "sub_4",
+//         code: `class Solution:\n    def twoSum(self, nums, target):\n        seen = {}\n        for i, val in enumerate(nums):\n            diff = target - val\n            if diff in seen:\n                return [seen[diff], i]\n            seen[val] = i`,
+//         languageId: "1",
+//         totalExecTime: "1 ms",
+//         totalExecMemory: "12 MB",
+//         status: "Accepted",
+//         mode: "submit",
+//         createdAt: "2025-02-12T10:10:05Z"
+//       }
+//     ],
 
-    sub_1: [
-      {
-        id: "subAns_1",
-        submissionId: "sub_1",
-        code: `class Solution:\n    def twoSum(self, nums, target):\n        return []`,
-        languageId: "1",
-        totalExecTime: "0 ms",
-        totalExecMemory: "10 MB",
-        status: "Wrong Answer",
-        mode: "submit",
-        createdAt: "2025-02-12T10:05:10Z"
-      }
-    ],
+//     sub_1: [
+//       {
+//         id: "subAns_1",
+//         submissionId: "sub_1",
+//         code: `class Solution:\n    def twoSum(self, nums, target):\n        return []`,
+//         languageId: "1",
+//         totalExecTime: "0 ms",
+//         totalExecMemory: "10 MB",
+//         status: "Wrong Answer",
+//         mode: "submit",
+//         createdAt: "2025-02-12T10:05:10Z"
+//       }
+//     ],
 
-    sub_2: [
-      {
-        id: "subAns_2",
-        submissionId: "sub_2",
-        code: `public class Solution {\n    public int[] addTwoNumbers(...) {\n        int x = 5 / 0; // crash\n    }\n}`,
-        languageId: "2",
-        totalExecTime: "-",
-        totalExecMemory: "-",
-        status: "Runtime Error",
-        mode: "submit",
-        createdAt: "2025-02-11T18:30:10Z"
-      }
-    ],
+//     sub_2: [
+//       {
+//         id: "subAns_2",
+//         submissionId: "sub_2",
+//         code: `public class Solution {\n    public int[] addTwoNumbers(...) {\n        int x = 5 / 0; // crash\n    }\n}`,
+//         languageId: "2",
+//         totalExecTime: "-",
+//         totalExecMemory: "-",
+//         status: "Runtime Error",
+//         mode: "submit",
+//         createdAt: "2025-02-11T18:30:10Z"
+//       }
+//     ],
 
-    sub_3: [
-      {
-        id: "subAns_3",
-        submissionId: "sub_3",
-        code: `while(true) {}`, // infinite loop cause TLE
-        languageId: "3",
-        totalExecTime: ">2s",
-        totalExecMemory: "14 MB",
-        status: "Time Limit Exceeded",
-        mode: "submit",
-        createdAt: "2025-02-10T14:20:10Z"
-      }
-    ],
+//     sub_3: [
+//       {
+//         id: "subAns_3",
+//         submissionId: "sub_3",
+//         code: `while(true) {}`, // infinite loop cause TLE
+//         languageId: "3",
+//         totalExecTime: ">2s",
+//         totalExecMemory: "14 MB",
+//         status: "Time Limit Exceeded",
+//         mode: "submit",
+//         createdAt: "2025-02-10T14:20:10Z"
+//       }
+//     ],
 
-    sub_5: [
-      {
-        id: "subAns_5",
-        submissionId: "sub_5",
-        code: `while(true) {}`, // infinite loop cause TLE
-        languageId: "3",
-        totalExecTime: ">2s",
-        totalExecMemory: "14 MB",
-        status: "Time Limit Exceeded",
-        mode: "submit",
-        createdAt: "2025-02-10T14:20:10Z"
-      }
-    ],
+//     sub_5: [
+//       {
+//         id: "subAns_5",
+//         submissionId: "sub_5",
+//         code: `while(true) {}`, // infinite loop cause TLE
+//         languageId: "3",
+//         totalExecTime: ">2s",
+//         totalExecMemory: "14 MB",
+//         status: "Time Limit Exceeded",
+//         mode: "submit",
+//         createdAt: "2025-02-10T14:20:10Z"
+//       }
+//     ],
 
-    sub_6: [
-      {
-        id: "subAns_6",
-        submissionId: "sub_6",
-        code: `while(true) {}`, // infinite loop cause TLE
-        languageId: "3",
-        totalExecTime: ">2s",
-        totalExecMemory: "14 MB",
-        status: "Time Limit Exceeded",
-        mode: "submit",
-        createdAt: "2025-02-10T14:20:10Z"
-      }
-    ],
+//     sub_6: [
+//       {
+//         id: "subAns_6",
+//         submissionId: "sub_6",
+//         code: `while(true) {}`, // infinite loop cause TLE
+//         languageId: "3",
+//         totalExecTime: ">2s",
+//         totalExecMemory: "14 MB",
+//         status: "Time Limit Exceeded",
+//         mode: "submit",
+//         createdAt: "2025-02-10T14:20:10Z"
+//       }
+//     ],
 
-    sub_7: [
-      {
-        id: "subAns_7",
-        submissionId: "sub_7",
-        code: `while(true) {}`, // infinite loop cause TLE
-        languageId: "3",
-        totalExecTime: ">2s",
-        totalExecMemory: "14 MB",
-        status: "Time Limit Exceeded",
-        mode: "submit",
-        createdAt: "2025-02-10T14:20:10Z"
-      }
-    ],
+//     sub_7: [
+//       {
+//         id: "subAns_7",
+//         submissionId: "sub_7",
+//         code: `while(true) {}`, // infinite loop cause TLE
+//         languageId: "3",
+//         totalExecTime: ">2s",
+//         totalExecMemory: "14 MB",
+//         status: "Time Limit Exceeded",
+//         mode: "submit",
+//         createdAt: "2025-02-10T14:20:10Z"
+//       }
+//     ],
 
-    sub_8: [
-      {
-        id: "subAns_8",
-        submissionId: "sub_8",
-        code: `while(true) {}`, // infinite loop cause TLE
-        languageId: "3",
-        totalExecTime: ">2s",
-        totalExecMemory: "14 MB",
-        status: "Time Limit Exceeded",
-        mode: "submit",
-        createdAt: "2025-02-10T14:20:10Z"
-      }
-    ]
-  };
+//     sub_8: [
+//       {
+//         id: "subAns_8",
+//         submissionId: "sub_8",
+//         code: `while(true) {}`, // infinite loop cause TLE
+//         languageId: "3",
+//         totalExecTime: ">2s",
+//         totalExecMemory: "14 MB",
+//         status: "Time Limit Exceeded",
+//         mode: "submit",
+//         createdAt: "2025-02-10T14:20:10Z"
+//       }
+//     ]
+//   };
 
-  return data[submissionId] || [];
-};
-
-
-
-export const getSnippetsByProblem = async(problemId) => {
-  const snippet_data = await axios.get(`${BASE_URL}/problems/${problemId}/snippets`);
-  return snippet_data.data.data;
-};
-
+//   return data[submissionId] || [];
+// };
 
 export const getProblemById = async(problemId) => {
-  const problem_data = await axios.get(`${BASE_URL}/problems/${problemId}`)
+  const problem_data = await api.get(`${BASE_URL}/problems/${problemId}`)
+  console.log("prob_data : ", problem_data);
   return problem_data.data.data;
 };
 
 
-export const getProblemHints = async(problemId) => {
-  const problem_hints = await axios.get(`${BASE_URL}/problems/${problemId}/hints`);
-  return problem_hints.data.data;
-};
+// export const getSnippetsByProblem = async(problemId) => {
+//   const snippet_data = await axios.get(`${BASE_URL}/problems/${problemId}/snippets`);
+//   return snippet_data.data.data;
+// };
 
 
-export const getProblemConstraints = async(problemId) => {
-  const problem_constraints = await axios.get(`${BASE_URL}/problems/${problemId}/constraints`);
-  return problem_constraints.data.data;
-};
 
 
-export const getProblemEditorial = async(problemId) => {
-  const editorial_data = await axios.get(`${BASE_URL}/problems/${problemId}/editorial`);
-  console.log(editorial_data.data.data);
-  return editorial_data.data.data;
-};
+// export const getProblemHints = async(problemId) => {
+//   const problem_hints = await axios.get(`${BASE_URL}/problems/${problemId}/hints`);
+//   return problem_hints.data.data;
+// };
 
 
-export const getProblemTestCases = async(problemId) => {
-  const testcases_data = await axios.get(`${BASE_URL}/problems/${problemId}/testcases`);
-  return testcases_data.data.data;
-};
+// export const getProblemConstraints = async(problemId) => {
+//   const problem_constraints = await axios.get(`${BASE_URL}/problems/${problemId}/constraints`);
+//   return problem_constraints.data.data;
+// };
 
 
-export const getProblemTags = async(problemId) => {
-  const tags_data = await axios.get(`${BASE_URL}/problems/${problemId}/tags`);
-  return tags_data.data.data;
-};
+// export const getProblemEditorial = async(problemId) => {
+//   const editorial_data = await axios.get(`${BASE_URL}/problems/${problemId}/editorial`);
+//   console.log(editorial_data.data.data);
+//   return editorial_data.data.data;
+// };
+
+
+// export const getProblemTestCases = async(problemId) => {
+//   const testcases_data = await axios.get(`${BASE_URL}/problems/${problemId}/testcases`);
+//   return testcases_data.data.data;
+// };
+
+
+// export const getProblemTags = async(problemId) => {
+//   const tags_data = await axios.get(`${BASE_URL}/problems/${problemId}/tags`);
+//   return tags_data.data.data;
+// };
 
 // GET /api/problems (list all problems)
 
@@ -440,7 +441,7 @@ export const getProblems = async () => {
   try {
     const url =`${BASE_URL}/problems/`;
         
-    const res = await axios.get(url);
+    const res = await api.get(url);
     return res.data.data || res.data;
   } catch (err) {
     console.error("Error fetching problems:", err);
@@ -470,5 +471,20 @@ export const getDailyChallenge = async () => {
   } catch (error) {
     console.error("Error fetching daily challenge:", error);
     return null;
+  }
+};
+
+
+
+export const submitCode = async(submissionData) => {
+  try {
+    console.log("Submission data : ", submissionData);
+
+    const res = await api.post(`${BASE_URL}/submissions/create`, submissionData);
+    console.log("submission response : ", res.data);
+    return res.data.message;
+    
+  } catch (error) {
+    console.log("Error submitting code : ", error);
   }
 };

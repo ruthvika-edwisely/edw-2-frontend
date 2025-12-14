@@ -8,9 +8,8 @@ import HorizontalHandle from '../../features/CodeEditorPage/components/Horizonta
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { getProblemData } from "../../store/features/problem/problemSlice.js";
-import { getUserSubmissionData, getUserProblemSubmissionData } from '../../store/features/submission/submissionSlice.js';
 import { togglePanelVisibility } from '../../store/features/showAIPanel/showAISlice.js';
-import { getProblemById, getProblemConstraints, getProblemEditorial, getProblemHints, getProblemTags, getProblemTestCases, getSnippetsByProblem } from '../../api/api.js';
+import { getProblemById } from '../../api/api.js';
 
 const CodeEditorPage = () => {
   
@@ -27,17 +26,10 @@ const CodeEditorPage = () => {
 
       try {
         const data = await getProblemById(id);
-        const hints = await getProblemHints(id);
-        const constraints = await getProblemConstraints(id);
-        const snippets = await getSnippetsByProblem(id);
-        const editorial = await getProblemEditorial(id);
-        const testcases = await getProblemTestCases(id);
-        const tags = await getProblemTags(id);
 
         console.log(data);
-        console.log(tags);
         
-        dispatch(getProblemData({id, data, hints, constraints, snippets, editorial, testcases, tags}));
+        dispatch(getProblemData({id, data}));
       }
       finally {
         setLoading(false);
@@ -47,8 +39,6 @@ const CodeEditorPage = () => {
 
 
     // data sotre cheste -> dispatch , ikkada id store chestunna, so dispatch
-    dispatch(getUserSubmissionData(userId));
-    dispatch(getUserProblemSubmissionData({userId, id}));
 
 
   }, [userId, id]);
@@ -74,32 +64,8 @@ const CodeEditorPage = () => {
 
 
   return (
-    <Box sx={{display: "flex", flexDirection: "column", height: "100%", width: "100%", 
-    // bgcolor: "grey.1200"
-    }}>
-
-        {/* AI Toggle Button */}
-        <Box sx={{
-                  display: "flex", 
-                  justifyContent: "center", 
-                  alignItems: "center",
-                  width: "100%", 
-                  height: "65px", 
-                  paddingX: "8px", 
-                  paddingY: "16px",
-                  border: "1px solid",
-                  borderColor: "grey.1300"
-                }}
-        >
-          <Button variant='contained' onClick={() => dispatch(togglePanelVisibility())}>
-            {showAI ? "Close" : "Ask AI"}
-          </Button>
-        </Box>
-
-
-
-        {/* Horizontal Panels - 3 unnay (1 closable) */}
-        <PanelGroup direction='horizontal'>
+    <Box sx={{height: "100vh"}}>
+      <PanelGroup direction='horizontal' height="50%">
 
           {/* left */}
           <ProblemDescriptionSection />
@@ -125,9 +91,6 @@ const CodeEditorPage = () => {
           }
 
         </PanelGroup>
-
-
-      
     </Box>
   )
 }

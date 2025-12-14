@@ -6,7 +6,7 @@ import VerticalHandle from "../components/VerticalHandle.jsx";
 
 const CodeEditorSection = () => {
   return (
-    <Panel minSize={5}>
+    <Panel minSize={5} height="100%">
       <PanelGroup direction='vertical'>
         <CodeEditor />
 
