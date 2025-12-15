@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, Snackbar } from '@mui/material'
 import React, { useState } from 'react'
 import { Panel } from 'react-resizable-panels'
 import CodeEditorMenu from './components/CodeEditorMenu'
@@ -6,6 +6,7 @@ import CodeEditorMain from './components/CodeEditorMain'
 import { useDispatch, useSelector } from 'react-redux'
 import { submitCode } from '../../../../../api/api.js';
 import { getTestcaseResults, getLatestSubmissionData } from "../../../../../store/features/submission/submissionSlice.js";
+import { updateTabIndex } from '../../../../../store/features/activeTabSlice.js'
 
 
 
@@ -16,10 +17,17 @@ const CodeEditor = () => {
   const [runCode, setRunCode] = useState(false);
   const [submitCodeFlag, setSubmitCodeFlag] = useState(false);
   const problemId = useSelector(state => state.problem.id);
+  const [snackBarOpen, setSnackBarOpen] = useState(false);
   const dispatch = useDispatch();
 
   const runCodeExecution = async(mode) => {
     const source_code = localStorage.getItem(`code-problem-${problemId}-${language.toLowerCase()}`)
+
+    if(!source_code || source_code.trim() == "") {
+      setSnackBarOpen(true);
+      return;
+    }
+
     const language_name = language.toLowerCase();
     
     const submissionResponse = await submitCode({
@@ -64,6 +72,7 @@ const CodeEditor = () => {
     finally {
       setRunCode(false);
       setSubmitCodeFlag(false);
+      dispatch(updateTabIndex(2));
     }
   };
 
@@ -83,6 +92,16 @@ const CodeEditor = () => {
           editorTheme={editorTheme}
           language={language} 
         />
+
+        <Snackbar
+          open={snackBarOpen}
+          autoHideDuration={6000}
+          onClose={() => setSnackBarOpen(false)}
+          message="Type something to Run / Submit"
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        />
+
+
     </Panel>
   )
 }

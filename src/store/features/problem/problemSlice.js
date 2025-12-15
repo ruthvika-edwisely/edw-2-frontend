@@ -8,7 +8,8 @@ const initialState = {
     editorial: {},
     testcases: [],
     snippets: [],
-    submissions: []
+    submissions: [],
+    languages: []
 };
 
 const problemSlice = createSlice({
@@ -27,10 +28,15 @@ const problemSlice = createSlice({
             state.testcases = data.testcases;
             state.snippets = data.snippets;
             state.submissions = data.submissions;
+            state.languages = data.languages;
+        },
+
+        updateSubmissionsData(state, action) {
+            state.submissions = action.payload;
         }
     }
 });
 
 
-export const { getProblemData } = problemSlice.actions;
+export const { getProblemData, updateSubmissionsData } = problemSlice.actions;
 export default problemSlice.reducer;

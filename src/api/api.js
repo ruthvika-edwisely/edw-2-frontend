@@ -397,6 +397,13 @@ export const getProblemById = async(problemId) => {
 };
 
 
+export const getSubmissionById = async(submissionId) => {
+  const sub_data = await api.get(`${BASE_URL}/submissions/${submissionId}`);
+  console.log('sub_ans data : ', sub_data);
+  return sub_data.data.data;
+};
+
+
 // export const getSnippetsByProblem = async(problemId) => {
 //   const snippet_data = await axios.get(`${BASE_URL}/problems/${problemId}/snippets`);
 //   return snippet_data.data.data;

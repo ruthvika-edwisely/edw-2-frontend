@@ -173,7 +173,9 @@ const CodeEditorMenu = ({ editorTheme, setEditorTheme, language, setLanguage, ru
                         "&:hover": { bgcolor: theme.palette.success[700] }
                     }}
                     disabled={runCode || submitCode}
-                    onClick={() => afterRunCodeClick("Submit")}
+                    onClick={() => {
+                        afterRunCodeClick("Submit")
+                    }}
                 >
                     {submitCode ? "Submitting...." : "Submit"}
                 </Button>

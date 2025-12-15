@@ -4,6 +4,7 @@ import submissionReducer from "./features/submission/submissionSlice.js";
 import showAIReducer from "./features/showAIPanel/showAISlice.js";
 import topicReducer from "./features/topic/topicSlice.js";
 import authReducer from "./features/auth/authSlice";
+import activeTabReducer from "./features/activeTabSlice.js"
 
 export const store = configureStore({
     reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
         showAIPanel: showAIReducer,
         topic: topicReducer,
         auth: authReducer,
+        activeTab: activeTabReducer
     }
 });

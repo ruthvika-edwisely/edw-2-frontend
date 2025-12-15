@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    currSubData: {},
+    currSubData: null,
     testcaseResults: [],
 };
 
@@ -24,6 +24,11 @@ const submissionSlice = createSlice({
             const data = action.payload;
             console.log("data this is it : ", data);
             state.testcaseResults = data
+        },
+
+        getSubAnsData(state, action) {
+            state.data = action.payload;
+            console.log(action.payload);
         }
 
     }

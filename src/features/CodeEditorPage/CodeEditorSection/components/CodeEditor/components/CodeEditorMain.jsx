@@ -7,23 +7,25 @@ const CodeEditorMain = ({ editorTheme, language }) => {
 
   const problemId = useSelector(state => state.problem.id);
   const snippetsData = useSelector(state => state.problem.snippets);
-  const langs = getAllLanguages();
+  const langs = useSelector(state => state.problem.languages);
+  
+  console.log("lang : ", langs)
+  
   const langObj = langs.find((lang) => lang.name.toLowerCase() === language.toLowerCase());
   const langId = langObj?.id;
 
   const snippet = snippetsData.find((s) => s.language_id == langId);
   const initialCode = snippet?.code ?? "";
+  console.log('this is initial code:', initialCode);
+  console.log("its lang : ", langObj);
 
   // State to store code for the current language
   const [code, setCode] = useState(localStorage.getItem(`code-problem-${problemId}-${language}`) || initialCode);
 
-
-  useEffect(() => {
-    localStorage.setItem(`code-problem-${problemId}-${language}`, initialCode);
-  }, []);
-
   useEffect(() => {
     console.log("ppppppppppppppppppppppppppppppppppppp: ",problemId)
+    localStorage.setItem(`code-problem-${problemId}-${language}`, initialCode);
+    console.log('this is what it is : ', localStorage.getItem(`code-problem-${problemId}-${language}`));
     setCode(localStorage.getItem(`code-problem-${problemId}-${language}`) ?? initialCode);
   }, [problemId, language]);
 

@@ -5,9 +5,19 @@ import { Panel } from "react-resizable-panels";
 import Description from "./components/Description.jsx";
 import Editorial from "./components/Editorial.jsx";
 import Submissions from "./components/Submissions.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import { updateTabIndex } from "../../../store/features/activeTabSlice.js";
 
 const ProblemDescriptionSection = () => {
-  const [activeTab, setActiveTab] = useState(0);
+
+
+  const dispatch = useDispatch();
+  const activeTab = useSelector(state => state.activeTab.tabIndex);
+
+  const setActiveTab = (tabIndex) => {
+    dispatch(updateTabIndex(tabIndex));
+  };
+
   const theme = useTheme();
   const pp = theme.palette.problemPage;
 
