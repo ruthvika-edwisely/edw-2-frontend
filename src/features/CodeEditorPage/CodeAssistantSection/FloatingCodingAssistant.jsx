@@ -10,7 +10,6 @@ import {
   Avatar,
   Chip,
   Fade,
-  Tooltip,
   Divider,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
@@ -27,12 +26,7 @@ import {
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { togglePanelVisibility } from "../../../store/features/showAIPanel/showAISlice";
-import {
-  fetchHints,
-  sendMessage,
-  addUserMessage,
-  unlockHint,
-} from "../../../store/features/showAIPanel/aISlice";
+import { fetchHints, sendMessage, addUserMessage, unlockHint } from "../../../store/features/showAIPanel/aISlice";
 
 const HINTS = [
   { level: 0, label: "High-level hint", cost: 0 },
@@ -41,7 +35,7 @@ const HINTS = [
   { level: 3, label: "Debug help", cost: 10 },
 ];
 
-const FloatingCodingAssistant = ({ problem, code }) => {
+const FloatingCodingAssistant = ({ problem }) => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const { palette } = theme;
@@ -74,7 +68,6 @@ const FloatingCodingAssistant = ({ problem, code }) => {
     if (!input.trim()) return;
     dispatch(addUserMessage({ problemId: problem.id, text: input }));
     dispatch(sendMessage({ problemId: problem.id, message: input }));
-
     setInput("");
   };
 
@@ -82,25 +75,11 @@ const FloatingCodingAssistant = ({ problem, code }) => {
     const hintData = hints.find((h) => h.level === hint.level);
     if (!hintData) return;
 
-    dispatch(
-      addUserMessage({
-        problemId: problem.id,
-        text: `Show me ${hint.label}`,
-      })
-    );
+    dispatch(addUserMessage({ problemId: problem.id, text: `Show me ${hint.label}` }));
 
-    const unlocked = await dispatch(
-      unlockHint({ problemId: problem.id, hintId: hintData.id })
-    ).unwrap();
-
+    const unlocked = await dispatch(unlockHint({ problemId: problem.id, hintId: hintData.id })).unwrap();
     if (unlocked?.text) {
-      dispatch(
-        addUserMessage({
-          problemId: problem.id,
-          text: unlocked.text,
-          sender: "ai",
-        })
-      );
+      dispatch(addUserMessage({ problemId: problem.id, text: unlocked.text, sender: "ai" }));
     }
 
     setHintOpen(false);
@@ -139,21 +118,14 @@ const FloatingCodingAssistant = ({ problem, code }) => {
             </Avatar>
             <Box>
               <Typography fontWeight={700}>AI Coding Assistant</Typography>
-              <Typography fontSize="0.7rem">
-                {problem?.title || "Ready to help"}
-              </Typography>
+              <Typography fontSize="0.7rem">{problem?.title || "Ready to help"}</Typography>
             </Box>
           </Box>
-
           <Box sx={{ display: "flex", gap: 0.5 }}>
             <Chip
               label={`${xp} XP`}
               size="small"
-              sx={{
-                bgcolor: palette.problemPage.xpBg,
-                color: palette.xp.primary,
-                fontWeight: 700,
-              }}
+              sx={{ bgcolor: palette.problemPage.xpBg, color: palette.xp.primary, fontWeight: 700 }}
             />
             <IconButton size="small" sx={{ color: "inherit" }}>
               {isMinimized ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
@@ -174,18 +146,18 @@ const FloatingCodingAssistant = ({ problem, code }) => {
         {!isMinimized && (
           <>
             {/* Messages */}
-            <Box
-              sx={{
-                flex: 1,
-                p: 2,
-                overflowY: "auto",
-                bgcolor: palette.background.default,
-              }}
-            >
+            <Box sx={{ flex: 1, p: 2, overflowY: "auto", bgcolor: palette.background.default }}>
+              {messages.length === 0 && !loading && (
+                <Box sx={{ mt: 5, textAlign: "center", color: palette.text.secondary }}>
+                  <SmartToy sx={{ fontSize: 42, mb: 1, opacity: 0.7 }} />
+                  <Typography fontWeight={600}>I’m here to help 🙂</Typography>
+                  <Typography variant="body2">Ask a question or unlock a hint 💡</Typography>
+                </Box>
+              )}
+
               {messages.map((m, i) => {
                 const isUser = m.sender === "user";
                 const isSystem = m.sender === "system";
-
                 return (
                   <Fade in key={i}>
                     <Box
@@ -201,19 +173,12 @@ const FloatingCodingAssistant = ({ problem, code }) => {
                           <SmartToy fontSize="small" />
                         </Avatar>
                       )}
-
                       <Paper
                         sx={{
                           p: 1.5,
                           maxWidth: "75%",
-                          bgcolor: isSystem
-                            ? palette.warning[100]
-                            : isUser
-                            ? palette.primary.main
-                            : palette.problemPage.cardBg,
-                          color: isUser
-                            ? palette.primary.contrastText
-                            : palette.text.primary,
+                          bgcolor: isSystem ? palette.warning[100] : isUser ? palette.primary.main : palette.problemPage.cardBg,
+                          color: isUser ? palette.primary.contrastText : palette.text.primary,
                           borderRadius: 2,
                         }}
                       >
@@ -221,7 +186,6 @@ const FloatingCodingAssistant = ({ problem, code }) => {
                           {m.text}
                         </Typography>
                       </Paper>
-
                       {isUser && (
                         <Avatar sx={{ bgcolor: palette.success[600] }}>
                           <Person fontSize="small" />
@@ -235,9 +199,7 @@ const FloatingCodingAssistant = ({ problem, code }) => {
               {loading && (
                 <Box sx={{ display: "flex", gap: 1 }}>
                   <CircularProgress size={16} />
-                  <Typography color={palette.text.secondary}>
-                    Thinking…
-                  </Typography>
+                  <Typography color={palette.text.secondary}>Thinking…</Typography>
                 </Box>
               )}
 
@@ -264,27 +226,14 @@ const FloatingCodingAssistant = ({ problem, code }) => {
                       sx={{
                         mb: 1,
                         justifyContent: "space-between",
-                        bgcolor: unlocked
-                          ? "transparent"
-                          : palette.primary.main,
-                        color: unlocked
-                          ? palette.primary.main
-                          : palette.primary.contrastText,
-                        border: unlocked
-                          ? `1px solid ${palette.primary.main}`
-                          : "none",
+                        bgcolor: unlocked ? "transparent" : palette.primary.main,
+                        color: unlocked ? palette.primary.main : palette.primary.contrastText,
+                        border: unlocked ? `1px solid ${palette.primary.main}` : "none",
                       }}
                     >
                       {hint.label}
                       {hint.cost > 0 && (
-                        <Chip
-                          label={`${hint.cost} XP`}
-                          size="small"
-                          sx={{
-                            bgcolor: palette.xp.primary,
-                            color: palette.common.white,
-                          }}
-                        />
+                        <Chip label={`${hint.cost} XP`} size="small" sx={{ bgcolor: palette.xp.primary, color: palette.common.white }} />
                       )}
                     </Button>
                   );
@@ -295,66 +244,44 @@ const FloatingCodingAssistant = ({ problem, code }) => {
             {/* Input */}
             <Box sx={{ p: 2, bgcolor: palette.background.paper }}>
               <Box sx={{ display: "flex", gap: 1 }}>
-              <TextField
-  fullWidth
-  size="small"
-  value={input}
-  onChange={(e) => setInput(e.target.value)}
-  onKeyDown={(e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  }}
-  placeholder="Ask a question or request help…"
-  inputRef={inputRef}
-  multiline
-  maxRows={3}
-  sx={{
-    "& .MuiOutlinedInput-root": {
-      backgroundColor: palette.problemPage.cardBg,
-      color: palette.problemPage.textPrimary,
-      borderRadius: 2,
-
-      "& fieldset": {
-        borderColor: palette.problemPage.cardBorder,
-      },
-
-      "&:hover fieldset": {
-        borderColor: palette.primary.main,
-      },
-
-      "&.Mui-focused fieldset": {
-        borderColor: palette.primary.main,
-        borderWidth: 2,
-      },
-
-      "&.Mui-disabled": {
-        backgroundColor: palette.grey[200],
-        color: palette.text.disabled,
-      },
-    },
-
-    "& .MuiInputBase-input::placeholder": {
-      color: palette.problemPage.textTertiary,
-      opacity: 1,
-    },
-  }}
-/>
-
-                <IconButton
-                  onClick={() => setHintOpen((p) => !p)}
-                  sx={{ bgcolor: palette.grey[200] }}
-                >
+                <TextField
+                  fullWidth
+                  size="small"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSend();
+                    }
+                  }}
+                  placeholder="Ask a question or request help…"
+                  inputRef={inputRef}
+                  multiline
+                  maxRows={3}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      backgroundColor: palette.problemPage.cardBg,
+                      color: palette.problemPage.textPrimary,
+                      borderRadius: 2,
+                      "& fieldset": { borderColor: palette.problemPage.cardBorder },
+                      "&:hover fieldset": { borderColor: palette.primary.main },
+                      "&.Mui-focused fieldset": { borderColor: palette.primary.main, borderWidth: 2 },
+                      "&.Mui-disabled": { backgroundColor: palette.grey[200], color: palette.text.disabled },
+                    },
+                    "& .MuiInputBase-input::placeholder": {
+                      color: palette.problemPage.textTertiary,
+                      opacity: 1,
+                    },
+                  }}
+                />
+                <IconButton onClick={() => setHintOpen((p) => !p)} sx={{ bgcolor: palette.grey[200] }}>
                   <Lightbulb />
                 </IconButton>
                 <IconButton
                   disabled={!input.trim()}
                   onClick={handleSend}
-                  sx={{
-                    bgcolor: palette.primary.main,
-                    color: palette.primary.contrastText,
-                  }}
+                  sx={{ bgcolor: palette.primary.main, color: palette.primary.contrastText }}
                 >
                   <Send />
                 </IconButton>

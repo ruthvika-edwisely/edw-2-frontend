@@ -67,8 +67,11 @@ export const sendMessage = createAsyncThunk(
       };
 
       // ---------- Get saved code ----------
-      const storageKey = `code:${problem.id}`;
+      const userId = state.auth.user?.id;
+      const language = state.problem.selectedLanguage?.name || "python";
+      const storageKey = `code-user-${userId}-problem-${problem.id}-${language}`;
       const savedCode = localStorage.getItem(storageKey) || "";
+
 
       // ---------- Prepare recent chat history ----------
       const chat = state.ai.chats[problemId];
@@ -78,6 +81,7 @@ export const sendMessage = createAsyncThunk(
           role: m.sender === "user" ? "user" : "assistant",
           content: m.text,
         }));
+      history.push({ role: "user", content: `Current code:\n${savedCode}` });
 
       console.log("Sending AI message:", { problemId, message, problemContext, savedCode, history });
 
