@@ -468,4 +468,14 @@ export const unlockHintAPI = async ({userId,hintId}) => {
   }
 };
 
+// Fetch progress for a specific user
+export const fetchUserProgress = async (userId) => {
+  try {
+    const res = await api.get(`/users/${userId}/progress`);
+    return res.data; // should match { currentUser, difficultyProgress, weeklyActivity }
+  } catch (err) {
+    console.error("Error fetching user progress:", err);
+    return null;
+  }
+};
 
