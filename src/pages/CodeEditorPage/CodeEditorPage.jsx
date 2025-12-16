@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { PanelGroup, Panel } from 'react-resizable-panels'
 import ProblemDescriptionSection from '../../features/CodeEditorPage/ProblemDescriptionSection/ProblemDescriptionSection.jsx';
 import CodeEditorSection from '../../features/CodeEditorPage/CodeEditorSection/CodeEditorSection.jsx';
-import CodingAssistantSection from '../../features/CodeEditorPage/CodeAssistantSection/CodingAssistantSection.jsx';
+import FloatingCodingAssistant from '../../features/CodeEditorPage/CodeAssistantSection/FloatingCodingAssistant.jsx';
 import HorizontalHandle from '../../features/CodeEditorPage/components/HorizontalHandle.jsx';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
@@ -359,12 +359,13 @@ const CodeEditorPage = () => {
   const { id } = useParams();
   // const userId = "user_1";
 
+  // Redux selectors
   const showAI = useSelector(state => state.showAIPanel.showAI);
+  const problemData = useSelector(state => state.problem.data); // Get problem data from Redux
+  const currentCode = useSelector(state => state.code?.current || state.editor?.code || ''); // Adjust based on your Redux structure
 
   useEffect(() => {
-    
     const loadProblemData = async() => {
-
       try {
         const data = await getProblemById(id);
 
@@ -389,31 +390,22 @@ const CodeEditorPage = () => {
   return (
     <Box sx={{height: "100vh"}}>
       <PanelGroup direction='horizontal' height="50%">
+        {/* left */}
+        <ProblemDescriptionSection />
 
-          {/* left */}
-          <ProblemDescriptionSection />
+        {/* resize handle */}
+        <HorizontalHandle />
 
-          {/* resize handle */}
-          <HorizontalHandle />
+        {/* center */}
+        <CodeEditorSection />
+      </PanelGroup>
 
-          {/* center */}
-          <CodeEditorSection />
-
-          {
-            showAI 
-              ?
-              <>
-                {/* resize handle */}
-                <HorizontalHandle />
-
-                {/* right */}
-                <CodingAssistantSection />
-              </> 
-              :
-              <></>
-          }
-
-        </PanelGroup>
+      {showAI && (
+        <FloatingCodingAssistant 
+          problem={problemData} 
+          code={currentCode} 
+        />
+      )}
     </Box>
   )
 }

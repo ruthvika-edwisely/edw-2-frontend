@@ -1,5 +1,5 @@
-// LeaderboardCard.jsx
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Card,
   CardContent,
@@ -11,332 +11,313 @@ import {
   FormControl,
   LinearProgress,
   Skeleton,
+  useTheme,
 } from "@mui/material";
+import { alpha } from "@mui/material/styles";
+
 import {
   KeyboardArrowDown as KeyboardArrowDownIcon,
   EmojiEvents as EmojiEventsIcon,
-  TrendingUp as TrendingUpIcon,
 } from "@mui/icons-material";
 
-// Import dummy users
-import { users as dummyUsers } from "../../api/api"; // adjust path accordingly
+import { getLeaderboardUsers } from "../../store/features/leaderboard/leaderboardSlice";
 
+const defaultAvatars = [
+  "https://mui.com/static/images/avatar/1.jpg",
+  "https://mui.com/static/images/avatar/2.jpg",
+  "https://mui.com/static/images/avatar/3.jpg",
+  "https://mui.com/static/images/avatar/4.jpg",
+];
 
-function LeaderboardCard() {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [scope, setScope] = useState('global');
+export default function Leaderboard() {
+  const theme = useTheme();
+  const dispatch = useDispatch();
+
+  const { users = [], loading } = useSelector(
+    (state) => state.leaderboard || {}
+  );
+  const { user: currentUserRaw } = useSelector(
+    (state) => state.auth || {}
+  );
+
+  const [scope, setScope] = useState("global");
+
+  /* ---------------- Fetch ---------------- */
 
   useEffect(() => {
-    const fetchLeaderboard = async () => {
-      try {
-        // simulate network delay
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        setUsers(dummyUsers);
-      } catch (error) {
-        console.error("Error fetching leaderboard:", error);
-      } finally {
-        setLoading(false);
+    dispatch(getLeaderboardUsers());
+  }, [dispatch]);
+
+  /* ---------------- Normalize ---------------- */
+
+  const normalizedUsers = users.map((u, i) => ({
+    id: u.id ?? u._id ?? i,
+    name: u.name ?? u.username ?? "Unknown",
+    avatar: u.avatar ?? defaultAvatars[i % defaultAvatars.length],
+    college: u.college ?? null,
+    totalXP: Number(u.total_xp ?? u.totalXP ?? u.xp ?? 0),
+  }));
+
+  const currentUser = currentUserRaw
+    ? {
+        id: currentUserRaw.id ?? currentUserRaw._id,
+        name: currentUserRaw.name ?? "You",
+        avatar:
+          currentUserRaw.avatar ?? defaultAvatars[0],
+        college: currentUserRaw.college ?? null,
+        totalXP: Number(
+          currentUserRaw.total_xp ??
+            currentUserRaw.totalXP ??
+            currentUserRaw.xp ??
+            0
+        ),
       }
-    };
+    : null;
+
+  /* ---------------- Filter & Sort ---------------- */
+
+  const filteredUsers =
+    scope === "college" && currentUser?.college
+      ? normalizedUsers.filter(
+          (u) => u.college === currentUser.college
+        )
+      : normalizedUsers;
+
+  const sortedUsers = [...filteredUsers].sort(
+    (a, b) => b.totalXP - a.totalXP
+  );
+
+  const topUsers = sortedUsers.slice(0, 5);
+
+  const currentUserRank =
+    currentUser &&
+    sortedUsers.findIndex((u) => u.id === currentUser.id) + 1;
+
+  const firstXP = sortedUsers[0]?.totalXP ?? 0;
+  const myXP = currentUser?.totalXP ?? 0;
+  const xpToFirst = Math.max(0, firstXP - myXP);
+  const progressToNextRank = ((myXP % 500) / 500) * 100;
+
+  /* ---------------- Helpers ---------------- */
+
+  const getRowBg = (rank, isMe) => {
+    if (isMe) return theme.palette.action.selected;
   
-    fetchLeaderboard();
-  }, []);
-  
-  const getRankBadgeColor = (rank) => {
-    switch (rank) {
-      case 1:
-        return '#fbbf24'; // Gold
-      case 2:
-        return '#94a3b8'; // Silver
-      case 3:
-        return '#cd7f32'; // Bronze
-      default:
-        return 'transparent';
+    if (rank === 1) {
+      return theme.palette.mode === "dark"
+        ? alpha(theme.palette.warning.main, 0.25)
+        : theme.palette.warning.light;
     }
+  
+    if (rank === 2) {
+      return theme.palette.action.hover;
+    }
+  
+    if (rank === 3) {
+      return theme.palette.action.hover;
+    }
+  
+    return "transparent";
   };
+  
+  /* ---------------- Loading ---------------- */
 
   if (loading) {
     return (
-      <Card sx={{ backgroundColor: 'background.paper', height: '100%' }}>
+      <Card sx={{ backgroundColor: theme.palette.background.paper }}>
         <CardContent sx={{ p: 3 }}>
-          <Skeleton variant="text" width={120} height={28} />
-          <Box sx={{ mt: 3 }}>
-            {[1, 2, 3, 4].map((item) => (
-              <Box key={item} sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                <Skeleton variant="circular" width={40} height={40} />
-                <Box sx={{ flex: 1 }}>
-                  <Skeleton variant="text" width="60%" />
-                  <Skeleton variant="text" width="40%" />
-                </Box>
+          <Skeleton width={140} height={28} />
+          {[1, 2, 3, 4].map((i) => (
+            <Box key={i} sx={{ display: "flex", gap: 2, mt: 2 }}>
+              <Skeleton variant="circular" width={40} height={40} />
+              <Box sx={{ flex: 1 }}>
+                <Skeleton width="60%" />
+                <Skeleton width="40%" />
               </Box>
-            ))}
-          </Box>
+            </Box>
+          ))}
         </CardContent>
       </Card>
     );
   }
 
-  const currentUser = Array.isArray(users) ? users.find(u => u.isCurrentUser) : null;
-
-  const topUsers = users.slice(0, 5);
-  const progressToNextRank = currentUser ? ((currentUser.xp % 500) / 500) * 100 : 0;
+  /* ---------------- UI ---------------- */
 
   return (
     <Card
       sx={{
-        backgroundColor: 'background.paper',
-        height: '100%',
-        margin: '0px 0px',
+        backgroundColor: theme.palette.background.paper,
+        borderRadius: 3,
+        height: "100%",
+        width: "100%",
       }}
-      data-testid="card-leaderboard"
     >
       <CardContent sx={{ p: 3 }}>
+        {/* Header */}
         <Box
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
             mb: 3,
           }}
         >
-          <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary' }}>
+          <Typography variant="h6" fontWeight={700}>
             Leaderboard
           </Typography>
+
           <FormControl size="small">
             <Select
               value={scope}
               onChange={(e) => setScope(e.target.value)}
               IconComponent={KeyboardArrowDownIcon}
               sx={{
-                minWidth: 100,
-                '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: 'divider',
-                },
-                '& .MuiSelect-select': {
-                  py: 0.75,
-                  color: 'text.primary',
-                  fontSize: '0.875rem',
-                },
+                minWidth: 130,
+                height: 36,
+                fontSize: 14,
               }}
-              data-testid="select-leaderboard-scope"
             >
               <MenuItem value="global">Global</MenuItem>
-              <MenuItem value="weekly">Weekly</MenuItem>
+              <MenuItem
+                value="college"
+                disabled={!currentUser?.college}
+              >
+                {currentUser?.college
+                  ? "College"
+                  : "College (N/A)"}
+              </MenuItem>
             </Select>
           </FormControl>
         </Box>
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {topUsers.map((user, index) => (
-            <Box
-              key={user.id}
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 2,
-                p: user.isCurrentUser ? 2 : 0,
-                borderRadius: user.isCurrentUser ? 2 : 0,
-                backgroundColor: user.isCurrentUser ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
-                border: user.isCurrentUser ? '1px solid' : 'none',
-                borderColor: 'primary.main',
-              }}
-              data-testid={`row-leaderboard-${user.id}`}
-            >
-              {index < 3 ? (
-                <Box
-                  sx={{
-                    width: 28,
-                    height: 28,
-                    borderRadius: '50%',
-                    backgroundColor: getRankBadgeColor(index + 1),
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  {index === 0 && (
-                    <EmojiEventsIcon sx={{ fontSize: 16, color: '#7c2d12' }} />
-                  )}
-                  {index > 0 && (
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        fontWeight: 700,
-                        color: index === 1 ? '#1e293b' : '#3f2305',
-                      }}
-                    >
-                      {index + 1}
-                    </Typography>
-                  )}
-                </Box>
-              ) : (
-                <Typography
-                  variant="body2"
-                  sx={{
-                    width: 28,
-                    textAlign: 'center',
-                    color: 'text.secondary',
-                    fontWeight: 500,
-                  }}
-                >
-                  {index + 1}
-                </Typography>
-              )}
-              <Avatar
-                src={user.avatar}
-                alt={user.name}
-                sx={{
-                  width: 40,
-                  height: 40,
-                  border: user.isCurrentUser ? '2px solid' : 'none',
-                  borderColor: 'primary.main',
-                }}
-              />
-              <Box sx={{ flex: 1 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      fontWeight: 500,
-                      color: user.isCurrentUser ? 'primary.main' : 'text.primary',
-                    }}
-                    data-testid={`text-username-${user.id}`}
-                  >
-                    {user.isCurrentUser ? `You (${user.name})` : user.name}
-                  </Typography>
-                  {user.isCurrentUser && (
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 0.25,
-                        color: 'success.main',
-                      }}
-                    >
-                      <TrendingUpIcon sx={{ fontSize: 14 }} />
-                      <Typography variant="caption" sx={{ fontWeight: 600 }}>
-                        +2
-                      </Typography>
-                    </Box>
-                  )}
-                </Box>
-                <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                  {user.xp.toLocaleString()} XP
-                </Typography>
-              </Box>
-            </Box>
-          ))}
-        </Box>
+        {/* Top Users */}
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 1.2 }}>
+          {topUsers.map((u, i) => {
+            const rank = i + 1;
+            const isMe = u.id === currentUser?.id;
 
-        {currentUser && currentUser.rank > 5 && (
-          <>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                py: 1,
-                color: 'text.disabled',
-              }}
-            >
-              <Typography variant="caption">...</Typography>
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 2,
-                p: 2,
-                borderRadius: 2,
-                backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                border: '1px solid',
-                borderColor: 'primary.main',
-              }}
-              data-testid="row-current-user"
-            >
-              <Typography
-                variant="body2"
+            return (
+              <Box
+                key={u.id}
                 sx={{
-                  width: 28,
-                  textAlign: 'center',
-                  color: 'primary.main',
-                  fontWeight: 600,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1.5,
+                  px: 1,
+                  py: 1,
+                  borderRadius: 2,
+                  backgroundColor: getRowBg(rank, isMe),
                 }}
               >
-                {currentUser.rank}
-              </Typography>
-              <Avatar
-                src={currentUser.avatar}
-                alt={currentUser.name}
-                sx={{
-                  width: 40,
-                  height: 40,
-                  border: '2px solid',
-                  borderColor: 'primary.main',
-                }}
-              />
-              <Box sx={{ flex: 1 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Typography
-                    variant="body2"
-                    sx={{ fontWeight: 500, color: 'primary.main' }}
-                  >
-                    You ({currentUser.name})
-                  </Typography>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 0.25,
-                      color: 'success.main',
-                    }}
-                  >
-                    <TrendingUpIcon sx={{ fontSize: 14 }} />
-                    <Typography variant="caption" sx={{ fontWeight: 600 }}>
-                      +2
-                    </Typography>
-                  </Box>
+                {/* Rank */}
+                <Box
+                  sx={{
+                    width: 26,
+                    textAlign: "center",
+                    fontWeight: 600,
+                  }}
+                >
+                  {rank === 1 ? (
+                    <EmojiEventsIcon
+                      sx={{
+                        fontSize: 18,
+                        color:
+                          theme.palette.mode === "dark"
+                            ? theme.palette.warning.light
+                            : theme.palette.warning.main,
+                      }}
+                    />
+                  ) : (
+                    rank
+                  )}
                 </Box>
-                <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                  {currentUser.xp.toLocaleString()} XP
+
+                <Avatar src={u.avatar} sx={{ width: 42, height: 42 }} />
+
+                <Box sx={{ flex: 1 }}>
+                  <Typography fontSize={14} fontWeight={600}>
+                    {u.name}
+                  </Typography>
+                  <Typography fontSize={12} color="text.secondary">
+                    {u.totalXP.toLocaleString()} XP
+                  </Typography>
+                </Box>
+              </Box>
+            );
+          })}
+        </Box>
+
+        {/* Current User */}
+        {currentUser && currentUserRank > 5 && (
+          <>
+            <Typography
+              sx={{
+                textAlign: "center",
+                my: 1,
+                letterSpacing: 2,
+                color: "text.secondary",
+              }}
+            >
+              ...
+            </Typography>
+
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1.5,
+                px: 1,
+                py: 1.2,
+                borderRadius: 2,
+                backgroundColor: theme.palette.action.selected,
+              }}
+            >
+              <Typography sx={{ width: 26, textAlign: "center", fontWeight: 600 }}>
+                {currentUserRank}
+              </Typography>
+
+              <Avatar src={currentUser.avatar} sx={{ width: 42, height: 42 }} />
+
+              <Box sx={{ flex: 1 }}>
+                <Typography fontSize={14} fontWeight={600} color="primary.main">
+                  You ({currentUser.name})
+                </Typography>
+                <Typography fontSize={12} color="text.secondary">
+                  {myXP.toLocaleString()} XP
                 </Typography>
               </Box>
             </Box>
           </>
         )}
 
-        <Box sx={{ mt: 3 }}>
-          <Typography
-            variant="caption"
-            sx={{ color: 'text.secondary', display: 'block', mb: 1 }}
-          >
-            Progress to Rank #{currentUser ? currentUser.rank - 1 : 6}
-          </Typography>
-          <LinearProgress
-            variant="determinate"
-            value={progressToNextRank}
-            sx={{
-              height: 8,
-              borderRadius: 4,
-              backgroundColor: 'rgba(59, 130, 246, 0.2)',
-              '& .MuiLinearProgress-bar': {
-                backgroundColor: 'primary.main',
-                borderRadius: 4,
-              },
-            }}
-            data-testid="progress-next-rank"
-          />
-          <Typography
-            variant="caption"
-            sx={{ color: 'text.secondary', display: 'block', mt: 1 }}
-          >
-            320 XP away from next rank
-          </Typography>
-        </Box>
+        {/* XP Progress */}
+        {currentUser && (
+          <Box sx={{ mt: 3 }}>
+            <Typography fontSize={12} color="text.secondary" fontWeight={500}>
+              {xpToFirst === 0
+                ? "You are Rank #1 🎉"
+                : `${xpToFirst.toLocaleString()} XP away from Rank #1`}
+            </Typography>
+
+            <LinearProgress
+              variant="determinate"
+              value={progressToNextRank}
+              sx={{
+                height: 8,
+                mt: 2,
+                borderRadius: 6,
+                backgroundColor:
+                  theme.palette.mode === "dark"
+                    ? theme.palette.grey[800]
+                    : theme.palette.grey[200],
+                "& .MuiLinearProgress-bar": {
+                  backgroundColor: theme.palette.primary.main,
+                },
+              }}
+            />
+          </Box>
+        )}
       </CardContent>
     </Card>
   );
 }
-
-export default LeaderboardCard;

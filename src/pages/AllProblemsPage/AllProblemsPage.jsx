@@ -1,188 +1,144 @@
+import { useEffect, useState, useMemo } from "react";
 import {
   Box,
   Typography,
-  Card,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Checkbox,
   Chip,
   Button,
   Select,
   MenuItem,
   FormControl,
-  Skeleton,
   TextField,
   InputAdornment,
-} from '@mui/material';
+  Checkbox,
+  Card,
+  CircularProgress,
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import BoltIcon from "@mui/icons-material/Bolt";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import { useNavigate } from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
+import { useSelector, useDispatch } from "react-redux";
 
-import { KeyboardArrowDown as KeyboardArrowDownIcon } from '@mui/icons-material';
-import SearchIcon from '@mui/icons-material/Search';
-import BoltIcon from '@mui/icons-material/Bolt';
-
-import { useState, useEffect } from 'react';
-import { useOutletContext, useNavigate, useLocation } from 'react-router-dom';
 import TopicGrid from "../../components/Topics/TopicGrid";
+import {
+  clearSelectedTopic,
+} from "../../store/features/topic/topicDashboardSlice";
+import { fetchDashboardProblems } from "../../store/features/dashboard/problemDashboardSlice";
 
-import { useSelector, useDispatch } from 'react-redux';
-import { setSelectedTopic, clearSelectedTopic } from '../../store/features/topic/topicSlice';
-import { getProblems} from "../../api/api";   // adjust path
-
-
-export default function AllProblemsPage() {
-  const { darkMode, searchQuery, setSearchQuery } = useOutletContext();
+function AllProblemsPage() {
+  const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const location = useLocation();
 
-  const preselectedTopic = location.state?.topic || '';
-  const selectedTopic = useSelector((state) => state.topic.selectedTopic); // ✅ corrected
+  const [difficultyFilter, setDifficultyFilter] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [expandedRows, setExpandedRows] = useState([]);
 
-  const [problems, setProblems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [difficultyFilter, setDifficultyFilter] = useState('all');
+  const { problems = [], loading } = useSelector(
+    (state) => state.dashboard
+  );
 
-  // Initialize selected topic from navigation state
-  useEffect(() => {
-    if (preselectedTopic) dispatch(setSelectedTopic(preselectedTopic));
-  }, [preselectedTopic, dispatch]);
-
-  useEffect(() => {
-    document.body.style.backgroundColor = darkMode ? "#0F172A" : "#F3F4F6";
-  }, [darkMode]);
+  const selectedTopic = useSelector(
+    (state) => state.topicDashboard.selectedTopic
+  );
 
   useEffect(() => {
-    setLoading(true);
-    const fetchProblems = async () => {
-      try {
-        // ❌ WRONG: getProblems(difficultyFilter)
-        // ✔️ Correct: backend always returns all problems
-        const data = await getProblems();
-  
-        const normalizedProblems = (Array.isArray(data) ? data : []).map(p => ({
-          ...p,
-          status: p.status || 'unsolved',
-          acceptance: p.acceptance || 0,
-          topics: p.topics || [],
-          xp: p.xp_reward || 0
-        }));
-  
-        setProblems(normalizedProblems);
-      } catch (err) {
-        console.error(err);
-        setProblems([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProblems();
-  }, []);
-  
-  
-  
-  const filteredProblems = problems.filter((p) => {
-    const matchesSearch =
-      p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.topics?.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()));
-  
-    const matchesTopic = !selectedTopic || p.topics?.includes(selectedTopic);
-  
-    const matchesDifficulty =
-      difficultyFilter === "all" ||
-      p.difficulty.toLowerCase() === difficultyFilter.toLowerCase();
-  
-    return matchesSearch && matchesTopic && matchesDifficulty;
-  });
-  
-  
+    dispatch(fetchDashboardProblems());
+  }, [dispatch]);
 
- 
+  /* ---------------- Difficulty style ---------------- */
 
-  const handleStatusChange = async (problemId, currentStatus) => {
-    const newStatus = currentStatus === 'solved' ? 'unsolved' : 'solved';
-    try {
-      await axios.patch(`/api/problems/${problemId}/status`, { status: newStatus });
-      setProblems(
-        problems.map((p) => (p.id === problemId ? { ...p, status: newStatus } : p))
-      );
-    } catch (error) {
-      console.error('Error updating problem status:', error);
-    }
-  };
-
-  const getDifficultyColor = (difficulty) => {
-    switch (difficulty?.toLowerCase()) {
-      case 'easy': return { bg: 'rgba(34, 197, 94, 0.15)', color: '#22c55e' };
-      case 'medium': return { bg: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b' };
-      case 'hard': return { bg: 'rgba(239, 68, 68, 0.15)', color: '#ef4444' };
-      default: return { bg: 'rgba(148, 163, 184, 0.15)', color: '#94a3b8' };
-    }
-  };
-
-  if (loading) {
+  const getDifficultyStyle = (difficulty) => {
+    const diff = (difficulty || "medium").toLowerCase();
     return (
-      <Box
-        sx={{
-          minHeight: '100vh',
-          pt: 4,
-          pb: 4,
-          px: { xs: 2, sm: 4, md: 6, lg: 10 },
-          bgcolor: darkMode ? "#0F172A" : "#F3F4F6",
-        }}
-      >
-        <Typography variant="h6" sx={{ fontWeight: 600, color: darkMode ? '#fff' : 'text.primary', mb: 2 }}>
-          All Problems
-        </Typography>
-        {[...Array(8)].map((_, idx) => (
-          <Skeleton key={idx} variant="rectangular" height={56} sx={{ borderRadius: 1, mb: 1 }} />
-        ))}
-      </Box>
+      theme.palette.difficulty_tags[diff] || {
+        background: theme.palette.grey[300],
+        text: theme.palette.text.secondary,
+      }
     );
-  }
+  };
+
+  /* ---------------- Filtering ---------------- */
+
+  const filteredProblems = useMemo(() => {
+    return problems
+      .filter((p) =>
+        difficultyFilter === "all"
+          ? true
+          : p.difficulty?.toLowerCase() === difficultyFilter
+      )
+      .filter((p) => {
+        const q = searchQuery.toLowerCase();
+        return (
+          p.title?.toLowerCase().includes(q) ||
+          (p.topics || []).some((t) => t.toLowerCase().includes(q)) ||
+          (p.companies || []).some((c) => c.toLowerCase().includes(q))
+        );
+      })
+      .filter((p) =>
+        selectedTopic ? p.topics?.includes(selectedTopic) : true
+      )
+      .sort((a, b) => b.xp - a.xp);
+  }, [problems, difficultyFilter, searchQuery, selectedTopic]);
+
+  const toggleExpand = (id) => {
+    setExpandedRows((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
+
+  /* ---------------- UI ---------------- */
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        pt: 4,
-        pb: 4,
-        px: { xs: 2, sm: 4, md: 6, lg: 10 },
-        bgcolor: darkMode ? "#0F172A" : "#F3F4F6",
-      }}
-    >
-      <TopicGrid /> {/* Redux-connected */}
+    <Box sx={{ px: { xs: 2, md: 6 }, py: 4 }}>
+      <TopicGrid />
 
       {selectedTopic && (
-        <Box sx={{ mb: 2 }}>
-          <Chip
-            label={selectedTopic}
-            onDelete={() => dispatch(clearSelectedTopic())}
-            sx={{
-              fontWeight: 500,
-              backgroundColor: darkMode ? '#1e293b' : '#e0f2fe',
-              color: darkMode ? '#fff' : '#0369a1',
-              '& .MuiChip-deleteIcon': { color: darkMode ? '#fff' : '#0369a1' },
-            }}
-          />
-        </Box>
+        <Chip
+          label={selectedTopic}
+          onDelete={() => dispatch(clearSelectedTopic())}
+          sx={{
+            mb: 2,
+            backgroundColor: theme.palette.problemPage.topicChipBg,
+            color: theme.palette.problemPage.topicChipText,
+            border: `1px solid ${theme.palette.problemPage.topicChipBorder}`,
+            fontWeight: 600,
+          }}
+        />
       )}
 
-      {/* Filters + Search */}
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-        <Typography variant="h6" sx={{ fontWeight: 600, color: darkMode ? '#fff' : 'text.primary' }}>
+      {/* Header */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: 2,
+          mb: 2,
+        }}
+      >
+        <Typography variant="h6" fontWeight={600}>
           All Problems
         </Typography>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
           <FormControl size="small">
             <Select
               value={difficultyFilter}
               onChange={(e) => setDifficultyFilter(e.target.value)}
               IconComponent={KeyboardArrowDownIcon}
-              sx={{ backgroundColor: "#fff", color: "#000" }}
+              sx={{
+                minWidth: 120,
+                backgroundColor: theme.palette.background.paper,
+                borderRadius: 2,
+              }}
             >
               <MenuItem value="all">All</MenuItem>
               <MenuItem value="easy">Easy</MenuItem>
@@ -192,71 +148,169 @@ export default function AllProblemsPage() {
           </FormControl>
 
           <TextField
+            size="small"
+            placeholder="Search problems"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search problems"
-            size="small"
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon sx={{ fontSize: 20, color: '#64748b' }} />
+                  <SearchIcon fontSize="small" />
                 </InputAdornment>
               ),
             }}
-            sx={{ width: 260, '& .MuiOutlinedInput-root': { backgroundColor: '#fff', borderRadius: 1 } }}
+            sx={{
+              width: 260,
+              backgroundColor: theme.palette.background.paper,
+              borderRadius: 2,
+            }}
           />
         </Box>
       </Box>
 
       {/* Table */}
-      <Card sx={{ backgroundColor: 'background.paper', width: '100%' }}>
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ color: 'text.secondary', fontWeight: 500, width: 80 }}>STATUS</TableCell>
-                <TableCell sx={{ color: 'text.secondary', fontWeight: 500 }}>TITLE</TableCell>
-                <TableCell sx={{ color: 'text.secondary', fontWeight: 500, width: 120 }}>DIFFICULTY</TableCell>
-                <TableCell sx={{ color: 'text.secondary', fontWeight: 500, width: 120 }}>ACCEPTANCE</TableCell>
-                <TableCell sx={{ color: 'text.secondary', fontWeight: 500, width: 100 }}>XP</TableCell>
-                <TableCell sx={{ color: 'text.secondary', fontWeight: 500, width: 100 }}>ACTION</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredProblems.map((problem) => {
-                const difficultyStyle = getDifficultyColor(problem.difficulty);
-                return (
-                  <TableRow key={problem.id} sx={{ '&:hover': { backgroundColor: 'rgba(255,255,255,0.02)' } }}>
-                    <TableCell>
+      <Card
+        sx={{
+          backgroundColor: theme.palette.background.paper,
+          borderRadius: 3,
+        }}
+      >
+        {loading ? (
+          <Box sx={{ p: 4, display: "flex", justifyContent: "center" }}>
+            <CircularProgress />
+          </Box>
+        ) : filteredProblems.length === 0 ? (
+          <Typography sx={{ p: 4, textAlign: "center" }}>
+            No problems found
+          </Typography>
+        ) : (
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  {[
+                    "Status",
+                    "Title",
+                    "Difficulty",
+                    "Acceptance",
+                    "XP",
+                    "Action",
+                  ].map((h) => (
+                    <TableCell key={h}>{h}</TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {filteredProblems.map((p) => {
+                  const diff = getDifficultyStyle(p.difficulty);
+                  const tags = [...(p.topics || []), ...(p.companies || [])];
+                  const expanded = expandedRows.includes(p.id);
+
+                  return (
+                    <TableRow key={p.id} hover>
+                      <TableCell>
                       <Checkbox
-                        checked={problem.status === 'solved'}
-                        onChange={() => handleStatusChange(problem.id, problem.status)}
-                        sx={{ color: 'text.disabled', '&.Mui-checked': { color: 'success.600' }, transform: 'scale(2)' }}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Typography sx={{ fontWeight: 500 }}>{problem.title}</Typography>
-                      <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                        {problem.topics?.join(', ')}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Chip label={problem.difficulty} size="small" sx={{ backgroundColor: difficultyStyle.bg, color: difficultyStyle.color, fontWeight: 600 }} />
-                    </TableCell>
-                    <TableCell>{problem.acceptance}%</TableCell>
-                    <TableCell>
-                      <Chip icon={<BoltIcon />} label={problem.xp} size="small" sx={{ border: '1px solid #f59e0b', color: '#f59e0b', fontWeight: 600, background: 'transparent', '& .MuiChip-icon': { color: '#f59e0b' } }} />
-                    </TableCell>
-                    <TableCell>
-                      <Button sx={{ color: 'primary.main', fontWeight: 600 }} onClick={() => navigate(`/problem/${problem.id}`)}>Solve</Button>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
+  checked={p.status === "solved"}
+  sx={{
+    transform: "scale(2)", // ⬅️ increase size
+    color: theme.palette.grey[400],
+    "&.Mui-checked": {
+      color: theme.palette.success[600], // ⬅️ green from palette
+    },
+  }}
+/>
+                      </TableCell>
+
+                      <TableCell>
+                        <Typography fontWeight={600}>{p.title}</Typography>
+
+                        <Box
+                          sx={{
+                            mt: 0.5,
+                            display: "flex",
+                            gap: 0.5,
+                            flexWrap: "wrap",
+                          }}
+                        >
+                          {(expanded ? tags : tags.slice(0, 3)).map((t, i) => (
+                            <Chip
+                              key={i}
+                              label={t}
+                              size="small"
+                              sx={{
+                                backgroundColor:
+                                  theme.palette.problemPage.topicChipBg,
+                                color:
+                                  theme.palette.problemPage.topicChipText,
+                                border: `1px solid ${theme.palette.problemPage.topicChipBorder}`,
+                                fontWeight: 600,
+                              }}
+                            />
+                          ))}
+
+                          {!expanded && tags.length > 3 && (
+                            <Chip
+                              label={`+${tags.length - 3}`}
+                              size="small"
+                              onClick={() => toggleExpand(p.id)}
+                            />
+                          )}
+                        </Box>
+                      </TableCell>
+
+                      <TableCell>
+                        <Chip
+                          label={p.difficulty}
+                          size="small"
+                          sx={{
+                            backgroundColor: diff.background,
+                            color: diff.text,
+                            fontWeight: 600,
+                          }}
+                        />
+                      </TableCell>
+
+                      <TableCell>{p.acceptance}%</TableCell>
+
+                      <TableCell>
+                        <Chip
+                          icon={<BoltIcon />}
+                          label={`${p.xp} XP`}
+                          sx={{
+                            backgroundColor:
+                              theme.palette.problemPage.xpBg,
+                            border: `1px solid ${theme.palette.xp.primary}`,
+                            color: theme.palette.problemPage.xpGold,
+                            fontWeight: 700,
+                            "& .MuiChip-icon": {
+                              color: theme.palette.problemPage.xpGold,
+                            },
+                          }}
+                        />
+                      </TableCell>
+
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          onClick={() =>
+                            navigate(`/problem/${p.id}`)
+                          }
+                          sx={{ fontWeight: 700, borderRadius: 2 }}
+                        >
+                          Solve
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
       </Card>
     </Box>
   );
 }
+
+export default AllProblemsPage;

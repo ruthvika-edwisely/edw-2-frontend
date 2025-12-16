@@ -16,6 +16,7 @@ import { BadgeIndianRupee, Code2, Building2, Lightbulb } from "lucide-react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useSelector } from "react-redux";
 import { useTheme } from "@mui/material/styles";
+import { Bolt as BoltIcon } from "@mui/icons-material";
 
 const Description = () => {
   const theme = useTheme();
@@ -115,39 +116,23 @@ const Description = () => {
           />
 
 
-          <Chip
-            icon={
-              <BadgeIndianRupee 
-                size={16} 
-                style={{ 
-                  color: palette.xpGold,
-                  marginLeft: "8px"
-                }} 
-              />
-            }
-            label={
-              <Typography
-                variant="body2"
-                sx={{ 
-                  fontWeight: 700, 
-                  color: palette.xpGold,
-                  fontSize: "0.813rem"
-                }}
-              >
-                {xp_reward} XP
-              </Typography>
-            }
-            sx={{
-              backgroundColor: palette.xpBg,
-              borderRadius: "8px",
-              height: "28px",
-              px: 0.5,
-              border: "none",
-              "& .MuiChip-icon": {
-                marginRight: "-4px",
-              }
-            }}
-          />
+<Chip
+  icon={<BoltIcon />}
+  label={`${xp_reward} XP`}
+  sx={{
+    backgroundColor:  theme.palette.problemPage.xpBg,
+    border: `1px solid ${theme.palette.xp.primary}`,
+    color: theme.palette.xp.primary,
+    fontWeight: 600,
+    height: "28px",
+    borderRadius: "8px",
+    ml: 1,
+    "& .MuiChip-icon": {
+      color: theme.palette.xp.primary,
+    },
+  }}
+/>
+
 
 
          {

@@ -1,0 +1,217 @@
+import React, { useState, useRef, useEffect } from 'react';
+import {
+  Box,
+  Paper,
+  Typography,
+  TextField,
+  IconButton,
+  Button,
+  CircularProgress,
+  Tabs,
+  Tab,
+  Chip,
+} from '@mui/material';
+import {
+  Close,
+  Send,
+  Lightbulb,
+  Code,
+  BugReport,
+  AutoAwesome,
+  Lock,
+} from '@mui/icons-material';
+import { useDispatch, useSelector } from 'react-redux';
+import { togglePanelVisibility } from '../../../store/features/showAIPanel/showAISlice';
+import { Panel } from 'react-resizable-panels';
+import { useTheme } from '@mui/material/styles';
+import * as aiService from '../../../api/api';
+
+const HINT_LEVELS = [
+  { level: 0, name: 'L0 - High-level hint', icon: <Lightbulb />, xpCost: 0, color: '#10b981' },
+  { level: 1, name: 'L1 - Approach guide', icon: <AutoAwesome />, xpCost: 0, color: '#6366f1' },
+  { level: 2, name: 'L2 - Pseudocode', icon: <Code />, xpCost: -5, color: '#f59e0b' },
+  { level: 3, name: 'L3 - Debug help', icon: <BugReport />, xpCost: -10, color: '#ef4444' },
+  { level: 4, name: 'L4 - Full solution', icon: <Lock />, xpCost: -25, color: '#8b5cf6' },
+];
+
+const CodingAssistantSection = ({ problem, code }) => {
+  const dispatch = useDispatch();
+  const { isAuthenticated } = useSelector((state) => state.auth);
+  const theme = useTheme();
+
+  const themeColors = theme.palette.problemPage;
+
+  const [activeTab, setActiveTab] = useState(0);
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [currentHint, setCurrentHint] = useState(null);
+  const [unlockedHints, setUnlockedHints] = useState([]);
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, currentHint]);
+
+  const handleSendMessage = async () => {
+    if (!input.trim()) return;
+
+    setMessages((prev) => [...prev, { sender: 'user', text: input }]);
+    setInput('');
+
+    if (!isAuthenticated) {
+      setMessages((prev) => [
+        ...prev,
+        { sender: 'assistant', text: 'Please login to chat with the AI assistant.' },
+      ]);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await aiService.chat(input, problem?.id, code);
+      setMessages((prev) => [...prev, { sender: 'assistant', text: res.data.response }]);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        { sender: 'assistant', text: 'Something went wrong. Please try again.' },
+      ]);
+    }
+    setLoading(false);
+  };
+
+  const handleGetHint = async (level) => {
+    if (!isAuthenticated) {
+      setCurrentHint({ hint: 'Please login to use AI hints.' });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await aiService.getHint(problem.id, level, code);
+      setCurrentHint(res.data);
+      if (!unlockedHints.includes(level)) {
+        setUnlockedHints((prev) => [...prev, level]);
+      }
+    } catch {
+      setCurrentHint({ hint: 'Failed to fetch hint.' });
+    }
+    setLoading(false);
+  };
+
+  return (
+    <Panel>
+      <Paper
+        sx={{
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          bgcolor: themeColors.cardBg,
+          color: themeColors.textPrimary,
+        }}
+      >
+        {/* Header */}
+        <Box sx={{ p: 2, borderBottom: `1px solid ${themeColors.divider}`, display: 'flex', justifyContent: 'space-between' }}>
+          <Typography variant="h6">Coding Assistant</Typography>
+          <Close
+            sx={{ cursor: 'pointer', color: themeColors.textSecondary }}
+            onClick={() => dispatch(togglePanelVisibility())}
+          />
+        </Box>
+
+        {/* Tabs */}
+        <Tabs value={activeTab} onChange={(_, v) => setActiveTab(v)}>
+          <Tab label="Chat" />
+          <Tab label="Hints" />
+        </Tabs>
+
+        {activeTab === 0 ? (
+          <>
+            {/* Messages */}
+            <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
+              {messages.map((msg, i) => (
+                <Box
+                  key={i}
+                  sx={{
+                    mb: 1,
+                    display: 'flex',
+                    justifyContent: msg.sender === 'user' ? 'flex-end' : 'flex-start',
+                  }}
+                >
+                  <Paper
+                    sx={{
+                      p: 1.5,
+                      maxWidth: '80%',
+                      bgcolor:
+                        msg.sender === 'user'
+                          ? theme.palette.primary.main
+                          : themeColors.chipBg,
+                      color:
+                        msg.sender === 'user'
+                          ? theme.palette.primary.contrastText
+                          : themeColors.textPrimary,
+                    }}
+                  >
+                    <Typography variant="body2" whiteSpace="pre-wrap">
+                      {msg.text}
+                    </Typography>
+                  </Paper>
+                </Box>
+              ))}
+              {loading && <CircularProgress size={20} />}
+              <div ref={messagesEndRef} />
+            </Box>
+
+            {/* Input */}
+            <Box sx={{ p: 1, display: 'flex', gap: 1, borderTop: `1px solid ${themeColors.divider}` }}>
+              <TextField
+                fullWidth
+                size="small"
+                value={input}
+                placeholder="Ask AI for help..."
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+              />
+              <IconButton
+                onClick={handleSendMessage}
+                sx={{
+                  bgcolor: theme.palette.primary.main,
+                  color: theme.palette.primary.contrastText,
+                }}
+              >
+                <Send />
+              </IconButton>
+            </Box>
+          </>
+        ) : (
+          <Box sx={{ p: 2 }}>
+            {HINT_LEVELS.map((hint) => (
+              <Button
+                key={hint.level}
+                fullWidth
+                variant="outlined"
+                sx={{ mb: 1 }}
+                onClick={() => handleGetHint(hint.level)}
+              >
+                {hint.icon} {hint.name}
+                {hint.xpCost !== 0 && (
+                  <Chip label={`${hint.xpCost} XP`} size="small" sx={{ ml: 1 }} />
+                )}
+              </Button>
+            ))}
+
+            {currentHint && (
+              <Paper sx={{ p: 2, mt: 2 }}>
+                <Typography variant="body2" whiteSpace="pre-wrap">
+                  {currentHint.hint}
+                </Typography>
+              </Paper>
+            )}
+          </Box>
+        )}
+      </Paper>
+    </Panel>
+  );
+};
+
+export default CodingAssistantSection;

@@ -1,22 +1,33 @@
-import React from 'react'
-import { PanelResizeHandle } from 'react-resizable-panels'
-import { styled } from '@mui/material'
+import React from "react";
+import { PanelResizeHandle } from "react-resizable-panels";
+import { styled } from "@mui/material/styles";
 
-const StyledResizeHandle = styled(PanelResizeHandle)(({ theme, styles }) => ({
-  width: styles?.width,
-  height: styles?.height,
-  background: styles.bg,
-  borderRadius: styles.borderRadius,
-  transition: styles.transition,
+const StyledResizeHandle = styled(PanelResizeHandle, {
+  shouldForwardProp: (prop) => prop !== "ownerState",
+})(({ theme, ownerState }) => {
+  const problemPagePalette =
+    theme.palette.mode === "dark"
+      ? theme.palette.PROBLEMPAGEDARK
+      : theme.palette.PROBLEMPAGELIGHT;
 
-  "&:hover": {
-    background: theme.palette.additionalColorPalette.resizeHandleHover,
-    cursor: styles.cursor,
-  },
-}));
+  if (!problemPagePalette) return {};
+
+  return {
+    width: ownerState.width,
+    height: ownerState.height,
+    background: problemPagePalette.resizeHandle,
+    borderRadius: ownerState.borderRadius,
+    transition: ownerState.transition,
+    cursor: ownerState.cursor,
+
+    "&:hover": {
+      background: problemPagePalette.resizeHandleHover,
+    },
+  };
+});
 
 const ResizeHandle = (props) => {
-  return <StyledResizeHandle styles={props} />
+  return <StyledResizeHandle ownerState={props} />;
 };
 
 export default ResizeHandle;

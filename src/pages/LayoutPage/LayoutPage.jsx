@@ -1,22 +1,14 @@
-import { useState } from "react";
-import React from 'react'
-import Navbar from '../../components/Navbar/Navbar'
-import Dashboard from '../DashboardPage/Dashboard.jsx'
-import LoginPage from "../LoginPage/LoginPage.jsx";
-import { Outlet } from 'react-router-dom'
-import { Box } from '@mui/material'
+import { Box } from "@mui/material";
+import Navbar from "../../components/Navbar/Navbar";
+import { Outlet } from "react-router-dom";
 
-const LayoutPage = () => {
-  const [darkMode, setDarkMode] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+const LayoutPage = ({ mode, setMode }) => {
   return (
-    
-    <Box sx={{display: "flex",flexDirection:"column"}}>
-        <Navbar darkMode={darkMode} setDarkMode={setDarkMode} searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery} />
-        <Outlet context={{ darkMode, setDarkMode,searchQuery,setSearchQuery }}/>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
+      <Navbar mode={mode} setMode={setMode} />
+      <Outlet />
     </Box>
-  )
-}
+  );
+};
 
-export default LayoutPage
+export default LayoutPage;

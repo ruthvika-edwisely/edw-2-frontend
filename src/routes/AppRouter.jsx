@@ -11,7 +11,7 @@ function ProtectedRoute({ children }) {
   return isAuthenticated ? children : <Navigate to="/login" />;
 }
 
-const AppRouter = () => {
+const AppRouter = ({ mode, setMode }) => {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
@@ -20,7 +20,7 @@ const AppRouter = () => {
         path="/"
         element={
           <ProtectedRoute>
-            <LayoutPage />
+            <LayoutPage mode={mode} setMode={setMode} />
           </ProtectedRoute>
         }
       >

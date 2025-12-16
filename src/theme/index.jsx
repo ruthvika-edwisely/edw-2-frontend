@@ -1,105 +1,103 @@
-import PropTypes from 'prop-types';
-import { useMemo } from 'react';
-import { CssBaseline } from '@mui/material';
-import { ThemeProvider as MUIThemeProvider, createTheme } from '@mui/material/styles';
-import GlobalStyles from './globalstyles';
-import componentsOverride from './overrides';
-import typography from './typography';
-import palette from './palette';
+import PropTypes from "prop-types";
+import { useMemo } from "react";
+import { CssBaseline } from "@mui/material";
+import {
+  ThemeProvider as MUIThemeProvider,
+  createTheme,
+} from "@mui/material/styles";
 
+import GlobalStyles from "./globalstyles";
+import componentsOverride from "./overrides";
+import typography from "./typography";
+import getPalette from "./palette"; // 🔥 FUNCTION now
 
 ThemeProvider.propTypes = {
   children: PropTypes.node,
+  mode: PropTypes.oneOf(["light", "dark"]).isRequired,
 };
 
-export default function ThemeProvider({ children }) {
-  const themeOptions = useMemo(() => {
-    const breakpoints =  {
+export default function ThemeProvider({ children, mode }) {
+  const theme = useMemo(() => {
+    const breakpoints = {
       values: {
-          xs: 0,          // 0 - 200
-          xs200to400: 201, // 201 - 400
-          sm: 401,        // 401 - 600
-          md: 601,        // 601 - 900
-          lg: 901,        // 901 - 1200
-          xl: 1201,       // 1201 - 1536
-          xxl: 1537,      // > 1536
+        xs: 0,
+        xs200to400: 201,
+        sm: 401,
+        md: 601,
+        lg: 901,
+        xl: 1201,
+        xxl: 1537,
       },
-    }
-    return {
-    palette: palette,
-    shape: { borderRadius: 6 },
-    typography: typography,
-    breakpoints:breakpoints,
-    components: {
+    };
+
+    const themeOptions = {
+      palette: getPalette(mode), // 🔥 HERE
+      shape: { borderRadius: 6 },
+      typography,
+      breakpoints,
+      components: {
         MuiTypography: {
-        defaultProps: {
-            variant: 'body1', // Set the default variant to body1
-        },
+          defaultProps: {
+            variant: "body1",
+          },
         },
         MuiInputBase: {
-        styleOverrides: {
-            input: {
-            ...typography.body1, // Apply body1 styles to input text
-            },
+          styleOverrides: {
+            input: typography.body1,
             inputPlaceholder: {
-            ...typography.body1, // Apply body1 styles to placeholders
-            opacity: 1, // Ensure placeholder text is visible
+              ...typography.body1,
+              opacity: 1,
             },
-        },
+          },
         },
         MuiTextField: {
-        defaultProps: {
+          defaultProps: {
             InputProps: {
-            disableUnderline: true, // Optional: Disable underline for TextField
+              disableUnderline: true,
             },
-        },
+          },
         },
         MuiAutocomplete: {
-        styleOverrides: {
-            inputRoot: {
-            ...typography.body1, // Apply body1 styles to the root input
-            },
-            listbox: {
-            ...typography.body1, // Apply body1 styles to dropdown options
-            },
-        },
+          styleOverrides: {
+            inputRoot: typography.body1,
+            listbox: typography.body1,
+          },
         },
         MuiSelect: {
-        styleOverrides: {
-            select: {
-            ...typography.body1, // Apply body1 styles to select text
-            },
-        },
+          styleOverrides: {
+            select: typography.body1,
+          },
         },
         MuiButton: {
-        styleOverrides: {
+          styleOverrides: {
             root: {
-            ...typography.body1, // Apply body1 styles to button text
-            textTransform: 'none', // Optional: Disable uppercase transformation
+              ...typography.body1,
+              textTransform: "none",
             },
-        },
+          },
         },
         MuiMenuItem: {
-        styleOverrides: {
-            root: {
-            ...typography.body1, // Apply body1 styles to menu items
-            },
+          styleOverrides: {
+            root: typography.body1,
+          },
         },
-        },
-    },
-    };
-  }, []);
-
-  const theme = createTheme(themeOptions);
-  theme.components = {
-    ...theme.components, // Retain existing components
-    ...componentsOverride(theme), // Apply overrides
-    MuiTypography: {
-      defaultProps: {
-        variant: 'body1', // Ensure this is retained
       },
-    },
-  };   
+    };
+
+    const theme = createTheme(themeOptions);
+
+    theme.components = {
+      ...theme.components,
+      ...componentsOverride(theme),
+      MuiTypography: {
+        defaultProps: {
+          variant: "body1",
+        },
+      },
+    };
+
+    return theme;
+  }, [mode]); // 🔥 IMPORTANT
 
   return (
     <MUIThemeProvider theme={theme}>

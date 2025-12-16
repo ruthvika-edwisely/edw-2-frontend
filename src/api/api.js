@@ -17,112 +17,63 @@ export const loginUserAPI = async ({ email, password }) => {
   }
 };
 
+export const getAllProblems = async () => {
+  try {
+    const res = await api.get("/problems/"); // /api/v1/problems/
+    const problemsRaw = res.data.data || [];
 
+    if (!problemsRaw.length) return { dailyChallenge: null, problems: [] };
 
+    // Normalize problems
+    const problems = problemsRaw.map(p => ({
+      id: p.id,
+      title: p.title,
+      description: p.description,
+      difficulty: p.difficulty,
+      status: p.solved_status ? "solved" : "unsolved",
+      xp: p.xp_reward || 0,
+      topics: p.tags
+        .filter(tag => tag.category === "Topic")
+        .map(tag => tag.name),
+      companies: p.tags
+        .filter(tag => tag.category === "Company")
+        .map(tag => tag.name),
+      acceptance: p.acceptance || 0, // optional, if backend provides
+    }));
+
+    // Take first unsolved problem as daily challenge
+    const dailyChallenge = problems.find(p => p.status === "unsolved") || problems[0];
+
+    return { dailyChallenge, problems };
+  } catch (err) {
+    console.error("Error fetching problems:", err);
+    return { dailyChallenge: null, problems: [] };
+  }
+};
+export const fetchTags = async () => {
+  try {
+    const res = await api.get("/tags/");
+    return res.data.data; // array of tags
+  } catch (err) {
+    throw err.response?.data?.message || "Failed to fetch tags";
+  }
+};
+
+export const fetchUsers = async () => {
+  try {
+    const response = await api.get(`/users/`);
+    return response.data.data; // assuming API returns array of users
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    throw error;
+  }
+};
 // src/data/users.js
 
-export const users = [
-  {
-    id: 1,
-    name: "Sarah Chen",
-    username: "sarahchen",
-    email: "sarah@gmail.com",
-    password: "sarah123",
-    avatar: "https://i.pravatar.cc/150?img=1",
-    xp: 8450,
-    problemsSolved: 127,
-    rank: 1
-  },
-  {
-    id: 2,
-    name: "Mike Johnson",
-    username: "mikej",
-    email: "mike@gmail.com",
-    password: "mike123",
-    avatar: "https://i.pravatar.cc/150?img=2",
-    xp: 7890,
-    problemsSolved: 112,
-    rank: 2
-  },
-  {
-    id: 3,
-    name: "Emma Liu",
-    username: "emmaliu",
-    email: "emma@gmail.com",
-    password: "emma123",
-    avatar: "https://i.pravatar.cc/150?img=3",
-    xp: 7250,
-    problemsSolved: 98,
-    rank: 3
-  },
-  {
-    id: 4,
-    name: "David Park",
-    username: "davidp",
-    email: "david@gmail.com",
-    password: "david123",
-    avatar: "https://i.pravatar.cc/150?img=4",
-    xp: 6800,
-    problemsSolved: 89,
-    rank: 4
-  },
-  {
-    id: 5,
-    name: "Lisa Wang",
-    username: "lisaw",
-    email: "lisa@gmail.com",
-    password: "lisa123",
-    avatar: "https://i.pravatar.cc/150?img=5",
-    xp: 6500,
-    problemsSolved: 85,
-    rank: 5
-  },
-  {
-    id: 6,
-    name: "James Wilson",
-    username: "jamesw",
-    email: "james@gmail.com",
-    password: "james123",
-    avatar: "https://i.pravatar.cc/150?img=6",
-    xp: 6350,
-    problemsSolved: 82,
-    rank: 6
-  },
-  {
-    id: 7,
-    name: "Alex Dev",
-    username: "alexdev",
-    email: "admin@gmail.com",
-    password: "admin123",
-    avatar: "https://i.pravatar.cc/150?img=7",
-    xp: 6180,
-    problemsSolved: 45,
-    rank: 7,
-    isCurrentUser: true
-  }
-];
-export const loginUserMock = ({ email, password }) => {
-  return new Promise((resolve, reject) => {
-    const user = users.find(u => u.email === email && u.password === password);
-    if (user) {
-      const token = btoa(`${email}:${password}`); // simple mock token
-      resolve({ user, token });
-    } else {
-      reject("Invalid credentials");
-    }
-  });
-};
 
 
 // api.js
 
-export const topics = [
-  { id: 1, name: "Data Structures", icon: "Storage", color: "#f97316", problemCount: 120 },
-  { id: 2, name: "Algorithms", icon: "AccountTree", color: "#3b82f6", problemCount: 95 },
-  { id: 3, name: "Math", icon: "Bolt", color: "#facc15", problemCount: 80 },
-  { id: 4, name: "Strings", icon: "TextFields", color: "#10b981", problemCount: 60 },
-  { id: 5, name: "Graphs", icon: "Hub", color: "#8b5cf6", problemCount: 50 },
-];
 
 // api.js
 
@@ -456,33 +407,6 @@ export const getProblems = async () => {
   }
 };
 
-// api.js
-
-export const getDailyChallenge = async () => {
-  try {
-    // Dummy data for testing
-    const dummyData = {
-      id: "challenge_1",
-      title: "Optimize Network Delay Time",
-      difficulty: "Medium",
-      description:
-        "You are given a network of n nodes, labeled from 1 to n. You are also given times, a list of travel times as directed edges times[i] = (ui, vi, wi), where ui is the source node...",
-      tags: ["Graph", "Dijkstra"],
-      xp: 150
-    };
-
-    // simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    return dummyData;
-  } catch (error) {
-    console.error("Error fetching daily challenge:", error);
-    return null;
-  }
-};
-
-
-
 export const submitCode = async(submissionData) => {
   try {
     console.log("Submission data : ", submissionData);
@@ -495,3 +419,43 @@ export const submitCode = async(submissionData) => {
     console.log("Error submitting code : ", error);
   }
 };
+
+export const sendAIMessageAPI = async ({ problemId, message, code }) => {
+  const response = await api.post("/ai/chat", { problemId, message, code });
+  return response.data;
+};
+
+// Get chat history for a problem
+export const getAIChatHistoryAPI = async (problemId) => {
+  const response = await api.get(`/ai/chat/history/${problemId}`);
+  return response.data;
+};
+
+/* ------------------ Fetch Hints ------------------ */
+export const getProblemHints = async (problemId, userId = null) => {
+  try {
+    const res = await api.get(`/aihints/${problemId}`, {
+      params: userId ? { userId } : {},
+    });
+    return res.data.data || [];
+  } catch (err) {
+    console.error("Error fetching hints:", err);
+    return [];
+  }
+};
+
+/* ------------------ Unlock Hint (XP Deduction) ------------------ */
+export const unlockHintAPI = async ({userId,hintId}) => {
+
+  if (!userId) throw new Error("User not logged in");
+
+  try {
+    const res = await api.post("/aihints/unlock", { userId, hintId });
+    return res.data;
+  } catch (err) {
+    console.error("Error unlocking hint:", err);
+    throw err.response?.data?.message || "Failed to unlock hint";
+  }
+};
+
+

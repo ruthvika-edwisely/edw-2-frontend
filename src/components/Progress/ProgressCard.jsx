@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -7,9 +7,9 @@ import {
   LinearProgress,
   Skeleton,
   useTheme,
-} from '@mui/material';
-import ReactECharts from 'echarts-for-react';
-import { userProgress as mockProgress } from '../../api/api'; 
+} from "@mui/material";
+import ReactECharts from "echarts-for-react";
+import { userProgress as mockProgress } from "../../api/api";
 
 function ProgressCard() {
   const [progress, setProgress] = useState(null);
@@ -18,7 +18,6 @@ function ProgressCard() {
 
   useEffect(() => {
     const fetchProgress = async () => {
-      // simulate delay for realism
       await new Promise((res) => setTimeout(res, 500));
       setProgress(mockProgress);
       setLoading(false);
@@ -27,20 +26,24 @@ function ProgressCard() {
     fetchProgress();
   }, []);
 
+  /* ---------------- Loading ---------------- */
+
   if (loading) {
     return (
-      <Card sx={{ backgroundColor: 'background.paper', height: '100%' }}>
+      <Card sx={{ backgroundColor: "background.paper", height: "100%" }}>
         <CardContent sx={{ p: 3 }}>
-          <Skeleton variant="text" width={120} height={28} />
-          <Box sx={{ display: 'flex', gap: 4, mt: 2, mb: 3 }}>
-            <Skeleton variant="rectangular" width={80} height={60} />
-            <Skeleton variant="rectangular" width={80} height={60} />
+          <Skeleton width={120} height={28} />
+          <Box sx={{ display: "flex", gap: 3, mt: 2, mb: 3 }}>
+            <Skeleton width={160} height={72} />
+            <Skeleton width={160} height={72} />
           </Box>
-          <Skeleton variant="rectangular" height={120} sx={{ borderRadius: 2 }} />
+          <Skeleton height={120} sx={{ borderRadius: 2 }} />
         </CardContent>
       </Card>
     );
   }
+
+  /* ---------------- Data ---------------- */
 
   const difficultyData = progress?.difficultyProgress || {
     easy: { solved: 20, total: 100 },
@@ -48,168 +51,190 @@ function ProgressCard() {
     hard: { solved: 10, total: 50 },
   };
 
-  // ------------------------
-  // ECharts Options
-  // ------------------------
+  /* ---------------- Chart ---------------- */
+
   const chartOptions = {
+    grid: { left: "0%", right: "0%", top: "10%", bottom: "10%" },
+    tooltip: {
+      trigger: "axis",
+      backgroundColor: theme.palette.background.paper,
+      borderColor: theme.palette.divider,
+      textStyle: { color: theme.palette.text.primary },
+      formatter: (params) => `${params[0]?.value ?? 0} problems`,
+    },
     xAxis: {
-      type: 'category',
+      type: "category",
       data: progress?.weeklyActivity?.map((d) => d.day) || [],
-      axisLine: { lineStyle: { color: theme.palette.text.secondary } },
+      axisLine: { lineStyle: { color: theme.palette.divider } },
       axisTick: { show: false },
-      axisLabel: { color: theme.palette.text.secondary, fontSize: 12 },
+      axisLabel: { color: theme.palette.text.secondary },
     },
     yAxis: {
-      type: 'value',
-      axisLine: { lineStyle: { color: theme.palette.text.secondary } },
+      type: "value",
+      axisLine: { show: false },
       axisTick: { show: false },
-      axisLabel: { color: theme.palette.text.secondary, fontSize: 12 },
+      axisLabel: { color: theme.palette.text.secondary },
       splitLine: { show: false },
-    },
-    tooltip: {
-      trigger: 'axis',
-      backgroundColor: theme.palette.primary.main,
-      borderColor: theme.palette.primary.main,
-      borderWidth: 1,
-      textStyle: { color: theme.palette.common.white },
-      padding: [8, 12],
-      formatter: (params) => {
-        const val = params[0]?.value ?? 0;
-        return `${val} problems`;
-      },
     },
     series: [
       {
-        data: progress?.weeklyActivity?.map((d) => d.problems) || [],
-        type: 'line',
+        type: "line",
         smooth: true,
-        symbol: 'circle',
+        data: progress?.weeklyActivity?.map((d) => d.problems) || [],
+        symbol: "circle",
         symbolSize: 6,
         lineStyle: {
-          color: '#3b82f6',
+          color: theme.palette.primary.main,
           width: 2,
         },
         itemStyle: {
-          color: '#3b82f6',
+          color: theme.palette.primary.main,
           borderColor: theme.palette.background.paper,
           borderWidth: 2,
         },
         areaStyle: {
           color: {
-            type: 'linear',
+            type: "linear",
             x: 0,
             y: 0,
             x2: 0,
             y2: 1,
             colorStops: [
-              { offset: 0, color: 'rgba(59, 130, 246, 0.4)' }, // top
-              { offset: 1, color: 'rgba(59, 130, 246, 0)' },   // bottom
+              {
+                offset: 0,
+                color: theme.palette.primary.main + "66",
+              },
+              {
+                offset: 1,
+                color: theme.palette.primary.main + "00",
+              },
             ],
           },
         },
-        emphasis: {
-          focus: 'series',
-        },
       },
     ],
-    grid: { left: '0%', right: '0%', top: '10%', bottom: '10%' },
   };
 
+  /* ---------------- Difficulty bar colors ---------------- */
+
+  const difficultyColors = {
+    easy: theme.palette.difficulty_tags.easy,
+    medium: theme.palette.difficulty_tags.medium,
+    hard: theme.palette.difficulty_tags.hard,
+  };
+
+  /* ---------------- UI ---------------- */
+
   return (
-    <Card sx={{ backgroundColor: 'background.paper', height: '100%', margin: '20px 0px' }} data-testid="card-your-progress">
+    <Card
+      sx={{
+        backgroundColor: "background.paper",
+        borderRadius: 3,
+        height: "100%",
+      }}
+    >
       <CardContent sx={{ p: 3 }}>
-        <Typography variant="h6" sx={{ fontWeight: 600, color: 'text.primary', mb: 3 }}>
+        <Typography variant="h6" fontWeight={600} mb={3}>
           Your Progress
         </Typography>
 
+        {/* Stats */}
         <Box sx={{ display: "flex", gap: 3, mb: 3 }}>
-          {/* XP Box */}
+          {/* XP */}
           <Box
             sx={{
-              width: "159px",
-              height: "72px",
-              borderRadius: "12px",
-              backgroundColor: theme.palette.grey[100],
+              width: 160,
+              height: 72,
+              borderRadius: 2,
+              backgroundColor: theme.palette.action.hover,
+              border: `1px solid ${theme.palette.divider}`,
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
-              border: "1px solid rgba(255,255,255,0.1)",
             }}
           >
-            <Typography variant="h4" sx={{ fontWeight: 700, color: "primary.main", lineHeight: 1 }}>
-              {progress?.currentUser?.xp ? Math.floor(progress.currentUser.xp / 100) : 18}
+            <Typography variant="h4" fontWeight={700} color="primary.main">
+              {progress?.currentUser?.xp
+                ? Math.floor(progress.currentUser.xp / 100)
+                : 18}
             </Typography>
-            <Typography variant="caption" sx={{ color: "text.secondary" }}>
+            <Typography variant="caption" color="text.secondary">
               XP ACHIEVED
             </Typography>
           </Box>
 
-          {/* Solved Box */}
+          {/* Solved */}
           <Box
             sx={{
-              width: "159px",
-              height: "72px",
-              borderRadius: "12px",
-              backgroundColor: theme.palette.grey[100],
-              border: "1px solid rgba(255,255,255,1)",
+              width: 160,
+              height: 72,
+              borderRadius: 2,
+              backgroundColor: theme.palette.action.hover,
+              border: `1px solid ${theme.palette.divider}`,
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            <Typography variant="h4" sx={{ fontWeight: 700, color: "text.primary", lineHeight: 1 }}>
+            <Typography variant="h4" fontWeight={700}>
               {progress?.currentUser?.problemsSolved || 45}
             </Typography>
-            <Typography variant="caption" sx={{ color: "text.secondary" }}>
+            <Typography variant="caption" color="text.secondary">
               SOLVED
             </Typography>
           </Box>
         </Box>
 
-        {/* ECharts Area Chart */}
+        {/* Chart */}
         <Box sx={{ height: 120, mb: 3 }}>
-          <ReactECharts option={chartOptions} style={{ height: '100%', width: '100%' }} />
+          <ReactECharts option={chartOptions} style={{ height: "100%" }} />
         </Box>
 
-        {/* Difficulty Progress Bars */}
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {['easy', 'medium', 'hard'].map((level) => (
-            <Box key={level}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                <Typography variant="body2" sx={{ color: 'text.primary' }}>
-                  {level.charAt(0).toUpperCase() + level.slice(1)}
-                </Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  {difficultyData[level].solved}/{difficultyData[level].total}
-                </Typography>
-              </Box>
-              <LinearProgress
-                variant="determinate"
-                value={(difficultyData[level].solved / difficultyData[level].total) * 100}
-                sx={{
-                  height: 6,
-                  borderRadius: 3,
-                  backgroundColor:
-                    level === 'easy'
-                      ? 'rgba(34, 197, 94, 0.2)'
-                      : level === 'medium'
-                      ? 'rgba(245, 158, 11, 0.2)'
-                      : 'rgba(239, 68, 68, 0.2)',
-                  '& .MuiLinearProgress-bar': {
-                    backgroundColor:
-                      level === 'easy'
-                        ? 'success.700'
-                        : level === 'medium'
-                        ? 'warning.main'
-                        : 'error.main',
+        {/* Difficulty */}
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          {["easy", "medium", "hard"].map((level) => {
+            const diff = difficultyColors[level];
+            const percent =
+              (difficultyData[level].solved /
+                difficultyData[level].total) *
+              100;
+
+            return (
+              <Box key={level}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    mb: 0.5,
+                  }}
+                >
+                  <Typography variant="body2" fontWeight={600}>
+                    {level.charAt(0).toUpperCase() + level.slice(1)}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {difficultyData[level].solved}/
+                    {difficultyData[level].total}
+                  </Typography>
+                </Box>
+
+                <LinearProgress
+                  variant="determinate"
+                  value={percent}
+                  sx={{
+                    height: 6,
                     borderRadius: 3,
-                  },
-                }}
-              />
-            </Box>
-          ))}
+                    backgroundColor: diff.background + "33",
+                    "& .MuiLinearProgress-bar": {
+                      backgroundColor: diff.text,
+                      borderRadius: 3,
+                    },
+                  }}
+                />
+              </Box>
+            );
+          })}
         </Box>
       </CardContent>
     </Card>
