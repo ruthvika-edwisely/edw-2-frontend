@@ -11,7 +11,6 @@ import {
   FormControl,
   LinearProgress,
   Skeleton,
-  useTheme,
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import {
@@ -19,6 +18,7 @@ import {
   EmojiEvents as EmojiEventsIcon,
 } from "@mui/icons-material";
 import { getLeaderboardUsers } from "../../store/features/leaderboard/leaderboardSlice";
+import { useTheme } from "@mui/material/styles";
 
 const defaultAvatars = [
   "https://mui.com/static/images/avatar/1.jpg",
@@ -30,17 +30,17 @@ const defaultAvatars = [
 export default function Leaderboard() {
   const theme = useTheme();
   const dispatch = useDispatch();
-
-  const { users = [], loading } = useSelector((state) => state.leaderboard || {});
+  const { users = [], loading } = useSelector(
+    (state) => state.leaderboard || {}
+  );
   const { user: currentUserRaw } = useSelector((state) => state.auth || {});
   const [scope, setScope] = useState("global");
 
-  /* ---------------- Fetch ---------------- */
   useEffect(() => {
     dispatch(getLeaderboardUsers());
   }, [dispatch]);
 
-  /* ---------------- Normalize ---------------- */
+  // Normalize users
   const normalizedUsers = users.map((u, i) => ({
     id: u.id ?? u._id ?? i,
     name: u.name ?? u.username ?? "Unknown",
@@ -64,51 +64,67 @@ export default function Leaderboard() {
       }
     : null;
 
-  /* ---------------- Filter & Sort ---------------- */
+  // Filter by scope
   const filteredUsers =
     scope === "college" && currentUser?.college
       ? normalizedUsers.filter((u) => u.college === currentUser.college)
       : normalizedUsers;
 
-  const sortedUsers = [...filteredUsers].sort((a, b) => b.totalXP - a.totalXP);
-  const topUsers = sortedUsers.slice(0, 5);
+  // Sort and assign tie-aware ranks
+  const sortedUsers = [...filteredUsers].sort((a, b) => {
+    // Primary: XP descending
+    if (b.totalXP !== a.totalXP) return b.totalXP - a.totalXP;
+  
+    // Secondary: current user first if XP ties
+    if (currentUser) {
+      if (a.id === currentUser.id) return -1;
+      if (b.id === currentUser.id) return 1;
+    }
+  
+    return 0;
+  });
+  
 
-  const currentUserRank =
-    currentUser && sortedUsers.findIndex((u) => u.id === currentUser.id) + 1;
+  let rankCounter = 0;
+  let prevXP = null;
+  let sameRankCount = 0;
 
-  const firstXP = sortedUsers[0]?.totalXP ?? 0;
+  const rankedUsers = sortedUsers.map((u) => {
+    if (u.totalXP === prevXP) {
+      sameRankCount += 1;
+    } else {
+      rankCounter += 1 + sameRankCount;
+      sameRankCount = 0;
+    }
+    prevXP = u.totalXP;
+    return { ...u, rank: rankCounter };
+  });
+
+  const topUsers = rankedUsers.slice(0, 5);
+  const currentUserRank = currentUser
+    ? rankedUsers.find((u) => u.id === currentUser.id)?.rank
+    : null;
+
+  const firstXP = rankedUsers[0]?.totalXP ?? 0;
   const myXP = currentUser?.totalXP ?? 0;
   const xpToFirst = Math.max(0, firstXP - myXP);
 
+  // Calculate progress to next rank
   let progressToNextRank = 0;
-
-if (currentUser && sortedUsers.length > 0 && currentUserRank) {
-  // Rank #1 → full bar
-  if (currentUserRank === 1) {
-    progressToNextRank = 100;
+  if (currentUser && currentUserRank) {
+    if (currentUserRank === 1) progressToNextRank = 100;
+    else {
+      const aboveUser = rankedUsers.find((u) => u.rank === currentUserRank - 1);
+      const me = rankedUsers.find((u) => u.id === currentUser.id);
+      if (aboveUser) {
+        const range = Math.max(1, aboveUser.totalXP - me.totalXP);
+        const progress = me.totalXP - (aboveUser.totalXP - range);
+        progressToNextRank = Math.min(100, Math.max(0, (progress / range) * 100));
+      }
+    }
   }
-  // Last rank → empty bar
-  else if (currentUserRank === sortedUsers.length) {
-    progressToNextRank = 0;
-  }
-  // Middle users
-  else {
-    const above = sortedUsers[currentUserRank - 2]; // rank-1
-    const me = sortedUsers[currentUserRank - 1];    // rank
-    const below = sortedUsers[currentUserRank];     // rank+1
 
-    const range = Math.max(1, above.totalXP - below.totalXP);
-    const progress = me.totalXP - below.totalXP;
-
-    progressToNextRank = Math.min(
-      100,
-      Math.max(0, (progress / range) * 100)
-    );
-  }
-}
-
-
-  /* ---------------- Helpers ---------------- */
+  // Row background helper
   const getRowBg = (rank, isMe) => {
     if (isMe) return theme.palette.action.selected;
     if (rank === 1)
@@ -119,7 +135,6 @@ if (currentUser && sortedUsers.length > 0 && currentUserRank) {
     return "transparent";
   };
 
-  /* ---------------- Loading ---------------- */
   if (loading) {
     return (
       <Card
@@ -146,7 +161,6 @@ if (currentUser && sortedUsers.length > 0 && currentUserRank) {
     );
   }
 
-  /* ---------------- UI ---------------- */
   return (
     <Card
       sx={{
@@ -160,7 +174,14 @@ if (currentUser && sortedUsers.length > 0 && currentUserRank) {
     >
       <CardContent sx={{ p: 3 }}>
         {/* Header */}
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 3,
+          }}
+        >
           <Typography variant="h6" fontWeight={700}>
             Leaderboard
           </Typography>
@@ -181,8 +202,7 @@ if (currentUser && sortedUsers.length > 0 && currentUserRank) {
 
         {/* Top Users */}
         <Box sx={{ display: "flex", flexDirection: "column", gap: 1.2 }}>
-          {topUsers.map((u, i) => {
-            const rank = i + 1;
+          {topUsers.map((u) => {
             const isMe = u.id === currentUser?.id;
 
             return (
@@ -195,12 +215,19 @@ if (currentUser && sortedUsers.length > 0 && currentUserRank) {
                   px: 1,
                   py: 1,
                   borderRadius: 2,
-                  backgroundColor: getRowBg(rank, isMe),
+                  backgroundColor: getRowBg(u.rank, isMe),
+                  border: isMe ? `2px solid ${theme.palette.primary.main}` : "none",
                 }}
               >
                 {/* Rank */}
-                <Box sx={{ width: 26, textAlign: "center", fontWeight: 600 }}>
-                  {rank === 1 ? (
+                <Box
+                  sx={{
+                    width: 26,
+                    textAlign: "center",
+                    fontWeight: 600,
+                  }}
+                >
+                  {u.rank === 1 ? (
                     <EmojiEventsIcon
                       sx={{
                         fontSize: 18,
@@ -211,15 +238,26 @@ if (currentUser && sortedUsers.length > 0 && currentUserRank) {
                       }}
                     />
                   ) : (
-                    rank
+                    u.rank
                   )}
                 </Box>
 
-                <Avatar src={u.avatar} sx={{ width: 42, height: 42 }} />
+                <Avatar
+                  src={u.avatar}
+                  sx={{
+                    width: isMe ? 48 : 42,
+                    height: isMe ? 48 : 42,
+                    border: isMe ? `2px solid ${theme.palette.primary.main}` : "none",
+                  }}
+                />
 
                 <Box sx={{ flex: 1 }}>
-                  <Typography fontSize={14} fontWeight={600}>
-                    {u.name}
+                  <Typography
+                    fontSize={isMe ? 15 : 14}
+                    fontWeight={isMe ? 700 : 600}
+                    color={isMe ? theme.palette.primary.main : "inherit"}
+                  >
+                    {isMe ? `You (${u.name})` : u.name}
                   </Typography>
                   <Typography fontSize={12} color="text.secondary">
                     {u.totalXP.toLocaleString()} XP
@@ -230,10 +268,12 @@ if (currentUser && sortedUsers.length > 0 && currentUserRank) {
           })}
         </Box>
 
-        {/* Current User */}
+        {/* Current user if not in top 5 */}
         {currentUser && currentUserRank > 5 && (
           <>
-            <Typography sx={{ textAlign: "center", my: 1, letterSpacing: 2, color: "text.secondary" }}>
+            <Typography
+              sx={{ textAlign: "center", my: 1, letterSpacing: 2, color: "text.secondary" }}
+            >
               ...
             </Typography>
             <Box
@@ -242,22 +282,34 @@ if (currentUser && sortedUsers.length > 0 && currentUserRank) {
                 alignItems: "center",
                 gap: 1.5,
                 px: 1,
-                py: 1.2,
+                py: 1.5,
                 borderRadius: 2,
-                backgroundColor: theme.palette.action.selected,
+                border: `2px solid ${theme.palette.primary.main}`,
+                backgroundColor:
+                  theme.palette.mode === "dark"
+                    ? alpha(theme.palette.primary.main, 0.1)
+                    : alpha(theme.palette.primary.main, 0.15),
               }}
             >
-              <Typography sx={{ width: 26, textAlign: "center", fontWeight: 600 }}>
+              <Typography
+                sx={{
+                  width: 26,
+                  textAlign: "center",
+                  fontWeight: 700,
+                  color: theme.palette.primary.main,
+                }}
+              >
                 {currentUserRank}
               </Typography>
-
-              <Avatar src={currentUser.avatar} sx={{ width: 42, height: 42 }} />
-
+              <Avatar
+                src={currentUser.avatar}
+                sx={{ width: 48, height: 48, border: `2px solid ${theme.palette.primary.main}` }}
+              />
               <Box sx={{ flex: 1 }}>
-                <Typography fontSize={14} fontWeight={600} color="primary.main">
+                <Typography fontSize={15} fontWeight={700} color={theme.palette.primary.main}>
                   You ({currentUser.name})
                 </Typography>
-                <Typography fontSize={12} color="text.secondary">
+                <Typography fontSize={13} color="text.secondary">
                   {myXP.toLocaleString()} XP
                 </Typography>
               </Box>
@@ -273,7 +325,6 @@ if (currentUser && sortedUsers.length > 0 && currentUserRank) {
                 ? "You are Rank #1 🎉"
                 : `${xpToFirst.toLocaleString()} XP away from Rank #1`}
             </Typography>
-
             <LinearProgress
               variant="determinate"
               value={progressToNextRank}

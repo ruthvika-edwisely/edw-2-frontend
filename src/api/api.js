@@ -59,6 +59,16 @@ export const fetchTags = async () => {
   }
 };
 
+export const getDailyChallenge = async () => {
+  try {
+    const res = await api.get("/problems/daily");
+    return res.data.data; // returns the problem object selected by backend
+  } catch (err) {
+    console.error("Error fetching daily challenge:", err);
+    return null;
+  }
+};
+
 export const fetchUsers = async () => {
   try {
     const response = await api.get(`/users/`);

@@ -37,7 +37,6 @@ function ProblemTable() {
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const { problems = [], loading } = useSelector((state) => state.dashboard);
 
   useEffect(() => {
@@ -70,9 +69,7 @@ function ProblemTable() {
 
   /* ---------------- Filtering ---------------- */
   const filteredProblems = problems
-    .filter((p) =>
-      difficultyFilter === "all" ? true : p.difficulty?.toLowerCase() === difficultyFilter
-    )
+    .filter((p) => (difficultyFilter === "all" ? true : p.difficulty?.toLowerCase() === difficultyFilter))
     .filter(
       (p) =>
         p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -84,9 +81,7 @@ function ProblemTable() {
     .slice(0, 5);
 
   const toggleExpand = (id) => {
-    setExpandedRows((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-    );
+    setExpandedRows((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   };
 
   /* ---------------- UI ---------------- */
@@ -118,7 +113,13 @@ function ProblemTable() {
             placeholder="Search problems"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon fontSize="small" /></InputAdornment> }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon fontSize="small" />
+                </InputAdornment>
+              ),
+            }}
             sx={{ width: 260, backgroundColor: theme.palette.background.paper, borderRadius: 2 }}
           />
 
@@ -131,27 +132,26 @@ function ProblemTable() {
       {/* Table */}
       <Card sx={{ backgroundColor: theme.palette.background.paper, borderRadius: 3 }}>
         <TableContainer>
-          <Table>
+          <Table sx={{ borderCollapse: "separate", borderSpacing: 0 }}>
             <TableHead>
-              <TableRow>
+              <TableRow sx={{ "& th": { borderBottom: `2px solid ${theme.palette.divider}` } }}>
                 {["Status", "Title", "Difficulty", "Acceptance", "XP", "Action"].map((h) => (
-                  <TableCell key={h}>{h}</TableCell>
+                  <TableCell key={h} sx={{ fontWeight: 600 }}>
+                    {h}
+                  </TableCell>
                 ))}
               </TableRow>
             </TableHead>
+
             <TableBody>
               {loading
                 ? Array.from({ length: 5 }).map((_, i) => (
                     <TableRow key={i}>
-                      <TableCell><Skeleton variant="circular" width={24} height={24} /></TableCell>
-                      <TableCell>
-                        <Skeleton width="80%" height={24} />
-                        <Skeleton width="60%" height={18} sx={{ mt: 0.5 }} />
-                      </TableCell>
-                      <TableCell><Skeleton width={60} height={24} /></TableCell>
-                      <TableCell><Skeleton width={40} height={24} /></TableCell>
-                      <TableCell><Skeleton width={60} height={24} /></TableCell>
-                      <TableCell><Skeleton width={80} height={32} /></TableCell>
+                      {Array.from({ length: 6 }).map((_, j) => (
+                        <TableCell key={j}>
+                          <Skeleton variant={j === 0 ? "circular" : "rectangular"} width={j === 0 ? 24 : "100%"} height={j === 0 ? 24 : 24} />
+                        </TableCell>
+                      ))}
                     </TableRow>
                   ))
                 : error
@@ -178,10 +178,17 @@ function ProblemTable() {
                     const expanded = expandedRows.includes(p.id);
 
                     return (
-                      <TableRow key={p.id} hover>
+                      <TableRow
+                        key={p.id}
+                        hover
+                        sx={{
+                          "& td": { borderBottom: `1px solid ${theme.palette.divider}` },
+                        }}
+                      >
                         <TableCell>
                           {p.status === "solved" && <CheckCircleIcon sx={{ color: theme.palette.success[600], fontSize: 22 }} />}
                         </TableCell>
+
                         <TableCell>
                           <Typography fontWeight={600}>{p.title}</Typography>
                           <Box sx={{ mt: 0.5, display: "flex", gap: 0.5, flexWrap: "wrap" }}>
@@ -203,6 +210,7 @@ function ProblemTable() {
                             )}
                           </Box>
                         </TableCell>
+
                         <TableCell>
                           <Chip
                             label={p.difficulty}
@@ -214,7 +222,9 @@ function ProblemTable() {
                             }}
                           />
                         </TableCell>
+
                         <TableCell>{p.acceptance ?? p.acceptance_rate ?? 0}%</TableCell>
+
                         <TableCell>
                           <Chip
                             icon={<BoltIcon />}
@@ -228,12 +238,9 @@ function ProblemTable() {
                             }}
                           />
                         </TableCell>
+
                         <TableCell>
-                          <Button
-                            variant="contained"
-                            onClick={() => navigate(`/problem/${p.id}`)}
-                            sx={{ fontWeight: 700, borderRadius: 2 }}
-                          >
+                          <Button variant="contained" onClick={() => navigate(`/problem/${p.id}`)} sx={{ fontWeight: 700, borderRadius: 2 }}>
                             Solve
                           </Button>
                         </TableCell>

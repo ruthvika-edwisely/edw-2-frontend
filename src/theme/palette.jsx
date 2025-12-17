@@ -315,7 +315,7 @@ const getPalette = (mode = "dark") => {
       selected: "rgba(59,130,246,0.08)",
     },
 
-    divider: isDark ? GREY[700] : GREY[200],
+    divider: isDark ? GREY[600] : GREY[300],
   };
 };
 

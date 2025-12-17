@@ -83,14 +83,31 @@ export default function Navbar({ mode, setMode }) {
 
   return (
     <AppBar
-      position="sticky"
-      elevation={0}
-      sx={{
-        backgroundColor: theme.palette.background.paper,
-        borderBottom: `1px solid ${theme.palette.divider}`,
-      }}
-    >
-      <Toolbar sx={{ px: { xs: 2, md: 4 }, py: 2, gap: 3, minHeight: 72, overflow: "visible", }}>
+  position="sticky"
+  elevation={0}
+  sx={{
+    width: "100vw", // force full viewport width
+    left: 0,        // ensure it starts from left edge
+    backgroundColor: theme.palette.background.paper,
+    borderBottom: `1px solid ${theme.palette.divider}`,
+  }}
+>
+
+      <Toolbar
+  disableGutters
+  sx={{
+    px: { xs: 2, md: 4 },
+    minHeight: 72,       // fixed desktop height
+    height: 72,          // force exact height
+    gap: 3,
+    display: "flex",
+    alignItems: "center", // vertically center everything
+    justifyContent: "space-between",
+    overflow: "visible",
+    width: "100%",
+  }}
+>
+
         {/* Logo */}
         <Box
           component={RouterLink}

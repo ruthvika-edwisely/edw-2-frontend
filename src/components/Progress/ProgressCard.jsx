@@ -17,6 +17,20 @@ function ProgressCard() {
   const { user } = useSelector((state) => state.auth);
   const [progress, setProgress] = useState(null);
   const [loading, setLoading] = useState(true);
+  const cardSx = {
+    backgroundColor: "background.paper",
+    borderRadius: 3,
+  
+    /* Desktop fixed size */
+    width: { lg: 392 },
+  
+    /* Below 1380px → responsive */
+    maxWidth: { xs: "100%", lg: 392 },
+  
+    /* Prevent height jump */
+    minHeight: 456,
+  };
+  
 
   useEffect(() => {
     if (!user?.id) return;
@@ -44,7 +58,8 @@ function ProgressCard() {
 
   if (!user) {
     return (
-      <Card sx={{ p: 3, minWidth: 392, minHeight: 456 }}>
+      <Card sx={cardSx}>
+
         <Typography>Please login to see your progress.</Typography>
       </Card>
     );
@@ -52,7 +67,8 @@ function ProgressCard() {
 
   if (loading || !progress) {
     return (
-      <Card sx={{ backgroundColor: "background.paper", borderRadius: 3, minWidth: 392, minHeight: 456 }}>
+      <Card sx={cardSx}>
+
         <CardContent sx={{ p: 3 }}>
           <Skeleton width={140} height={28} />
           <Box sx={{ display: "flex", gap: 3, mt: 2, mb: 3 }}>
@@ -138,7 +154,8 @@ function ProgressCard() {
   };
 
   return (
-    <Card sx={{ backgroundColor: "background.paper", borderRadius: 3, minWidth: 392, minHeight: 456 }}>
+    <Card sx={cardSx}>
+
       <CardContent sx={{ p: 3 }}>
         <Typography variant="h6" fontWeight={600} mb={3}>
           Your Progress
