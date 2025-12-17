@@ -5,7 +5,7 @@ import CodeEditorMenu from './components/CodeEditorMenu'
 import CodeEditorMain from './components/CodeEditorMain'
 import { useDispatch, useSelector } from 'react-redux'
 import { submitCode } from '../../../../../api/api.js';
-import { getTestcaseResults, getLatestSubmissionData } from "../../../../../store/features/submission/submissionSlice.js";
+import { getTestcaseResults, getLatestSubmissionData, getRunStatus } from "../../../../../store/features/submission/submissionSlice.js";
 import { updateTabIndex } from '../../../../../store/features/activeTabSlice.js'
 
 
@@ -14,10 +14,11 @@ const CodeEditor = () => {
 
   const [editorTheme, setEditorTheme] = useState("vs-dark");
   const [language, setLanguage] = useState("python");
-  const [runCode, setRunCode] = useState(false);
+  const runCode = useSelector(state => state.submissions.runCode);
   const [submitCodeFlag, setSubmitCodeFlag] = useState(false);
   const problemId = useSelector(state => state.problem.id);
   const [snackBarOpen, setSnackBarOpen] = useState(false);
+  const [isDefault, setIsDefault] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user);
   const userId = user?.id;
@@ -39,7 +40,7 @@ const CodeEditor = () => {
       "mode": mode
     });
 
-    console.log("submission response : ", submissionResponse.testcase_results);
+    console.log("submission response : ", submissionResponse);
 
     
     if(mode == "Run") {
@@ -47,6 +48,7 @@ const CodeEditor = () => {
       const data = submissionResponse.testcase_results;
       console.log('checking again : ', data);
       dispatch(getTestcaseResults(data));
+      dispatch(getLatestSubmissionData(submissionResponse));
     
     }
     
@@ -60,11 +62,14 @@ const CodeEditor = () => {
   const afterRunCodeClick = async(mode) => {
     try {
 
-      if(mode == "Run")
-        setRunCode(true);
+      dispatch(getTestcaseResults(null));
+      if(mode == "Run") {
+        dispatch(getRunStatus(true));
+      }
 
-      else if(mode == "Submit")
+      else if(mode == "Submit") {
           setSubmitCodeFlag(true);
+      }
 
       await runCodeExecution(mode);
     }
@@ -72,7 +77,7 @@ const CodeEditor = () => {
       console.log("Run code error :", error);
     }
     finally {
-      setRunCode(false);
+      dispatch(getRunStatus(false));
       setSubmitCodeFlag(false);
       dispatch(updateTabIndex(2));
     }
@@ -86,13 +91,15 @@ const CodeEditor = () => {
           setEditorTheme={setEditorTheme} 
           language={language}
           setLanguage={setLanguage}
-          runCode={runCode}
           submitCode={submitCodeFlag}
           afterRunCodeClick={afterRunCodeClick}
+          setIsDefault={setIsDefault}
         />
         <CodeEditorMain 
           editorTheme={editorTheme}
           language={language} 
+          isDefault={isDefault}
+          setIsDefault={setIsDefault}
         />
 
         <Snackbar

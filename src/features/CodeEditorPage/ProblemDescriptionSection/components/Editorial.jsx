@@ -45,8 +45,8 @@ const Editorial = () => {
   console.log('subs: ', submissions);
   useEffect(() => {
     submissions.forEach((sub) => {
-      console.log(sub.status);
-      if(sub.status == "AC") {
+      console.log(sub.status, sub);
+      if(sub.status == "AC" && sub.mode == "Submit") {
         setLocked(false);
       }
     });

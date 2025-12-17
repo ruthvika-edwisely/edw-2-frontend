@@ -94,20 +94,38 @@ const Submissions = () => {
       testcase_results:
         latestSubmissionData.testcase_results ?? [],
 
+      time_complexity: latestSubmissionData.time_complexity,
+      space_complexity: latestSubmissionData.space_complexity,
+
+      mode: latestSubmissionData.mode,
+
       created_at: new Date().toISOString(),
       language_name: latestSubmissionData.language_name || "Unknown",
       code: latestSubmissionData.code || null,
     };
   }, [latestSubmissionData]);
 
-  // Automatically show detailed result when new su bmission comes in
-  useEffect(() => {
-    if (latestSubmission?.id) {
+  // Automatically show detailed result when new submission comes in
+useEffect(() => {
+  if (latestSubmission?.id) {
+    setShowTestCases(false);
+    setShowLatestCode(false);
+
+    console.log('latest submission: ', latestSubmission);
+
+    // Only show detailed result for Submit mode, not Run mode
+    if (latestSubmission?.mode === "Submit") {
       setShowDetailedResult(true);
-      setShowTestCases(false);
-      setShowLatestCode(false);
+    } else {
+      setShowDetailedResult(false);
+      // Optionally add the submission to the list immediately for Run mode
+      const totalSubmissions = structuredClone(submissions);
+      totalSubmissions.push(latestSubmission);
+      dispatch(updateSubmissionsData(totalSubmissions));
+      dispatch(getLatestSubmissionData(null));
     }
-  }, [latestSubmission?.id]);
+  }
+}, [latestSubmission?.id, latestSubmission?.mode]); // Added mode to dependencies
 
   // Sort submissions descending by created_at
   const sortedSubs = useMemo(() => {
@@ -264,7 +282,11 @@ const Submissions = () => {
         </Box>
 
         {/* Metrics Cards Skeleton */}
-        <Box sx={{ px: 4, py: 3, borderBottom: `1px solid ${palette.cardBorder}` }}>
+        <Box sx={{ px: 4, py: 3, borderBottom: `1px solid ${palette.cardBorder}`, display: "flex", flexDirection: "column", gap: 1.5 }}>
+          <Stack direction="row" spacing={2}>
+            <Skeleton variant="rounded" width="50%" height={80} sx={{ borderRadius: "12px" }} />
+            <Skeleton variant="rounded" width="50%" height={80} sx={{ borderRadius: "12px" }} />
+          </Stack>
           <Stack direction="row" spacing={2}>
             <Skeleton variant="rounded" width="50%" height={80} sx={{ borderRadius: "12px" }} />
             <Skeleton variant="rounded" width="50%" height={80} sx={{ borderRadius: "12px" }} />
@@ -472,7 +494,7 @@ const Submissions = () => {
           )}
 
           {/* Metrics Cards - Side by Side */}
-          <Box sx={{ px: 4, py: 3, borderBottom: `1px solid ${palette.cardBorder}` }}>
+          <Box sx={{ px: 4, py: 3, borderBottom: `1px solid ${palette.cardBorder}`, display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Stack direction="row" spacing={2}>
               {/* Runtime Card */}
               <Card
@@ -555,7 +577,92 @@ const Submissions = () => {
                   </Typography>
                 </Stack>
               </Card>
+
             </Stack>
+            <Stack direction="row" spacing={2}>
+              {/* Runtime Card */}
+              <Card
+                sx={{
+                  flex: 1,
+                  backgroundColor: palette.exampleBg,
+                  border: `1px solid ${palette.cardBorder}`,
+                  borderRadius: "12px",
+                  p: 2.5,
+                }}
+                elevation={0}
+              >
+                <Stack spacing={1.5}>
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <Clock size={18} color={palette.textTertiary} />
+                    <Typography
+                      sx={{
+                        color: palette.textTertiary,
+                        fontSize: "0.813rem",
+                        fontWeight: 600,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.5px",
+                      }}
+                    >
+                      Time complexity
+                    </Typography>
+                  </Stack>
+                  <Typography 
+                    sx={{ 
+                      color: palette.textPrimary, 
+                      fontSize: "1.5rem", 
+                      fontWeight: 700,
+                      lineHeight: 1,
+                    }}
+                  >
+                    {latestSubmission.time_complexity 
+                      ? `${latestSubmission.time_complexity}`
+                      : "N/A"}
+                  </Typography>
+                </Stack>
+              </Card>
+
+              <Card
+                sx={{
+                  flex: 1,
+                  backgroundColor: palette.exampleBg,
+                  border: `1px solid ${palette.cardBorder}`,
+                  borderRadius: "12px",
+                  p: 2.5,
+                }}
+                elevation={0}
+              >
+                <Stack spacing={1.5}>
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    <Clock size={18} color={palette.textTertiary} />
+                    <Typography
+                      sx={{
+                        color: palette.textTertiary,
+                        fontSize: "0.813rem",
+                        fontWeight: 600,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.5px",
+                      }}
+                    >
+                      Space complexity
+                    </Typography>
+                  </Stack>
+                  <Typography 
+                    sx={{ 
+                      color: palette.textPrimary, 
+                      fontSize: "1.5rem", 
+                      fontWeight: 700,
+                      lineHeight: 1,
+                    }}
+                  >
+                    {latestSubmission.space_complexity 
+                      ? `${latestSubmission.space_complexity}`
+                      : "N/A"}
+                  </Typography>
+                </Stack>
+              </Card>
+
+            </Stack>
+            
           </Box>
 
           {/* Code Section */}
@@ -758,7 +865,7 @@ const Submissions = () => {
     <>
       {/* Main Content - Toggle between detailed result and list view */}
       {showDetailedResult && latestSubmission?.id
-        ? renderDetailedSubmissionResult() 
+        ? renderDetailedSubmissionResult()  
         : renderSubmissionsList()}
 
       {/* Code Dialog for Regular Submissions */}
@@ -823,12 +930,16 @@ const Submissions = () => {
                 <Typography sx={{ color: palette.textTertiary, fontSize: "0.875rem" }}>
                   {getDateTimeDisplay(selectedSubmissionData.created_at)}
                 </Typography>
+
+                <Typography sx={{ color: palette.textTertiary, fontSize: "0.875rem" }}>
+                  Mode : {selectedSubmissionData.mode}
+                </Typography>
                 
               </Stack>
             </Box>
 
             {/* Metrics Cards - Side by Side */}
-            <Box sx={{ px: 4, py: 3, borderBottom: `1px solid ${palette.cardBorder}` }}>
+            <Box sx={{ px: 4, py: 3, borderBottom: `1px solid ${palette.cardBorder}`, display: "flex", flexDirection: "column", gap: 1.5 }}>
               <Stack direction="row" spacing={2}>
                 {/* Runtime Card */}
                 <Card
@@ -907,6 +1018,89 @@ const Submissions = () => {
                     >
                       {selectedSubmissionData.total_exec_memory 
                         ? `${selectedSubmissionData.total_exec_memory.toFixed(2)} MB`
+                        : "N/A"}
+                    </Typography>
+                  </Stack>
+                </Card>
+              </Stack>
+              <Stack direction="row" spacing={2}>
+                {/* Runtime Card */}
+                <Card
+                  sx={{
+                    flex: 1,
+                    backgroundColor: palette.exampleBg,
+                    border: `1px solid ${palette.cardBorder}`,
+                    borderRadius: "12px",
+                    p: 2.5,
+                  }}
+                  elevation={0}
+                >
+                  <Stack spacing={1.5}>
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      {/* <Clock size={18} color={palette.textTertiary} /> */}
+                      <Typography
+                        sx={{
+                          color: palette.textTertiary,
+                          fontSize: "0.813rem",
+                          fontWeight: 600,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.5px",
+                        }}
+                      >
+                        Time Complexity
+                      </Typography>
+                    </Stack>
+                    <Typography 
+                      sx={{ 
+                        color: palette.textPrimary, 
+                        fontSize: "1.5rem", 
+                        fontWeight: 700,
+                        lineHeight: 1,
+                      }}
+                    >
+                      {selectedSubmissionData.time_complexity 
+                        ? `${selectedSubmissionData.time_complexity}`
+                        : "N/A"}
+                    </Typography>
+                  </Stack>
+                </Card>
+
+                {/* Memory Card */}
+                <Card
+                  sx={{
+                    flex: 1,
+                    backgroundColor: palette.exampleBg,
+                    border: `1px solid ${palette.cardBorder}`,
+                    borderRadius: "12px",
+                    p: 2.5,
+                  }}
+                  elevation={0}
+                >
+                  <Stack spacing={1.5}>
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      {/* <Database size={18} color={palette.textTertiary} /> */}
+                      <Typography
+                        sx={{
+                          color: palette.textTertiary,
+                          fontSize: "0.813rem",
+                          fontWeight: 600,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.5px",
+                        }}
+                      >
+                        Space Complexity
+                      </Typography>
+                    </Stack>
+                    <Typography 
+                      sx={{ 
+                        color: palette.textPrimary, 
+                        fontSize: "1.5rem", 
+                        fontWeight: 700,
+                        lineHeight: 1,
+                      }}
+                    >
+                      {selectedSubmissionData.space_complexity 
+                        ? `${selectedSubmissionData.space_complexity}`
                         : "N/A"}
                     </Typography>
                   </Stack>
