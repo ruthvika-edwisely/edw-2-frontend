@@ -14,7 +14,7 @@ import { fetchUserProgress } from "../../api/api";
 
 function ProgressCard() {
   const theme = useTheme();
-  const { user } = useSelector((state) => state.auth); // Current user from Redux
+  const { user } = useSelector((state) => state.auth);
   const [progress, setProgress] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -36,37 +36,49 @@ function ProgressCard() {
     fetchProgress();
   }, [user?.id]);
 
+  const difficultyColors = {
+    easy: theme.palette.difficulty_tags.easy,
+    medium: theme.palette.difficulty_tags.medium,
+    hard: theme.palette.difficulty_tags.hard,
+  };
+
   if (!user) {
     return (
-      <Card sx={{ p: 3 }}>
+      <Card sx={{ p: 3, minWidth: 392, minHeight: 456 }}>
         <Typography>Please login to see your progress.</Typography>
       </Card>
     );
   }
 
-  if (loading) {
+  if (loading || !progress) {
     return (
-      <Card sx={{ backgroundColor: "background.paper", height: "100%" }}>
+      <Card sx={{ backgroundColor: "background.paper", borderRadius: 3, minWidth: 392, minHeight: 456 }}>
         <CardContent sx={{ p: 3 }}>
-          <Skeleton width={120} height={28} />
+          <Skeleton width={140} height={28} />
           <Box sx={{ display: "flex", gap: 3, mt: 2, mb: 3 }}>
-            <Skeleton width={160} height={72} />
-            <Skeleton width={160} height={72} />
+            <Skeleton width={160} height={72} sx={{ borderRadius: 2 }} />
+            <Skeleton width={160} height={72} sx={{ borderRadius: 2 }} />
           </Box>
-          <Skeleton height={120} sx={{ borderRadius: 2 }} />
+          <Skeleton height={120} sx={{ borderRadius: 2, mb: 3 }} />
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {["easy", "medium", "hard"].map((level) => (
+              <Box key={level}>
+                <Skeleton width="100%" height={20} sx={{ mb: 0.5 }} />
+                <Skeleton width="100%" height={6} sx={{ borderRadius: 3 }} />
+              </Box>
+            ))}
+          </Box>
         </CardContent>
       </Card>
     );
   }
 
-  // ---------------- Difficulty data ----------------
   const difficultyData = progress?.difficultyProgress || {
     easy: { solved: 0, total: 0 },
     medium: { solved: 0, total: 0 },
     hard: { solved: 0, total: 0 },
   };
 
-  // ---------------- Weekly activity ----------------
   const allDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   const weeklyActivity = allDays.map((day) => {
     const dayData = progress?.weeklyActivity?.find((d) => d.day === day);
@@ -92,14 +104,13 @@ function ProgressCard() {
     yAxis: {
       type: "value",
       min: 0,
-      max: Math.max(...weeklyActivity.map(d => d.problems), 1),
-      minInterval: 1, // <-- ensures only integer ticks
+      max: Math.max(...weeklyActivity.map((d) => d.problems), 1),
+      minInterval: 1,
       axisLine: { show: false },
       axisTick: { show: false },
       axisLabel: { color: theme.palette.text.secondary },
       splitLine: { show: false },
     },
-    
     series: [
       {
         type: "line",
@@ -126,14 +137,8 @@ function ProgressCard() {
     ],
   };
 
-  const difficultyColors = {
-    easy: theme.palette.difficulty_tags.easy,
-    medium: theme.palette.difficulty_tags.medium,
-    hard: theme.palette.difficulty_tags.hard,
-  };
-
   return (
-    <Card sx={{ backgroundColor: "background.paper", borderRadius: 3, height: "100%" }}>
+    <Card sx={{ backgroundColor: "background.paper", borderRadius: 3, minWidth: 392, minHeight: 456 }}>
       <CardContent sx={{ p: 3 }}>
         <Typography variant="h6" fontWeight={600} mb={3}>
           Your Progress

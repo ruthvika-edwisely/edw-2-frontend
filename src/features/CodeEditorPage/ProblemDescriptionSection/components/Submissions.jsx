@@ -38,6 +38,7 @@ import { useTheme } from "@mui/material/styles";
 import { updateSubmissionsData } from "../../../../store/features/problem/problemSlice";
 import { getLatestSubmissionData } from "../../../../store/features/submission/submissionSlice";
 import { getSubmissionById } from "../../../../api/api";
+import { incrementXP } from "../../../../store/features/auth/authSlice";
 
 const Submissions = () => {
   const submissions = useSelector((state) => state.problem.submissions);
@@ -99,6 +100,30 @@ const Submissions = () => {
       code: latestSubmissionData.code || null,
     };
   }, [latestSubmissionData]);
+  const user = useSelector((state) => state.auth.user);
+
+  useEffect(() => {
+    if (!latestSubmissionData || !user) return;
+  
+    const isAccepted =
+      latestSubmissionData.submission_status === "AC" ||
+      latestSubmissionData.submission_status === "Accepted";
+  
+    const xpEarned = latestSubmissionData.xp_earned; // do NOT default to 10
+  
+    if (!isAccepted || !xpEarned || latestSubmissionData.xpAwarded) return;
+  
+    dispatch(incrementXP(xpEarned));
+  
+    // mark locally to prevent double increment on this front-end session
+    dispatch(
+      getLatestSubmissionData({
+        ...latestSubmissionData,
+        xpAwarded: true,
+      })
+    );
+  }, [latestSubmissionData, dispatch, user]);
+  
 
   // Automatically show detailed result when new su bmission comes in
   useEffect(() => {
