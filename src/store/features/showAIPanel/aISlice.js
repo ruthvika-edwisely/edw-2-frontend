@@ -1,21 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import * as api from "../../../api/api";
 import { sendAIMessageAPI } from "../../../api/api";
-
-/* =========================
-   Async Thunks
-========================= */
-
-export const fetchHints = createAsyncThunk(
-  "ai/fetchHints",
-  async ({ problemId }, thunkAPI) => {
-    const state = thunkAPI.getState();
-    const userId = state.auth.user?.id || null;
-
-    const data = await api.getProblemHints(problemId, userId);
-    return { problemId, data };
-  }
-);
+import { setUserXP } from "../auth/authSlice";
 
 export const unlockHint = createAsyncThunk(
   "ai/unlockHint",
@@ -33,9 +19,32 @@ export const unlockHint = createAsyncThunk(
       throw new Error(res.message || "Failed to unlock hint");
     }
 
+    // 🔥 THIS IS THE FIX
+    if (typeof res.data.remainingXP === "number") {
+      thunkAPI.dispatch(setUserXP(res.data.remainingXP));
+    }
+
     return { problemId, ...res.data };
   }
 );
+
+
+/* =========================
+   Async Thunks
+========================= */
+
+export const fetchHints = createAsyncThunk(
+  "ai/fetchHints",
+  async ({ problemId }, thunkAPI) => {
+    const state = thunkAPI.getState();
+    const userId = state.auth.user?.id || null;
+
+    const data = await api.getProblemHints(problemId, userId);
+    return { problemId, data };
+  }
+);
+
+
 
 export const sendMessage = createAsyncThunk(
   "ai/sendMessage",

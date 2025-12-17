@@ -81,17 +81,32 @@ export default function Leaderboard() {
   const xpToFirst = Math.max(0, firstXP - myXP);
 
   let progressToNextRank = 0;
-  if (currentUser && sortedUsers.length > 0) {
-    if (currentUserRank === 1) {
-      progressToNextRank = 100;
-    } else {
-      const me = sortedUsers[currentUserRank - 1];
-      const aboveMe = sortedUsers[currentUserRank - 2];
-      const gap = Math.max(1, aboveMe.totalXP - me.totalXP);
-      const gained = myXP - me.totalXP;
-      progressToNextRank = Math.min(100, Math.max(0, (gained / gap) * 100));
-    }
+
+if (currentUser && sortedUsers.length > 0 && currentUserRank) {
+  // Rank #1 → full bar
+  if (currentUserRank === 1) {
+    progressToNextRank = 100;
   }
+  // Last rank → empty bar
+  else if (currentUserRank === sortedUsers.length) {
+    progressToNextRank = 0;
+  }
+  // Middle users
+  else {
+    const above = sortedUsers[currentUserRank - 2]; // rank-1
+    const me = sortedUsers[currentUserRank - 1];    // rank
+    const below = sortedUsers[currentUserRank];     // rank+1
+
+    const range = Math.max(1, above.totalXP - below.totalXP);
+    const progress = me.totalXP - below.totalXP;
+
+    progressToNextRank = Math.min(
+      100,
+      Math.max(0, (progress / range) * 100)
+    );
+  }
+}
+
 
   /* ---------------- Helpers ---------------- */
   const getRowBg = (rank, isMe) => {

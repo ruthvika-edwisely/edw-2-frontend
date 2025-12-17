@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -31,8 +31,20 @@ export default function Navbar({ mode, setMode }) {
 
   const { user } = useSelector((state) => state.auth || {});
   const userXp = user?.xp ?? 0;
-
-
+  const [xpDelta, setXpDelta] = useState(null); // +10 / -5
+  const [prevXp, setPrevXp] = useState(userXp);
+  useEffect(() => {
+    if (userXp !== prevXp) {
+      const diff = userXp - prevXp;
+      setXpDelta(diff);
+  
+      const timeout = setTimeout(() => setXpDelta(null), 700);
+      setPrevXp(userXp);
+  
+      return () => clearTimeout(timeout);
+    }
+  }, [userXp, prevXp]);
+  
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   console.log("AUTH USER:", user);
@@ -78,7 +90,7 @@ export default function Navbar({ mode, setMode }) {
         borderBottom: `1px solid ${theme.palette.divider}`,
       }}
     >
-      <Toolbar sx={{ px: { xs: 2, md: 4 }, py: 2, gap: 3, minHeight: 72 }}>
+      <Toolbar sx={{ px: { xs: 2, md: 4 }, py: 2, gap: 3, minHeight: 72, overflow: "visible", }}>
         {/* Logo */}
         <Box
           component={RouterLink}
@@ -150,20 +162,58 @@ export default function Navbar({ mode, setMode }) {
         </IconButton>
 
         {/* XP Badge */}
-        <Chip
-  icon={<BoltIcon />}
-  label={userXp}
-  sx={{
-    backgroundColor: "transparent",
-    border: `1px solid ${theme.palette.xp.primary}`,
-    color: theme.palette.xp.primary,
-    fontWeight: 600,
-    ml: 1,
-    "& .MuiChip-icon": {
+        <Box sx={{ position: "relative", ml: 1 }}>
+  {/* Main XP chip */}
+  <Chip
+    icon={<BoltIcon />}
+    label={userXp}
+    sx={{
+      backgroundColor: "transparent",
+      border: `1px solid ${theme.palette.xp.primary}`,
       color: theme.palette.xp.primary,
-    },
-  }}
-/>
+      fontWeight: 600,
+      "& .MuiChip-icon": { color: theme.palette.xp.primary },
+    }}
+  />
+
+  {/* XP Delta Animation */}
+  {xpDelta !== null && (
+  <Chip
+    label={`${xpDelta > 0 ? "+" : ""}${xpDelta}`}
+    size="small"
+    sx={{
+      position: "absolute",
+      top: -18,
+      left: "50%",
+      fontSize: 12,
+      px: 0.5,
+      backgroundColor: "transparent",
+      color:
+        xpDelta > 0
+          ? theme.palette.success.main
+          : theme.palette.error.main,
+
+      animation: "xp-float 700ms ease-out forwards",
+
+      "@keyframes xp-float": {
+        "0%": {
+          opacity: 0,
+          transform: "translate(-50%, 8px)",
+        },
+        "30%": {
+          opacity: 1,
+        },
+        "100%": {
+          opacity: 0,
+          transform: "translate(-50%, -12px)",
+        },
+      },
+    }}
+  />
+)}
+
+</Box>
+
 
 
         {/* Avatar */}

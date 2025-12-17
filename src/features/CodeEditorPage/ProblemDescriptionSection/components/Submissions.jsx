@@ -109,20 +109,25 @@ const Submissions = () => {
       latestSubmissionData.submission_status === "AC" ||
       latestSubmissionData.submission_status === "Accepted";
   
-    const xpEarned = latestSubmissionData.xp_earned; // do NOT default to 10
+    const xpEarned = latestSubmissionData.xp_earned;
+    console.log("XP Earned:", xpEarned);
+    // guard conditions
+    if (!isAccepted) return;
+    if (!xpEarned || xpEarned <= 0) return;
+    if (latestSubmissionData.xpAwarded) return;
   
-    if (!isAccepted || !xpEarned || latestSubmissionData.xpAwarded) return;
-  
+    // ✅ increment XP in auth slice
     dispatch(incrementXP(xpEarned));
   
-    // mark locally to prevent double increment on this front-end session
+    // ✅ mark locally so it never increments again
     dispatch(
       getLatestSubmissionData({
         ...latestSubmissionData,
         xpAwarded: true,
       })
     );
-  }, [latestSubmissionData, dispatch, user]);
+  }, [latestSubmissionData?.submission_id]);
+  
   
 
   // Automatically show detailed result when new su bmission comes in

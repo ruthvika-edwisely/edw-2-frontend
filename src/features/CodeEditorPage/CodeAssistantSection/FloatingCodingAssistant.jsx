@@ -25,8 +25,15 @@ import {
   KeyboardArrowUp,
 } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
-import { togglePanelVisibility } from "../../../store/features/showAIPanel/showAISlice";
-import { fetchHints, sendMessage, addUserMessage, unlockHint } from "../../../store/features/showAIPanel/aISlice";
+import {
+  togglePanelVisibility,
+} from "../../../store/features/showAIPanel/showAISlice";
+import {
+  fetchHints,
+  sendMessage,
+  addUserMessage,
+  unlockHint,
+} from "../../../store/features/showAIPanel/aISlice";
 
 const HINTS = [
   { level: 0, label: "High-level hint", cost: 0 },
@@ -51,8 +58,10 @@ const FloatingCodingAssistant = ({ problem }) => {
   const messages = chat.messages || [];
   const hints = chat.hints || [];
   const unlockedHints = chat.unlockedHints || [];
-  const xp = chat.xp || 0;
   const loading = chat.loading || false;
+
+  // ✅ Get user's current XP from auth slice
+  const userXP = useSelector((state) => state.auth.user?.xp ?? 0);
 
   useEffect(() => {
     if (problem?.id) {
@@ -75,12 +84,13 @@ const FloatingCodingAssistant = ({ problem }) => {
     const hintData = hints.find((h) => h.level === hint.level);
     if (!hintData) return;
 
-    dispatch(addUserMessage({ problemId: problem.id, text: `Show me ${hint.label}` }));
+    dispatch(
+      addUserMessage({ problemId: problem.id, text: `Show me ${hint.label}` })
+    );
 
-    const unlocked = await dispatch(unlockHint({ problemId: problem.id, hintId: hintData.id })).unwrap();
-    if (unlocked?.text) {
-      dispatch(addUserMessage({ problemId: problem.id, text: unlocked.text, sender: "ai" }));
-    }
+    const unlocked = await dispatch(
+      unlockHint({ problemId: problem.id, hintId: hintData.id })
+    ).unwrap();
 
     setHintOpen(false);
   };
@@ -123,9 +133,13 @@ const FloatingCodingAssistant = ({ problem }) => {
           </Box>
           <Box sx={{ display: "flex", gap: 0.5 }}>
             <Chip
-              label={`${xp} XP`}
+              label={`${userXP} XP`}
               size="small"
-              sx={{ bgcolor: palette.problemPage.xpBg, color: palette.xp.primary, fontWeight: 700 }}
+              sx={{
+                bgcolor: palette.problemPage.xpBg,
+                color: palette.xp.primary,
+                fontWeight: 700,
+              }}
             />
             <IconButton size="small" sx={{ color: "inherit" }}>
               {isMinimized ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
@@ -213,7 +227,7 @@ const FloatingCodingAssistant = ({ problem }) => {
               <Box sx={{ p: 2, bgcolor: palette.background.paper }}>
                 {HINTS.map((hint) => {
                   const unlocked = unlockedHints.includes(hint.level);
-                  const canAfford = xp >= hint.cost;
+                  const canAfford = userXP >= hint.cost;
                   const next = hint.level === unlockedHints.length;
 
                   return (
@@ -233,7 +247,11 @@ const FloatingCodingAssistant = ({ problem }) => {
                     >
                       {hint.label}
                       {hint.cost > 0 && (
-                        <Chip label={`${hint.cost} XP`} size="small" sx={{ bgcolor: palette.xp.primary, color: palette.common.white }} />
+                        <Chip
+                          label={`${hint.cost} XP`}
+                          size="small"
+                          sx={{ bgcolor: palette.xp.primary, color: palette.common.white }}
+                        />
                       )}
                     </Button>
                   );

@@ -41,33 +41,32 @@ const authSlice = createSlice({
       localStorage.removeItem("user");
       document.cookie = "access_token=; Max-Age=0; path=/;";
     },
+  
     decrementXP(state, action) {
+      const cost = action.payload;
       if (state.user) {
-        const newXP = Math.max(0, state.user.xp - action.payload);
-        state.user = { ...state.user, xp: newXP };
+        state.user.xp = Math.max(0, state.user.xp - cost);
         localStorage.setItem("user", JSON.stringify(state.user));
       }
     },
-    
+  
     incrementXP(state, action) {
+      const gainedXP = action.payload;
       if (state.user) {
-        const newXP = state.user.xp + action.payload;
-        state.user = { ...state.user, xp: newXP }; // create new object for reactivity
+        state.user.xp += gainedXP;
         localStorage.setItem("user", JSON.stringify(state.user));
       }
     },
-    
     setUserXP(state, action) {
       if (state.user) {
-        state.user = { ...state.user, xp: action.payload };
+        state.user.xp = action.payload;
         localStorage.setItem("user", JSON.stringify(state.user));
       }
-    },
+    }
     
-    
-    
-
   },
+  
+
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
