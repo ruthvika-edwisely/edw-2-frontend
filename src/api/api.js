@@ -38,7 +38,7 @@ export const getAllProblems = async () => {
       companies: p.tags
         .filter(tag => tag.category === "Company")
         .map(tag => tag.name),
-      acceptance: p.acceptance || 0, // optional, if backend provides
+      acceptance: p.acceptance_rate || 0, // optional, if backend provides
     }));
 
     // Take first unsolved problem as daily challenge
@@ -478,4 +478,3 @@ export const fetchUserProgress = async (userId) => {
     return null;
   }
 };
-

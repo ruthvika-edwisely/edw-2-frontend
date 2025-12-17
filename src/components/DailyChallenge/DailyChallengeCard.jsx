@@ -47,7 +47,7 @@ function DailyChallenge() {
 
   if (loading || !dailyChallenge) {
     return (
-      <Card sx={{ backgroundColor: "background.paper", height: "100%" }}>
+      <Card sx={{ backgroundColor: "background.paper", height: "100%", minWidth: 836, }}>
         <CardContent sx={{ p: 3 }}>
           {/* Header */}
           <Box
