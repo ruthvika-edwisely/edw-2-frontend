@@ -179,9 +179,10 @@ const Description = () => {
       </Typography>
 
 
+        {console.log(testcasesData)}
       {/* ------------------------------- EXAMPLE ------------------------------- */}
       {testcasesData.filter(tc => !tc.isHidden).map((tc, idx) => 
-
+        
        (
       <Box
 
@@ -236,7 +237,7 @@ const Description = () => {
               overflowX: "auto",
             }}
           >
-            {tc?.input.split("\n").map((item, idx) => <Box key={idx} sx={{paddingY: "3px"}}>{item}</Box>)}
+            {tc?.input_to_show.split("\n").map((item, idx) => <Box key={idx} sx={{paddingY: "3px"}}>{item}</Box>)}
           </Box>
         </Box>
 
@@ -266,7 +267,7 @@ const Description = () => {
               overflowX: "auto",
             }}
           >
-            {tc?.expected_output}
+            {tc?.expected_output_to_show}
           </Typography>
         </Box>
 

@@ -1,15 +1,17 @@
-import { Box, Button, Divider, MenuItem, Select, Tooltip } from '@mui/material';
-import { MoonStar, Sun } from 'lucide-react';
+import { Box, Button, Divider, IconButton, MenuItem, Select, Tooltip } from '@mui/material';
+import { MoonStar, Sun, Undo, Undo2 } from 'lucide-react';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { togglePanelVisibility } from '../../../../../../store/features/showAIPanel/showAISlice';
 import { useTheme } from '@mui/material/styles';
 
-const CodeEditorMenu = ({ editorTheme, setEditorTheme, language, setLanguage, runCode, submitCode, afterRunCodeClick }) => {
+const CodeEditorMenu = ({ editorTheme, setEditorTheme, language, setLanguage, afterRunCodeClick, setIsDefault }) => {
 
     const theme = useTheme();
     const showAi = useSelector((state) => state.showAIPanel.showAI);
     const dispatch = useDispatch();
+    const runCode = useSelector(state => state.submissions.runCode);
+    const submitCode = useSelector(state => state.submissions.submitCodeFlag);
 
     const isLight = theme.palette.mode === "light";
 
@@ -142,6 +144,28 @@ const CodeEditorMenu = ({ editorTheme, setEditorTheme, language, setLanguage, ru
                         {!showAi ? "Ask AI" : "Close"}
                     </Button>
                 </Tooltip>
+
+                {/* RESET TO DEFAULT BUTTON */}
+                <Tooltip title="Reset to default code">
+                    <IconButton
+                        onClick={() => setIsDefault(true)}
+                        size="small"
+                        sx={{
+                        color: isLight
+                            ? theme.palette.grey[700]
+                            : theme.palette.grey[300],
+                        "&:hover": {
+                            bgcolor: isLight
+                            ? theme.palette.grey[200]
+                            : theme.palette.grey[900],
+                            color: theme.palette.primary.main,
+                        },
+                        }}
+                    >
+                        <Undo2 size={18} />
+                    </IconButton>
+                </Tooltip>
+
 
             </Box>
 

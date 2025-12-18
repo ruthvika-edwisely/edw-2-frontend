@@ -11,14 +11,28 @@ import { getProblemData } from "../../store/features/problem/problemSlice.js";
 import { togglePanelVisibility } from '../../store/features/showAIPanel/showAISlice.js';
 import { getProblemById } from '../../api/api.js';
 import { getLatestSubmissionData, getTestcaseResults } from '../../store/features/submission/submissionSlice.js';
+import { useTheme } from '@mui/material/styles';
 
 // Skeleton Component
 const CodeEditorPageSkeleton = () => {
+  const theme = useTheme();
+  const isLight = theme.palette.mode === "light";
+
+  // Define colors based on theme
+  const bgMain = isLight ? theme.palette.grey[50] : "#1e1e1e";
+  const bgCard = isLight ? theme.palette.common.white : "#252525";
+  const bgCode = isLight ? theme.palette.grey[100] : "#1e1e1e";
+  const borderColor = isLight ? theme.palette.grey[300] : "#333";
+  const skeletonBg = isLight ? theme.palette.grey[200] : "#2d2d2d";
+  const skeletonAnimation = isLight 
+    ? 'linear-gradient(90deg, transparent, rgba(0,0,0,0.04), transparent)'
+    : 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)';
+
   return (
     <Box sx={{ 
       height: "100vh", 
       display: "flex",
-      bgcolor: "#1e1e1e" // Dark background
+      bgcolor: bgMain
     }}>
       <PanelGroup direction='horizontal'>
         
@@ -28,8 +42,8 @@ const CodeEditorPageSkeleton = () => {
             height: "100%", 
             p: 3, 
             overflow: "auto",
-            bgcolor: "#1e1e1e",
-            borderRight: "1px solid #333"
+            bgcolor: bgMain,
+            borderRight: `1px solid ${borderColor}`
           }}>
             {/* Title */}
             <Skeleton 
@@ -38,9 +52,9 @@ const CodeEditorPageSkeleton = () => {
               height={40} 
               sx={{ 
                 mb: 2,
-                bgcolor: "#2d2d2d",
+                bgcolor: skeletonBg,
                 '&::after': {
-                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)'
+                  background: skeletonAnimation
                 }
               }}
             />
@@ -52,9 +66,9 @@ const CodeEditorPageSkeleton = () => {
                 width={80} 
                 height={24} 
                 sx={{ 
-                  bgcolor: "#2d2d2d",
+                  bgcolor: skeletonBg,
                   '&::after': {
-                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)'
+                    background: skeletonAnimation
                   }
                 }} 
               />
@@ -63,9 +77,9 @@ const CodeEditorPageSkeleton = () => {
                 width={100} 
                 height={24} 
                 sx={{ 
-                  bgcolor: "#2d2d2d",
+                  bgcolor: skeletonBg,
                   '&::after': {
-                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)'
+                    background: skeletonAnimation
                   }
                 }} 
               />
@@ -74,9 +88,9 @@ const CodeEditorPageSkeleton = () => {
                 width={90} 
                 height={24} 
                 sx={{ 
-                  bgcolor: "#2d2d2d",
+                  bgcolor: skeletonBg,
                   '&::after': {
-                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)'
+                    background: skeletonAnimation
                   }
                 }} 
               />
@@ -91,9 +105,9 @@ const CodeEditorPageSkeleton = () => {
                 height={20} 
                 sx={{ 
                   mb: 1,
-                  bgcolor: "#2d2d2d",
+                  bgcolor: skeletonBg,
                   '&::after': {
-                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)'
+                    background: skeletonAnimation
                   }
                 }} 
               />
@@ -107,9 +121,9 @@ const CodeEditorPageSkeleton = () => {
               sx={{ 
                 mb: 2, 
                 mt: 3,
-                bgcolor: "#2d2d2d",
+                bgcolor: skeletonBg,
                 '&::after': {
-                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)'
+                  background: skeletonAnimation
                 }
               }} 
             />
@@ -120,9 +134,9 @@ const CodeEditorPageSkeleton = () => {
               sx={{ 
                 mb: 3, 
                 borderRadius: 1,
-                bgcolor: "#252525",
+                bgcolor: isLight ? theme.palette.grey[100] : "#252525",
                 '&::after': {
-                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)'
+                  background: skeletonAnimation
                 }
               }} 
             />
@@ -134,9 +148,9 @@ const CodeEditorPageSkeleton = () => {
               height={30} 
               sx={{ 
                 mb: 2,
-                bgcolor: "#2d2d2d",
+                bgcolor: skeletonBg,
                 '&::after': {
-                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)'
+                  background: skeletonAnimation
                 }
               }} 
             />
@@ -148,9 +162,9 @@ const CodeEditorPageSkeleton = () => {
                 height={20} 
                 sx={{ 
                   mb: 1,
-                  bgcolor: "#2d2d2d",
+                  bgcolor: skeletonBg,
                   '&::after': {
-                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)'
+                    background: skeletonAnimation
                   }
                 }} 
               />
@@ -170,7 +184,7 @@ const CodeEditorPageSkeleton = () => {
                 height: "100%", 
                 display: "flex", 
                 flexDirection: "column",
-                bgcolor: "#1e1e1e"
+                bgcolor: bgCode
               }}>
                 {/* Editor Header */}
                 <Box sx={{ 
@@ -178,8 +192,8 @@ const CodeEditorPageSkeleton = () => {
                   justifyContent: "space-between",
                   alignItems: "center",
                   p: 2,
-                  borderBottom: "1px solid #333",
-                  bgcolor: "#252525"
+                  borderBottom: `1px solid ${borderColor}`,
+                  bgcolor: bgCard
                 }}>
                   <Box sx={{ display: "flex", gap: 1 }}>
                     <Skeleton 
@@ -187,9 +201,9 @@ const CodeEditorPageSkeleton = () => {
                       width={100} 
                       height={32} 
                       sx={{ 
-                        bgcolor: "#2d2d2d",
+                        bgcolor: skeletonBg,
                         '&::after': {
-                          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)'
+                          background: skeletonAnimation
                         }
                       }} 
                     />
@@ -198,9 +212,9 @@ const CodeEditorPageSkeleton = () => {
                       width={80} 
                       height={32} 
                       sx={{ 
-                        bgcolor: "#2d2d2d",
+                        bgcolor: skeletonBg,
                         '&::after': {
-                          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)'
+                          background: skeletonAnimation
                         }
                       }} 
                     />
@@ -211,9 +225,9 @@ const CodeEditorPageSkeleton = () => {
                       width={80} 
                       height={32} 
                       sx={{ 
-                        bgcolor: "#2d2d2d",
+                        bgcolor: skeletonBg,
                         '&::after': {
-                          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)'
+                          background: skeletonAnimation
                         }
                       }} 
                     />
@@ -222,9 +236,9 @@ const CodeEditorPageSkeleton = () => {
                       width={80} 
                       height={32} 
                       sx={{ 
-                        bgcolor: "#2d2d2d",
+                        bgcolor: skeletonBg,
                         '&::after': {
-                          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)'
+                          background: skeletonAnimation
                         }
                       }} 
                     />
@@ -232,7 +246,7 @@ const CodeEditorPageSkeleton = () => {
                 </Box>
 
                 {/* Editor Body */}
-                <Box sx={{ flex: 1, p: 2, bgcolor: "#1e1e1e" }}>
+                <Box sx={{ flex: 1, p: 2, bgcolor: bgCode }}>
                   {[...Array(12)].map((_, i) => (
                     <Skeleton 
                       key={i}
@@ -241,9 +255,9 @@ const CodeEditorPageSkeleton = () => {
                       height={24} 
                       sx={{ 
                         mb: 0.5,
-                        bgcolor: "#2d2d2d",
+                        bgcolor: skeletonBg,
                         '&::after': {
-                          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)'
+                          background: skeletonAnimation
                         }
                       }}
                     />
@@ -260,16 +274,16 @@ const CodeEditorPageSkeleton = () => {
                 height: "100%", 
                 display: "flex", 
                 flexDirection: "column",
-                bgcolor: "#1e1e1e"
+                bgcolor: bgCode
               }}>
                 {/* Testcase Header */}
                 <Box sx={{ 
                   display: "flex",
                   gap: 2,
                   p: 2,
-                  borderTop: "1px solid #333",
-                  borderBottom: "1px solid #333",
-                  bgcolor: "#252525"
+                  borderTop: `1px solid ${borderColor}`,
+                  borderBottom: `1px solid ${borderColor}`,
+                  bgcolor: bgCard
                 }}>
                   {[80, 80, 80].map((width, i) => (
                     <Skeleton 
@@ -278,9 +292,9 @@ const CodeEditorPageSkeleton = () => {
                       width={width} 
                       height={32} 
                       sx={{ 
-                        bgcolor: "#2d2d2d",
+                        bgcolor: skeletonBg,
                         '&::after': {
-                          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)'
+                          background: skeletonAnimation
                         }
                       }} 
                     />
@@ -288,16 +302,16 @@ const CodeEditorPageSkeleton = () => {
                 </Box>
 
                 {/* Testcase Body */}
-                <Box sx={{ flex: 1, p: 2, bgcolor: "#1e1e1e" }}>
+                <Box sx={{ flex: 1, p: 2, bgcolor: bgCode }}>
                   <Skeleton 
                     variant="text" 
                     width="20%" 
                     height={24} 
                     sx={{ 
                       mb: 1,
-                      bgcolor: "#2d2d2d",
+                      bgcolor: skeletonBg,
                       '&::after': {
-                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)'
+                        background: skeletonAnimation
                       }
                     }} 
                   />
@@ -308,10 +322,10 @@ const CodeEditorPageSkeleton = () => {
                     sx={{ 
                       mb: 2, 
                       borderRadius: 1,
-                      bgcolor: "#252525",
-                      border: "1px solid #333",
+                      bgcolor: isLight ? theme.palette.grey[100] : "#252525",
+                      border: `1px solid ${borderColor}`,
                       '&::after': {
-                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)'
+                        background: skeletonAnimation
                       }
                     }} 
                   />
@@ -322,9 +336,9 @@ const CodeEditorPageSkeleton = () => {
                     height={24} 
                     sx={{ 
                       mb: 1,
-                      bgcolor: "#2d2d2d",
+                      bgcolor: skeletonBg,
                       '&::after': {
-                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)'
+                        background: skeletonAnimation
                       }
                     }} 
                   />
@@ -334,10 +348,10 @@ const CodeEditorPageSkeleton = () => {
                     height={60} 
                     sx={{ 
                       borderRadius: 1,
-                      bgcolor: "#252525",
-                      border: "1px solid #333",
+                      bgcolor: isLight ? theme.palette.grey[100] : "#252525",
+                      border: `1px solid ${borderColor}`,
                       '&::after': {
-                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.04), transparent)'
+                        background: skeletonAnimation
                       }
                     }} 
                   />
