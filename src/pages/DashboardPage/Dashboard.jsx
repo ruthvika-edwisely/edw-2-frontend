@@ -1,9 +1,9 @@
 import { Box } from "@mui/material";
-import DailyChallengeCard from "../../components/DailyChallenge/DailyChallengeCard";
-import ProblemTable from "../../components/Problems/ProblemTable";
-import ProgressCard from "../../components/Progress/ProgressCard";
-import LeaderboardCard from "../../components/Leaderboard/LeaderboardCard";
-import TopicGrid from "../../components/Topics/TopicGrid";
+import DailyChallengeCard from "../../features/Dashboard/components/DailyChallenge/DailyChallengeCard";
+import ProblemTable from "../../features/Dashboard/components/Problems/ProblemTable";
+import ProgressCard from "../../features/Dashboard/components/Progress/ProgressCard";
+import LeaderboardCard from "../../features/Dashboard/components/Leaderboard/LeaderboardCard";
+import TopicGrid from "../../features/Dashboard/components/Topics/TopicGrid";
 
 export default function Dashboard() {
   return (
@@ -32,7 +32,7 @@ export default function Dashboard() {
       >
         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
           <DailyChallengeCard />
-          <TopicGrid navigateOnClick />
+          <TopicGrid navigateOnClick={true}/>
           <ProblemTable />
         </Box>
   

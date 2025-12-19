@@ -1,36 +1,31 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
   Card,
   CardContent,
   Typography,
   Box,
-  LinearProgress,
   Skeleton,
   useTheme,
 } from "@mui/material";
 import ReactECharts from "echarts-for-react";
-import { fetchUserProgress } from "../../api/api";
+import { fetchUserProgress } from "../../../../api/api";
+import ProgressBar from "../../../../components/progressbar/ProgressBar"; // import ProgressBar
 
 function ProgressCard() {
   const theme = useTheme();
   const { user } = useSelector((state) => state.auth);
   const [progress, setProgress] = useState(null);
   const [loading, setLoading] = useState(true);
+
   const cardSx = {
     backgroundColor: "background.paper",
     borderRadius: 3,
-  
-    /* Desktop fixed size */
     width: { lg: 392 },
-  
-    /* Below 1380px → responsive */
     maxWidth: { xs: "100%", lg: 392 },
-  
-    /* Prevent height jump */
     minHeight: 456,
   };
-  
+  const h1 = { fontWeight: 600, fontSize: 14 }; 
 
   useEffect(() => {
     if (!user?.id) return;
@@ -59,8 +54,9 @@ function ProgressCard() {
   if (!user) {
     return (
       <Card sx={cardSx}>
-
-        <Typography>Please login to see your progress.</Typography>
+        <CardContent sx={{ p: 3 }}>
+          <Typography>Please login to see your progress.</Typography>
+        </CardContent>
       </Card>
     );
   }
@@ -68,7 +64,6 @@ function ProgressCard() {
   if (loading || !progress) {
     return (
       <Card sx={cardSx}>
-
         <CardContent sx={{ p: 3 }}>
           <Skeleton width={140} height={28} />
           <Box sx={{ display: "flex", gap: 3, mt: 2, mb: 3 }}>
@@ -78,10 +73,11 @@ function ProgressCard() {
           <Skeleton height={120} sx={{ borderRadius: 2, mb: 3 }} />
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {["easy", "medium", "hard"].map((level) => (
-              <Box key={level}>
-                <Skeleton width="100%" height={20} sx={{ mb: 0.5 }} />
-                <Skeleton width="100%" height={6} sx={{ borderRadius: 3 }} />
-              </Box>
+              <ProgressBar
+                key={level}
+                label={level.charAt(0).toUpperCase() + level.slice(1)}
+                loading={true}
+              />
             ))}
           </Box>
         </CardContent>
@@ -155,7 +151,6 @@ function ProgressCard() {
 
   return (
     <Card sx={cardSx}>
-
       <CardContent sx={{ p: 3 }}>
         <Typography variant="h6" fontWeight={600} mb={3}>
           Your Progress
@@ -213,38 +208,32 @@ function ProgressCard() {
         </Box>
 
         {/* Difficulty bars */}
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          {["easy", "medium", "hard"].map((level) => {
-            const diff = difficultyColors[level];
-            const percent =
-              difficultyData[level].total > 0
-                ? (difficultyData[level].solved / difficultyData[level].total) * 100
-                : 0;
+        
+              
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+  {["easy", "medium", "hard"].map((level) => {
+    const diff = difficultyColors[level];
+    const percent =
+      difficultyData[level].total > 0
+        ? (difficultyData[level].solved / difficultyData[level].total) * 100
+        : 0;
 
-            return (
-              <Box key={level}>
-                <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
-                  <Typography variant="body2" fontWeight={600}>
-                    {level.charAt(0).toUpperCase() + level.slice(1)}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {difficultyData[level].solved}/{difficultyData[level].total}
-                  </Typography>
-                </Box>
-                <LinearProgress
-                  variant="determinate"
-                  value={percent}
-                  sx={{
-                    height: 6,
-                    borderRadius: 3,
-                    backgroundColor: diff.background + "33",
-                    "& .MuiLinearProgress-bar": { backgroundColor: diff.text, borderRadius: 3 },
-                  }}
-                />
-              </Box>
-            );
-          })}
-        </Box>
+    return (
+      <ProgressBar
+        key={level}
+        label={level.charAt(0).toUpperCase() + level.slice(1)}
+        labelSx={h1}
+        sideText={`${difficultyData[level].solved}/${difficultyData[level].total}`}
+        value={percent}
+        color={diff.text}
+        backgroundColor={diff.background + "33"}
+        height={6}
+      />
+    );
+  })}
+</Box>
+
+           
       </CardContent>
     </Card>
   );
