@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+// const BASE_URL = import.meta.env.VITE_BASE_URL;
+const BASE_URL = "https://edw-2-backend.onrender.com/api/v1"
 
 export const api = axios.create({
   baseURL: BASE_URL,
@@ -490,4 +491,5 @@ export const fetchUserProgress = async (userId) => {
     console.error("Error fetching user progress:", err);
     return null;
   }
+
 };
