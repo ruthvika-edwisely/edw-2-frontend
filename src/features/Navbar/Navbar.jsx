@@ -22,9 +22,9 @@ import {
 import { useLocation, Link as RouterLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../store/features/auth/authSlice";
-import SwitchTabs from "../tabs/SwitchTabs"; // import TabsList
-import TagChip from "../chips/TagChip"; // adjust path
-import ThemeToggleButton from "../buttons/ThemeToggleButton"; // import ThemeToggleButton
+import SwitchTabs from "../../components/tabs/SwitchTabs"; // import TabsList
+import TagChip from "../../components/chips/TagChip"; // adjust path
+import ThemeToggleButton from "../../components/buttons/ThemeToggleButton"; // import ThemeToggleButton
 export default function Navbar({ mode, setMode }) {
   const theme = useTheme();
   const dispatch = useDispatch();

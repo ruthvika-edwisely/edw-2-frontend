@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
-import HeroSection from "../../components/Login/HeroSection";
-import LoginCard from "../../components/Login/LoginCard";
+import HeroSection from "../../features/Login/HeroSection";
+import LoginCard from "../../features/Login/LoginCard";
 
 export default function LoginPage() {
   return (

@@ -18,7 +18,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../store/features/auth/authSlice";
-
+import PrimaryActionButton from "../../components/buttons/PrimaryActionButton";
 export default function LoginCard() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -163,34 +163,28 @@ export default function LoginCard() {
         </Box>
 
         {/* Sign In */}
-        <Button
-          fullWidth
-          disabled={loading}
-          onClick={handleSubmit}
-          sx={{
-            py: 1.4,
-            borderRadius: "8px",
-            background:
-              "linear-gradient(to right, #2563eb, #3b82f6)",
-            textTransform: "none",
-            fontSize: "1rem",
-            fontWeight: 600,
-            color: "#fff",
-            "&:hover": {
-              background:
-                "linear-gradient(to right, #1d4ed8, #2563eb)",
-            },
-            "&:disabled": {
-              opacity: 0.7,
-            },
-          }}
-        >
-          {loading ? (
-            <CircularProgress size={22} sx={{ color: "#fff" }} />
-          ) : (
-            "Sign In →"
-          )}
-        </Button>
+        <PrimaryActionButton
+  fullWidth
+  label="Sign In →"
+  onClick={handleSubmit}
+  disabled={loading}
+  loading={loading}
+  sx={{
+    py: 1.4,
+    borderRadius: "8px",
+    background: "linear-gradient(to right, #2563eb, #3b82f6)",
+    textTransform: "none",
+    fontSize: "1rem",
+    fontWeight: 600,
+    color: "#fff",
+    "&:hover": {
+      background: "linear-gradient(to right, #1d4ed8, #2563eb)",
+    },
+    "&:disabled": {
+      opacity: 0.7,
+    },
+  }}
+/>
       </CardContent>
     </Card>
   );
