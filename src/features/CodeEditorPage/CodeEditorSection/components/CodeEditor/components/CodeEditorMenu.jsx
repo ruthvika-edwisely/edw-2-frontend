@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { togglePanelVisibility } from '../../../../../../store/reducers/showAIReducer';
 import { useTheme } from '@mui/material/styles';
 import DropdownList from "../../../../../../components/dropdowns/DropdownList"
+import PrimaryActionButton from '../../../../../../components/buttons/PrimaryActionButton';
 
 
 const CodeEditorMenu = ({ editorTheme, setEditorTheme, language, setLanguage, afterRunCodeClick, setIsDefault }) => {
@@ -190,7 +191,8 @@ const CodeEditorMenu = ({ editorTheme, setEditorTheme, language, setLanguage, af
             {/* RIGHT */}
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
 
-                <Button
+
+                <PrimaryActionButton 
                     variant="contained"
                     size="small"
                     sx={{
@@ -201,11 +203,10 @@ const CodeEditorMenu = ({ editorTheme, setEditorTheme, language, setLanguage, af
                     }}
                     disabled={runCode || submitCode}
                     onClick={() => afterRunCodeClick("Run")}
-                >
-                    {runCode ? "Processing...." : "Run"}
-                </Button>
+                    label={runCode ? "Processing...." : "Run"}
+                />
 
-                <Button
+                <PrimaryActionButton 
                     variant="contained"
                     size="small"
                     sx={{
@@ -218,10 +219,8 @@ const CodeEditorMenu = ({ editorTheme, setEditorTheme, language, setLanguage, af
                     onClick={() => {
                         afterRunCodeClick("Submit")
                     }}
-                >
-                    {submitCode ? "Submitting...." : "Submit"}
-                </Button>
-
+                    label={submitCode ? "Submitting...." : "Submit"}
+                />
             </Box>
 
         </Box>
