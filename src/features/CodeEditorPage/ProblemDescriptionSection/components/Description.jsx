@@ -5,6 +5,7 @@ import {
   Stack,
   Typography,
   Divider,
+  Box,
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useTheme } from "@mui/material/styles";
@@ -102,6 +103,9 @@ const Description = () => {
   ];
 
 
+  console.log("desc : ", description.split('\n'));
+
+
 
 
   return (
@@ -191,7 +195,7 @@ const Description = () => {
           mb: 3,
         }}
       >
-        {description}
+        {description.split('\\n').map((d, idx) => <Box key={idx}>{d + "\n"}</Box>)}
       </Typography>
 
 

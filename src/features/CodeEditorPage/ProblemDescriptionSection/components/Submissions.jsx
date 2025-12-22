@@ -38,7 +38,7 @@ import { useTheme } from "@mui/material/styles";
 import { updateSubmissionsData } from "../../../../store/features/problem/problemSlice";
 import { getLatestSubmissionData } from "../../../../store/features/submission/submissionSlice";
 import { getSubmissionById } from "../../../../api/api";
-import { incrementXP } from "../../../../store/features/auth/authSlice";
+import { incrementXP } from "../../../../store/reducers/authReducer.js";
 import SubmissionDialog from "../../components/submission/SubmissionDialog";
 import SubmissionRow from "../../components/submission/SubmissionRow";
 import SubmissionList from "../../components/submission/SubmissionList";

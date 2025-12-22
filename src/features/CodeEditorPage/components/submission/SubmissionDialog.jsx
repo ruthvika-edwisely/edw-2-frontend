@@ -3,28 +3,18 @@ import {
   Dialog,
   DialogContent,
   IconButton,
-  Box,
-  Tooltip,
-  Typography,
-  Card,
+  Box
 } from "@mui/material";
 
 import {
   X,
-  Copy,
-  Check,
   Clock,
   Database
 } from "lucide-react";
 
-
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useTheme } from "@mui/material/styles";
-import { updateSubmissionsData } from "../../../../store/features/problem/problemSlice";
-import { getLatestSubmissionData } from "../../../../store/features/submission/submissionSlice";
-import { getSubmissionById } from "../../../../api/api";
-import { incrementXP } from "../../../../store/features/auth/authSlice";
+
+
 
 import { getStatusColor, normalizeStatus, getDateTimeDisplay, getLanguageDisplay } from "../../utils/formatFunctions.js";
 import DialogSkeleton from "../skeletons/DialogSkeleton.jsx";
