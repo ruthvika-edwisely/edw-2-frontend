@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import Navbar from "../../components/Navbar/Navbar";
+import Navbar from "../../features/Navbar/Navbar";
 import { Outlet } from "react-router-dom";
 
 const LayoutPage = ({ mode, setMode }) => {

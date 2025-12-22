@@ -38,7 +38,7 @@ import { useTheme } from "@mui/material/styles";
 import { updateSubmissionsData } from "../../../../store/features/problem/problemSlice";
 import { getLatestSubmissionData } from "../../../../store/features/submission/submissionSlice";
 import { getSubmissionById } from "../../../../api/api";
-import { incrementXP } from "../../../../store/features/auth/authSlice";
+import { incrementXP } from "../../../../store/reducers/authReducer.js";
 
 const Submissions = () => {
   const submissions = useSelector((state) => state.problem.submissions);

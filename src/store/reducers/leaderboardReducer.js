@@ -1,25 +1,15 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchUsers } from "../../../api/api.js"; // adjust path
+import { createSlice } from "@reduxjs/toolkit";
+import { getLeaderboardUsers } from "../actions/leaderboardActions";
 
-export const getLeaderboardUsers = createAsyncThunk(
-  "leaderboard/getLeaderboardUsers",
-  async (_, { rejectWithValue }) => {
-    try {
-      const users = await fetchUsers();
-      return users; // array of users
-    } catch (err) {
-      return rejectWithValue(err.response?.data || err.message);
-    }
-  }
-);
+const initialState = {
+  users: [],
+  loading: false,
+  error: null,
+};
 
 const leaderboardSlice = createSlice({
   name: "leaderboard",
-  initialState: {
-    users: [],
-    loading: false,
-    error: null,
-  },
+  initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -29,7 +19,7 @@ const leaderboardSlice = createSlice({
       })
       .addCase(getLeaderboardUsers.fulfilled, (state, action) => {
         state.loading = false;
-        state.users = action.payload; // ✅ now this is an array
+        state.users = action.payload;
       })
       .addCase(getLeaderboardUsers.rejected, (state, action) => {
         state.loading = false;

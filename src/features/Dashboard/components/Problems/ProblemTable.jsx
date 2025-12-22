@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import DropdownList from "../../../../components/dropdowns/DropdownList";
 import SearchBar from "../../../../components/searchbar/SearchBar";
-import { fetchDashboardProblems } from "../../../../store/features/dashboard/problemDashboardSlice";
+import { fetchDashboardProblems } from "../../../../store/actions/dashboardActions";
 import MUIDataGrid from "../../../../components/dataGrid/MUIDataGrid";
 import TagChip from "../../../../components/chips/TagChip"; // Import TagChip
 import PrimaryActionButton from "../../../../components/buttons/PrimaryActionButton";

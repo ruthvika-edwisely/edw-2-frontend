@@ -1,29 +1,18 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getAllProblems } from "../../../api/api";
+import { createSlice } from "@reduxjs/toolkit";
+import { fetchDashboardProblems } from "../actions/dashboardActions";
 
-// Async thunk to fetch problems from API
-export const fetchDashboardProblems = createAsyncThunk(
-  "dashboard/fetchProblems",
-  async (_, { rejectWithValue }) => {
-    try {
-      const data = await getAllProblems();
-      return data;
-    } catch (err) {
-      return rejectWithValue(err.message || "Failed to fetch problems");
-    }
-  }
-);
+const initialState = {
+  dailyChallenge: null,
+  problems: [],
+  loading: false,
+  error: null,
+};
 
 const problemDashboardSlice = createSlice({
   name: "dashboard",
-  initialState: {
-    dailyChallenge: null,
-    problems: [],
-    loading: false,
-    error: null,
-  },
+  initialState,
   reducers: {
-    clearDashboard(state) {
+    clearDashboard: (state) => {
       state.dailyChallenge = null;
       state.problems = [];
       state.loading = false;

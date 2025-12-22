@@ -7,9 +7,9 @@ import { useNavigate } from "react-router-dom";
 import InfoCard from "../../../../components/cards/InfoCard";
 import {
   fetchTopics,
-  setSelectedTopic,
-  clearSelectedTopic,
-} from "../../../../store/features/topic/topicDashboardSlice";
+  
+} from "../../../../store/actions/topicDashboardActions";
+import { clearSelectedTopic,setSelectedTopic } from "../../../../store/reducers/topicDashboardReducer";
 
 import {
   AccountTree as AccountTreeIcon,
