@@ -4,19 +4,16 @@ import {
   Paper,
   Stack,
   Typography,
-  Box,
   Divider,
-  List,
-  ListItem,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
 } from "@mui/material";
-import { Code2, Building2, Lightbulb } from "lucide-react";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useSelector } from "react-redux";
 import { useTheme } from "@mui/material/styles";
 import { Bolt as BoltIcon } from "@mui/icons-material";
+import ExampleBlock from "../../components/ExampleBlock.jsx";
+import ConstraintsSection from "../../components/description/ConstraintsSection.jsx";
+import HintsSection from "../../components/description/HintsSection.jsx";
+import TagsSection from "../../components/description/TagsSection.jsx";
+import CompHeading from "../../components/CompHeading.jsx";
 
 const Description = () => {
   const theme = useTheme();
@@ -47,14 +44,65 @@ const Description = () => {
   const currentDifficultyStyle =
     difficultyStyles[difficulty] || difficultyStyles.Easy;
 
-  /* ---------------- Scroll Refs ---------------- */
+
+
+
   const topicsRef = useRef(null);
   const companiesRef = useRef(null);
+  
+  const scrollToTopics = () => {
+    topicsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+  const scrollToCompanies = () => {
+    companiesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
-  const chips = [
-    { name: "Topics", fn: () => topicsRef.current?.scrollIntoView({ behavior: "smooth" }) },
-    { name: "Companies", fn: () => companiesRef.current?.scrollIntoView({ behavior: "smooth" }) },
+  const tagSectionData = [
+    {
+      "name": "Topics",
+      "category": "Topic",
+      "sx": {
+              background: palette.topicChipBg,
+              color: palette.topicChipText,
+              border: `1px solid ${palette.topicChipBorder}`,
+              borderRadius: "6px",
+              fontWeight: 600,
+              fontSize: "0.813rem",
+              height: "26px",
+              transition: "all 0.2s ease",
+              "&:hover": {
+                  background: palette.chipHoverBg,
+                  transform: "translateY(-1px)",
+              },
+            },
+      "ref": topicsRef,
+      "fn": scrollToTopics
+    },
+    
+    {
+      "name": "Companies",
+      "category": "Company",
+      "sx": {
+              background: palette.companyChipBg,
+              color: palette.companyChipText,
+              border: `1px solid ${palette.companyChipBorder}`,
+              borderRadius: "6px",
+              fontWeight: 600,
+              fontSize: "0.813rem",
+              height: "26px",
+              transition: "all 0.2s ease",
+              "&:hover": {
+                background: palette.chipHoverBg,
+                transform: "translateY(-1px)",
+              },
+            },
+      "ref": companiesRef,
+      "fn": scrollToCompanies
+    }
   ];
+
+
+
 
   return (
     <Paper
@@ -69,9 +117,19 @@ const Description = () => {
     >
       {/* ---------------- Title ---------------- */}
       <Stack spacing={2} sx={{ mb: 3 }}>
-        <Typography variant="h4" sx={{ fontWeight: 700, color: palette.textPrimary }}>
-          {id}. {title}
-        </Typography>
+
+
+        <CompHeading 
+          title={`${id}. ${title}`}
+          variant="h4"
+          sx={{
+            fontWeight: 700,
+            color: palette.textPrimary,
+            fontSize: { xs: "1.5rem", sm: "2rem" },
+            letterSpacing: "-0.02em",
+            lineHeight: 1.2,
+          }}
+        />
 
         <Stack direction="row" spacing={1} flexWrap="wrap">
           <Chip
@@ -88,15 +146,22 @@ const Description = () => {
             icon={<BoltIcon />}
             label={`${xp_reward} XP`}
             sx={{
-              backgroundColor: palette.xpBg,
+              backgroundColor:  theme.palette.problemPage.xpBg,
               border: `1px solid ${theme.palette.xp.primary}`,
               color: theme.palette.xp.primary,
               fontWeight: 600,
-              height: 28,
+              height: "28px",
+              borderRadius: "8px",
+              ml: 1,
+              "& .MuiChip-icon": {
+                color: theme.palette.xp.primary,
+              },
             }}
           />
 
-          {chips.map((chip, idx) => (
+
+
+         {tagSectionData.map((chip, idx) => (
             <Chip
               key={idx}
               label={chip.name}
@@ -113,7 +178,10 @@ const Description = () => {
         </Stack>
       </Stack>
 
-      {/* ---------------- Description ---------------- */}
+
+
+
+      {/* ------------------------------- DESCRIPTION ------------------------------- */}
       <Typography
         sx={{
           whiteSpace: "pre-wrap",
@@ -126,150 +194,47 @@ const Description = () => {
         {description}
       </Typography>
 
-      {/* ---------------- Examples ---------------- */}
-      {testcasesData
-        .filter((tc) => !tc?.isHidden)
-        .map((tc, idx) => (
-          <Box
-            key={idx}
-            sx={{
-              background: palette.exampleBg,
-              borderRadius: 2,
-              p: 2.5,
-              mb: 3,
-              border: `1px solid ${palette.cardBorder}`,
-              borderLeft: `3px solid ${palette.exampleBorder}`,
-            }}
-          >
-            <Typography fontWeight={700} mb={2}>
-              Example {tc?.order ?? idx + 1}
-            </Typography>
 
-            {/* Input */}
-            <Box mb={1.5}>
-              <Typography fontSize="0.75rem">Input:</Typography>
-              <Box
-                sx={{
-                  fontFamily: "monospace",
-                  background: palette.codeBg,
-                  p: 1.5,
-                  borderRadius: 1.5,
-                }}
-              >
-                {(tc?.input_to_show ?? "")
-                  .split("\n")
-                  .map((line, i) => (
-                    <Box key={i}>{line}</Box>
-                  ))}
-              </Box>
-            </Box>
+        {console.log(testcasesData)}
 
-            {/* Output */}
-            <Box mb={1.5}>
-              <Typography fontSize="0.75rem">Output:</Typography>
-              <Box
-                sx={{
-                  fontFamily: "monospace",
-                  background: palette.codeBg,
-                  p: 1.5,
-                  borderRadius: 1.5,
-                }}
-              >
-                {tc?.expected_output_to_show ?? ""}
-              </Box>
-            </Box>
 
-            {/* Explanation */}
-            {tc?.explanation && (
-              <Box>
-                <Typography fontSize="0.75rem">Explanation:</Typography>
-                <Box
-                  sx={{
-                    fontFamily: "monospace",
-                    background: palette.codeBg,
-                    p: 1.5,
-                    borderRadius: 1.5,
-                  }}
-                >
-                  {tc.explanation}
-                </Box>
-              </Box>
-            )}
-          </Box>
-        ))}
 
-      {/* ---------------- Constraints ---------------- */}
-      <Box mb={3}>
-        <Typography fontWeight={700} mb={1.5}>
-          Constraints:
-        </Typography>
-
-        <List dense>
-          {constraintsData.map((item) => (
-            <ListItem key={item.id} sx={{ p: 0 }}>
-              <Typography>• {item.content}</Typography>
-            </ListItem>
-          ))}
-        </List>
-      </Box>
-
-      <Divider sx={{ mb: 3 }} />
-
-      {/* ---------------- Hints ---------------- */}
-      {hintsData.length > 0 && (
-        <Box mb={3}>
-          <Stack direction="row" spacing={1} mb={2}>
-            <Lightbulb size={18} />
-            <Typography fontWeight={700}>Hints</Typography>
-          </Stack>
-
-          {hintsData.map((hint, index) => (
-            <Accordion key={hint.id}>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography>Hint {index + 1}</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Typography whiteSpace="pre-wrap">{hint.content}</Typography>
-              </AccordionDetails>
-            </Accordion>
-          ))}
-        </Box>
+      {/* ------------------------------- EXAMPLES SECTION  ------------------------------- */}
+      {testcasesData.filter(tc => !tc.isHidden).map((tc, idx) => 
+        <ExampleBlock key={idx} tc={tc} idx={idx} />
       )}
 
-      <Divider sx={{ mb: 3 }} />
+      
+
+      {/* ------------------------------- CONSTRAINTS ------------------------------- */}
+      <ConstraintsSection data={constraintsData} />
+      <Divider sx={{ mb: 3, borderColor: palette.divider }} />
+
+
+
+
+      {/* ------------------------------- HINTS SECTION ------------------------------- */}
+      <HintsSection data={hintsData} />
+      <Divider sx={{ mb: 3, borderColor: palette.divider }} />
+
+
+
 
       {/* ---------------- Tags ---------------- */}
       <Stack spacing={3}>
-        <Box ref={topicsRef}>
-          <Stack direction="row" spacing={1} mb={1.5}>
-            <Code2 size={18} />
-            <Typography fontWeight={700}>Topics</Typography>
-          </Stack>
-
-          <Stack direction="row" spacing={1} flexWrap="wrap">
-            {tagsData
-              .filter((t) => t.category === "Topic")
-              .map((tag) => (
-                <Chip key={tag.id} label={tag.name} size="small" />
-              ))}
-          </Stack>
-        </Box>
-
-        <Box ref={companiesRef}>
-          <Stack direction="row" spacing={1} mb={1.5}>
-            <Building2 size={18} />
-            <Typography fontWeight={700}>Companies</Typography>
-          </Stack>
-
-          <Stack direction="row" spacing={1} flexWrap="wrap">
-            {tagsData
-              .filter((t) => t.category === "Company")
-              .map((tag) => (
-                <Chip key={tag.id} label={tag.name} size="small" />
-              ))}
-          </Stack>
-        </Box>
+        {/* Topics and Companies */}
+        {tagSectionData.map((tag, idx) => (
+          <TagsSection 
+            key={idx}
+            data={tagsData}
+            category={tag.category}
+            tagsRef={tag.ref}
+            scrollToTags={tag.fn}
+            sx={tag.sx}
+          />
+        ))}
       </Stack>
+
     </Paper>
   );
 };

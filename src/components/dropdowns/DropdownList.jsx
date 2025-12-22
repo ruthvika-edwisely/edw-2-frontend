@@ -28,15 +28,16 @@ export default function DropdownList({
             : {},
           ...selectProps.sx,
         }}
+        MenuProps={selectProps?.MenuProps}
       >
         {options.map((opt) => (
           <MenuItem
-            key={opt.value}
-            value={opt.value}
-            disabled={opt.disabled}
-            sx={opt.sx || {}}
+            key={opt?.value}
+            value={opt?.value}
+            disabled={opt?.disabled || false}
+            sx={opt?.sx || {}}
           >
-            {opt.label}
+            {opt?.label}
           </MenuItem>
         ))}
       </Select>
