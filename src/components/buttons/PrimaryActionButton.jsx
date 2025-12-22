@@ -7,6 +7,7 @@ function PrimaryActionButton({
   disabled = false,
   sx,
   loading = false,
+  fullWidth = false,
   skeletonWidth = 160,
   ...props
 }) {
@@ -15,8 +16,8 @@ function PrimaryActionButton({
       <Skeleton
         variant="rounded"
         height={40}
-        width={skeletonWidth}
-        sx={{ borderRadius: 8 }}
+        width={fullWidth ? "100%" : skeletonWidth}
+        sx={{ borderRadius: 8, ...sx }}
       />
     );
   }
@@ -27,6 +28,7 @@ function PrimaryActionButton({
       startIcon={startIcon}
       onClick={onClick}
       disabled={disabled}
+      fullWidth={fullWidth}
       sx={sx}
       {...props}
     >

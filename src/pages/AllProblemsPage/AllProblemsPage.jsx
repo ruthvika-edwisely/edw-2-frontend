@@ -9,8 +9,8 @@ import MUIDataGrid from "../../components/dataGrid/MUIDataGrid";
 import TopicGrid from "../../features/Dashboard/components/Topics/TopicGrid";
 import InfoCard from "../../components/cards/InfoCard";
 
-import { clearSelectedTopic } from "../../store/features/topic/topicDashboardSlice";
-import { fetchDashboardProblems } from "../../store/features/dashboard/problemDashboardSlice";
+import { clearSelectedTopic} from "../../store/reducers/topicDashboardReducer";
+import { fetchDashboardProblems } from "../../store/actions/dashboardActions";
 
 import BoltIcon from "@mui/icons-material/Bolt";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";

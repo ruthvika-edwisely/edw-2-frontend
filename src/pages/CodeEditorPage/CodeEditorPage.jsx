@@ -8,7 +8,7 @@ import HorizontalHandle from '../../features/CodeEditorPage/components/Horizonta
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { getProblemData } from "../../store/features/problem/problemSlice.js";
-import { togglePanelVisibility } from '../../store/features/showAIPanel/showAISlice.js';
+import { togglePanelVisibility } from '../../store/reducers/showAIReducer.js';
 import { getProblemById } from '../../api/api.js';
 import { getLatestSubmissionData, getTestcaseResults } from '../../store/features/submission/submissionSlice.js';
 import { useTheme } from '@mui/material/styles';

@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { alpha, useTheme } from "@mui/material/styles";
 import { KeyboardArrowDown as KeyboardArrowDownIcon, EmojiEvents as EmojiEventsIcon } from "@mui/icons-material";
-import { getLeaderboardUsers } from "../../../../store/features/leaderboard/leaderboardSlice";
+import { getLeaderboardUsers } from "../../../../store/actions/leaderboardActions";
 import ProgressBar from "../../../../components/progressbar/ProgressBar";
 import DropdownList from "../../../../components/dropdowns/DropdownList";
 const defaultAvatars = [

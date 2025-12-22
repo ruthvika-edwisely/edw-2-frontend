@@ -1,72 +1,49 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { loginUserAPI } from "../../../api/api";
+import { createSlice } from "@reduxjs/toolkit";
+import { loginUser } from "../actions/authActions";
 
-export const loginUser = createAsyncThunk(
-  "auth/loginUser",
-  async ({ email, password }, { rejectWithValue }) => {
-    try {
-      const user = await loginUserAPI({ email, password });
-      return user;
-    } catch (err) {
-      return rejectWithValue(err);
-    }
-  }
-);
-const initialState = {
-  user: null,
-  loading: false,
-  error: null,
-  isAuthenticated: false,
+// Helper function to get stored user
+const getStoredUser = () => {
+  const user = localStorage.getItem("user");
+  return user ? JSON.parse(user) : null;
 };
 
-const storedUser = JSON.parse(localStorage.getItem("user"));
-if (storedUser) {
-  initialState.user = storedUser;
-  initialState.isAuthenticated = true;
-}
-
+const initialState = {
+  user: getStoredUser(),
+  loading: false,
+  error: null,
+  isAuthenticated: !!getStoredUser(),
+};
 
 const authSlice = createSlice({
   name: "auth",
-  initialState: {
-    user: storedUser,
-    loading: false,
-    error: null,
-    isAuthenticated: !!storedUser,
-  },
+  initialState,
   reducers: {
-    logout(state) {
+    logout: (state) => {
       state.user = null;
       state.isAuthenticated = false;
       localStorage.removeItem("user");
       document.cookie = "access_token=; Max-Age=0; path=/;";
     },
-  
-    decrementXP(state, action) {
+    decrementXP: (state, action) => {
       const cost = action.payload;
       if (state.user) {
         state.user.xp = Math.max(0, state.user.xp - cost);
         localStorage.setItem("user", JSON.stringify(state.user));
       }
     },
-  
-    incrementXP(state, action) {
-      const gainedXP = action.payload;
+    incrementXP: (state, action) => {
       if (state.user) {
-        state.user.xp += gainedXP;
+        state.user.xp += action.payload;
         localStorage.setItem("user", JSON.stringify(state.user));
       }
     },
-    setUserXP(state, action) {
+    setUserXP: (state, action) => {
       if (state.user) {
         state.user.xp = action.payload;
         localStorage.setItem("user", JSON.stringify(state.user));
       }
-    }
-    
+    },
   },
-  
-
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
@@ -93,4 +70,5 @@ const authSlice = createSlice({
 
 export const { logout, decrementXP, incrementXP, setUserXP } = authSlice.actions;
 export const selectUserXP = (state) => state.auth.user?.xp ?? 0;
+
 export default authSlice.reducer;

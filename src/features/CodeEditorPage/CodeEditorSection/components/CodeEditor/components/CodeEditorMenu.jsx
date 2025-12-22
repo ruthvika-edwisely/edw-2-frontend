@@ -2,7 +2,7 @@ import { Box, Button, Divider, IconButton, MenuItem, Select, Tooltip } from '@mu
 import { MoonStar, Sun, Undo, Undo2 } from 'lucide-react';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { togglePanelVisibility } from '../../../../../../store/features/showAIPanel/showAISlice';
+import { togglePanelVisibility } from '../../../../../../store/reducers/showAIReducer';
 import { useTheme } from '@mui/material/styles';
 
 const CodeEditorMenu = ({ editorTheme, setEditorTheme, language, setLanguage, afterRunCodeClick, setIsDefault }) => {

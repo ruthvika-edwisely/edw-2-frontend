@@ -27,13 +27,14 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import {
   togglePanelVisibility,
-} from "../../../store/features/showAIPanel/showAISlice";
+} from "../../../store/reducers/showAIReducer";
 import {
   fetchHints,
   sendMessage,
-  addUserMessage,
   unlockHint,
-} from "../../../store/features/showAIPanel/aISlice";
+} from "../../../store/actions/aiActions";
+import { addUserMessage } from "../../../store/reducers/aiReducer";
+
 
 const HINTS = [
   { level: 0, label: "High-level hint", cost: 0 },

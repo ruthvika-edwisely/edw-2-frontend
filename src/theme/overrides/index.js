@@ -16,6 +16,8 @@ import TablePagination from './TablePagination';
 // import Typography from './Typography';
 // import Autocomplete from './Autocomplete';
 
+import Focus from './Focus'; // ✅ ADD THIS
+
 // ----------------------------------------------------------------------
 
 export default function ComponentsOverrides(theme) {
@@ -33,6 +35,7 @@ export default function ComponentsOverrides(theme) {
     Switch(theme),
     Alert(theme),
     TablePagination(theme),
+    Focus(theme),
     // Tooltip(theme),
     // Backdrop(theme),
     // Typography(theme),

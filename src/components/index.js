@@ -6,3 +6,4 @@ export { default as MUIDataGrid } from "./dataGrid/MUIDataGrid";
 export { default as ProgressBar} from "./progressbar/ProgressBar";
 export { default as InfoCard } from "./cards/InfoCard";
 export { default as DropdownList } from "./dropdowns/DropdownList";
+export {default as AppTextField} from "./inputs/AppTextField";
