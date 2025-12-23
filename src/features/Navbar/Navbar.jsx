@@ -86,7 +86,7 @@ export default function Navbar({ mode, setMode }) {
       position="sticky"
       elevation={0}
       sx={{
-        width: "100vw",
+        width: "100%",
         left: 0,
         backgroundColor: theme.palette.background.paper,
         borderBottom: `1px solid ${theme.palette.divider}`,

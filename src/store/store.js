@@ -7,7 +7,7 @@ import activeTabReducer from "./features/activeTabSlice.js";
 import aiReducer from "./reducers/aiReducer.js";
 import topicDashboardReducer from "./reducers/topicDashboardReducer.js";
 import dashboardReducer from "./reducers/dashboardReducer.js"; // ✅ new
-import leaderboardReducer from "./reducers/leaderboardReducer.js";
+import leaderboardReducer from "./reducers/leaderboardReducer";
 
 
 
