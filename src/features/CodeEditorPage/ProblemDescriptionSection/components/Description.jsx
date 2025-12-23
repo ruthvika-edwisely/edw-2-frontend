@@ -124,7 +124,7 @@ const Description = () => {
 
 
         <CompHeading 
-          title={`${id}. ${title}`}
+          title={`${id-3}. ${title}`}
           variant="h4"
           sx={{
             fontWeight: 700,
