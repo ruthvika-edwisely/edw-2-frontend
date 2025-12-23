@@ -25,7 +25,7 @@ const IOSection = ({ sectionHeading, sectionData, sx={}, blockSx={} }) => {
                     ...sx
                 }}
             >
-                {sectionHeading} :
+                {sectionHeading} : 
             </Typography>
             
             <IOBlock data={sectionData} sx={blockSx} />

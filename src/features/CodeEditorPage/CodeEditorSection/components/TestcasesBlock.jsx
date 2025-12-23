@@ -133,12 +133,12 @@ const TestcasesBlock = () => {
                     <>
                 
                       <IOSection 
-                        sectionHeading={"Your Output :"}
+                        sectionHeading={"Your Output"}
                         sectionData={currentResult.output?.trim() || "None"}
                       />
 
                       <IOSection 
-                        sectionHeading={"Status :"}
+                        sectionHeading={"Status"}
                         sectionData={currentResult.status}
                         blockSx={{
                           whiteSpace: "pre-wrap",

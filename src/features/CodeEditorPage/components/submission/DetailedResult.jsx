@@ -131,7 +131,7 @@ const DetailedResult = ({latestSubmission, isLoadingDetailedResult, submitCode, 
             {
                 icon: Database,
                 title: "Space complexity",
-                data: `${latestSubmission?.space_complexity} ? ${latestSubmission.space_complexity} : "N/A"`
+                data: `${latestSubmission?.space_complexity ? `${latestSubmission.space_complexity}` : "N/A"}`
             }
         ]
     ];
