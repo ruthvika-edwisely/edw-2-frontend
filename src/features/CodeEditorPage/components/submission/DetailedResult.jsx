@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Button, IconButton, Stack, Tooltip, Typography, useTheme } from "@mui/material";
 import { formatOutput, getFailedTestCases, getStatusColor, getTestCaseProgress, normalizeStatus } from "../../utils/formatFunctions.js";
 import DetailedResultSkeleton from "../skeletons/DetailedResultSkeleton.jsx";
 import { ArrowLeft, Clock, Database } from "lucide-react";
@@ -9,6 +9,10 @@ import CodeBlock from "../CodeBlock.jsx";
 
 const DetailedResult = ({latestSubmission, isLoadingDetailedResult, submitCode, handleBackToSubmissions, copied, handleCopy}) => {
     if (!latestSubmission) return null;
+
+
+    const theme = useTheme();
+    const palette = theme.palette.problemPage;
 
     // Show skeleton while loading
     if (isLoadingDetailedResult || submitCode) {
@@ -108,24 +112,24 @@ const DetailedResult = ({latestSubmission, isLoadingDetailedResult, submitCode, 
     const metricCardData = [
         [
             {
-                icon: {Clock},
+                icon: Clock,
                 title: "Runtime",
                 data : `${latestSubmission?.totalExecTime ? `${Math.round(latestSubmission.totalExecTime)} ms` : "N/A"}`
             },
             {
-                icon: {Database},
+                icon: Database,
                 title: "Memory",
                 data: `${latestSubmission?.totalExecMemory ? `${latestSubmission.totalExecMemory.toFixed(2)} MB` : "N/A"}`
             },
         ],
         [ 
             {
-                icon: {Clock},
+                icon: Clock,
                 title: "Time complexity",
                 data : `${latestSubmission?.time_complexity ? `${latestSubmission.time_complexity}` : "N/A"}`
             },
             {
-                icon: {Database},
+                icon: Database,
                 title: "Space complexity",
                 data: `${latestSubmission?.space_complexity} ? ${latestSubmission.space_complexity} : "N/A"`
             }
@@ -198,10 +202,11 @@ const DetailedResult = ({latestSubmission, isLoadingDetailedResult, submitCode, 
           <Box sx={{ px: 4, py: 3, borderBottom: `1px solid ${palette.cardBorder}`, display: 'flex', flexDirection: 'column', gap: 2 }}>
             
             {metricCardData.map((row, idx) => (
-                <Stack direction="row" spacing={2}>
+                <Stack key={idx} direction="row" spacing={2}>
                     
-                    {row.map((card) => (
+                    {row.map((card, rowIdx) => (
                         <MetricCard 
+                            key={rowIdx}
                             icon={card?.icon}
                             title={card?.title}
                             data={card?.data}
