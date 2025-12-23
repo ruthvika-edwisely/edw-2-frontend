@@ -44,7 +44,7 @@ const CodeBlock = ({code, language, copied, handleCopy}) => {
         <Tooltip title={copied ? "Copied!" : "Copy code"} placement="left">
             <IconButton
             size="small"
-            onClick={handleCopy}
+            onClick={() => handleCopy(code)}
             sx={{
                 color: palette.textTertiary,
                 "&:hover": {
