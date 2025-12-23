@@ -69,6 +69,7 @@ const CodeEditor = () => {
 
       else if(mode == "Submit") {
           dispatch(getSubmitStatus(true));
+          dispatch(updateTabIndex(2));
       }
 
       await runCodeExecution(mode);
@@ -79,7 +80,6 @@ const CodeEditor = () => {
     finally {
       dispatch(getRunStatus(false));
       dispatch(getSubmitStatus(false));
-      dispatch(updateTabIndex(2));
     }
   };
 

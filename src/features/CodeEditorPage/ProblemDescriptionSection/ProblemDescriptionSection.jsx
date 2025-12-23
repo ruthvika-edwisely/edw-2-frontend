@@ -7,6 +7,7 @@ import Editorial from "./components/Editorial.jsx";
 import Submissions from "./components/Submissions.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import { updateTabIndex } from "../../../store/features/activeTabSlice.js";
+import TabsComp from "../components/TabsComp.jsx";
 
 const ProblemDescriptionSection = () => {
 
@@ -21,6 +22,22 @@ const ProblemDescriptionSection = () => {
   const theme = useTheme();
   const pp = theme.palette.problemPage;
 
+  const pageTabs = [
+    {
+      key: 0,
+      label: "Description"
+    },
+    {
+      key: 1,
+      label: "Editorial"
+    },
+    {
+      key: 2,
+      label: "Submissions"
+    },
+
+  ];
+
   return (
     <Panel minSize={5}>
       <Box
@@ -33,44 +50,25 @@ const ProblemDescriptionSection = () => {
           width: "100%"
         }}
       >
-        {/* Tabs */}
-        <Tabs
+
+        <TabsComp
           value={activeTab}
-          onChange={(e, v) => setActiveTab(v)}
+          onChange={setActiveTab}
           variant="fullWidth"
-          TabIndicatorProps={{
-            sx: {
-              height: 3,
-              borderRadius: "3px",
-              bgcolor: pp.tabIndicator,
-            },
+          tabs={pageTabs}
+          colors={{
+            text: pp.tabText,
+            selected: pp.tabSelected,
+            indicator: pp.tabIndicator,
           }}
-          sx={{
-            borderBottom: `1px solid ${pp.cardBorder}`,
-            ".MuiTab-root": {
-              fontWeight: 600,
-              textTransform: "none",
-              color: pp.tabText,
-              "&.Mui-selected": {
-                color: pp.tabSelected,
-              },
-              "&:hover": {
-                bgcolor: pp.tabHover,
-              },
-            },
-          }}
-        >
-          <Tab label="Description" />
-          <Tab label="Editorial" />
-          <Tab label="Submissions" />
-        </Tabs>
+        />
 
         <Box
           sx={{
             flex: 1,
             overflowY: "auto",
             // p: 3,
-            width: "100%",     // ensures full width
+            width: "100%",
             bgcolor: pp.cardBg,
           }}
         >

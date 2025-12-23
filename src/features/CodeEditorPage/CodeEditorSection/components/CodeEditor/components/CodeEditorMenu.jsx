@@ -4,6 +4,9 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { togglePanelVisibility } from '../../../../../../store/reducers/showAIReducer';
 import { useTheme } from '@mui/material/styles';
+import DropdownList from "../../../../../../components/dropdowns/DropdownList"
+import PrimaryActionButton from '../../../../../../components/buttons/PrimaryActionButton';
+
 
 const CodeEditorMenu = ({ editorTheme, setEditorTheme, language, setLanguage, afterRunCodeClick, setIsDefault }) => {
 
@@ -23,6 +26,22 @@ const CodeEditorMenu = ({ editorTheme, setEditorTheme, language, setLanguage, af
         setLanguage(e.target.value);
     };
 
+
+    const options = [
+        {
+            key: "python",
+            label: "Python"
+        },
+        {
+            key: "java",
+            label: "Java"
+        },
+        {
+            key: "cpp",
+            label: "C++"
+        }
+    ];
+
     return (
         <Box
             sx={{
@@ -40,25 +59,29 @@ const CodeEditorMenu = ({ editorTheme, setEditorTheme, language, setLanguage, af
             {/* LEFT */}
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
 
-                <Select
+                <DropdownList
                     value={language}
                     onChange={changeEditorLanguage}
                     size="small"
-                    sx={{
+                    options={[
+                        { value: "python", label: "Python" },
+                        { value: "java", label: "Java" },
+                        { value: "cpp", label: "C++" },
+                    ]}
+                    selectProps={{
+                        sx: {
                         bgcolor: isLight
                             ? theme.palette.problemPage.selectBg
                             : theme.palette.grey[1200],
-
                         color: isLight
                             ? theme.palette.text.primary
                             : theme.palette.grey[200],
-
                         borderRadius: 1,
 
                         "& .MuiOutlinedInput-notchedOutline": {
                             borderColor: isLight
-                                ? theme.palette.grey[300]
-                                : theme.palette.grey[600],
+                            ? theme.palette.grey[300]
+                            : theme.palette.grey[600],
                         },
 
                         "&:hover .MuiOutlinedInput-notchedOutline": {
@@ -67,44 +90,40 @@ const CodeEditorMenu = ({ editorTheme, setEditorTheme, language, setLanguage, af
 
                         "& .MuiSvgIcon-root": {
                             color: isLight
-                                ? theme.palette.grey[700]
-                                : theme.palette.grey[300],
+                            ? theme.palette.grey[700]
+                            : theme.palette.grey[300],
                         },
 
-                        // TEXT inside the select box
                         "& .MuiSelect-select": {
                             color: isLight
-                                ? theme.palette.text.primary
-                                : theme.palette.grey[100],
+                            ? theme.palette.text.primary
+                            : theme.palette.grey[100],
                         },
-                    }}
-                    MenuProps={{
+                        },
+
+                        MenuProps: {
                         PaperProps: {
                             sx: {
+                            bgcolor: isLight
+                                ? theme.palette.grey[0]
+                                : theme.palette.grey[1100],
+
+                            "& .MuiMenuItem-root": {
+                                color: isLight
+                                ? theme.palette.text.primary
+                                : theme.palette.grey[200],
+
+                                "&:hover": {
                                 bgcolor: isLight
-                                    ? theme.palette.grey[0]
-                                    : theme.palette.grey[1100],
-
-                                "& .MuiMenuItem-root": {
-                                    color: isLight
-                                        ? theme.palette.text.primary
-                                        : theme.palette.grey[200],
-
-                                    "&:hover": {
-                                        bgcolor: isLight
-                                            ? theme.palette.grey[100]
-                                            : theme.palette.grey[900],
-                                    }
-                                }
-                            }
-                        }
+                                    ? theme.palette.grey[100]
+                                    : theme.palette.grey[900],
+                                },
+                            },
+                            },
+                        },
+                        },
                     }}
-                >
-                    <MenuItem value="python">Python</MenuItem>
-                    <MenuItem value="java">Java</MenuItem>
-                    <MenuItem value="cpp">C++</MenuItem>
-                </Select>
-
+                />
 
                 <Divider orientation="vertical" flexItem sx={{ bgcolor: isLight ? theme.palette.grey[300] : theme.palette.grey[600] }} />
 
@@ -172,7 +191,8 @@ const CodeEditorMenu = ({ editorTheme, setEditorTheme, language, setLanguage, af
             {/* RIGHT */}
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
 
-                <Button
+
+                <PrimaryActionButton 
                     variant="contained"
                     size="small"
                     sx={{
@@ -183,11 +203,10 @@ const CodeEditorMenu = ({ editorTheme, setEditorTheme, language, setLanguage, af
                     }}
                     disabled={runCode || submitCode}
                     onClick={() => afterRunCodeClick("Run")}
-                >
-                    {runCode ? "Processing...." : "Run"}
-                </Button>
+                    label={runCode ? "Processing...." : "Run"}
+                />
 
-                <Button
+                <PrimaryActionButton 
                     variant="contained"
                     size="small"
                     sx={{
@@ -200,10 +219,8 @@ const CodeEditorMenu = ({ editorTheme, setEditorTheme, language, setLanguage, af
                     onClick={() => {
                         afterRunCodeClick("Submit")
                     }}
-                >
-                    {submitCode ? "Submitting...." : "Submit"}
-                </Button>
-
+                    label={submitCode ? "Submitting...." : "Submit"}
+                />
             </Box>
 
         </Box>

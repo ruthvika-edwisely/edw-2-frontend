@@ -3,6 +3,7 @@ import { Button, Skeleton } from "@mui/material";
 function PrimaryActionButton({
   label,
   startIcon,
+  variant="contained",
   onClick,
   disabled = false,
   sx,
@@ -24,7 +25,7 @@ function PrimaryActionButton({
 
   return (
     <Button
-      variant="contained"
+      variant={variant}
       startIcon={startIcon}
       onClick={onClick}
       disabled={disabled}
